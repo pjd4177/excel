@@ -80,6 +80,14 @@ button{cursor:pointer}
 .all-freq td[rowspan]{vertical-align:top;color:var(--ink)}
 .all-freq tr.grp td{border-top:2px solid var(--lav)}
 .all-freq tr.sub td{color:var(--muted);font-size:13px}
+.cf-names{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.cf-names input{font:inherit;color:var(--text);border:1px solid var(--line);background:var(--card);border-radius:14px;padding:9px 12px;width:150px}
+.cf-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px}
+.cf-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 5px 5px 14px;border-radius:14px;background:var(--lav-soft);font-size:14px}
+.cf-item select{padding:6px 8px;border-radius:10px}
+details.km{margin:6px 0}
+details.km summary{cursor:pointer;color:var(--muted);font-size:14px;padding:4px 0}
+.ok{color:var(--lav-deep);font-weight:600}
 .menu-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 10px}
 .menu-head h3{font-weight:400;font-size:20px;margin:0;color:var(--ink)}
 .nav{display:flex;flex-direction:column}
@@ -216,6 +224,13 @@ footer div:last-child{text-align:right}
       <div class="nav">
         <button class="nav-item" data-p="rel"><span class="idx">13</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nt"><b>신뢰도 분석</b><small>Cronbach's α</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="val"><span class="idx">14</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="2"/><rect x="14" y="4" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span><span class="nt"><b>타당도 분석</b><small>탐색적 요인분석 · KMO</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="cfa"><span class="idx">15</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="3"/><rect x="2.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="16.5" y="15.5" width="5" height="5" rx="1.5"/><path d="M10.4 8 5.5 15.5M12 8.5v7M13.6 8l4.9 7.5"/></svg></span><span class="nt"><b>확인적 요인분석</b><small>CFA · 적합도 · AVE · CR</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group">다변량 · 생존 분석</p>
+      <div class="nav">
+        <button class="nav-item" data-p="disc"><span class="idx">16</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20 20 4" stroke-dasharray="2.5 2.5"/><circle cx="6.5" cy="8" r="1.7"/><circle cx="10" cy="5" r="1.7"/><circle cx="5" cy="12" r="1.7"/><circle cx="14" cy="19" r="1.7"/><circle cx="18" cy="15.5" r="1.7"/><circle cx="19" cy="11" r="1.7"/></svg></span><span class="nt"><b>판별분석</b><small>판별함수 · 분류 정확도</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="clus"><span class="idx">17</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="3.3"/><circle cx="17" cy="8" r="3.3"/><circle cx="11" cy="17" r="3.3"/></svg></span><span class="nt"><b>군집분석</b><small>K-평균 · 엘보우</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="surv"><span class="idx">18</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 5h5v4h4v5h5v5h4"/></svg></span><span class="nt"><b>생존분석</b><small>Kaplan-Meier · Cox 회귀</small></span><span class="chev">›</span></button>
       </div>
       <p class="quote">“숫자가 가벼워지면, 결론은 선명해집니다.”</p>
     </aside>
@@ -385,6 +400,58 @@ footer div:last-child{text-align:right}
         <button class="pill primary run" data-run="val">분석 실행</button>
         <div class="out" id="o-val"></div>
       </div>
+
+      <div class="panel" id="p-cfa">
+        <span class="eyebrow">15 · Confirmatory Factor Analysis</span>
+        <h2>확인적 요인분석</h2>
+        <p class="desc">요인마다 문항을 지정하면 최대우도법(ML)으로 측정모형을 추정해 모형 적합도(CFI·TLI·RMSEA·SRMR), 집중타당도(AVE·CR), 판별타당도(Fornell-Larcker)를 확인합니다. 요인끼리는 서로 상관을 허용합니다.</p>
+        <div class="controls"><label class="f">요인 수<select id="cf-nf"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label></div>
+        <p class="sublabel">요인 이름</p>
+        <div class="cf-names" id="cf-names"></div>
+        <p class="sublabel">문항 → 요인 지정 (분석에 쓰지 않을 문항은 — 로 두세요)</p>
+        <div class="cf-items" id="cf-items"></div>
+        <button class="pill primary run" data-run="cfa">분석 실행</button>
+        <div class="out" id="o-cfa"></div>
+      </div>
+
+      <div class="panel" id="p-disc">
+        <span class="eyebrow">16 · Discriminant Analysis</span>
+        <h2>판별분석</h2>
+        <p class="desc">집단(예: 재방문 여부)을 가장 잘 구분하는 판별함수를 만들고, 그 함수로 사례를 얼마나 정확히 분류하는지 봅니다. 사전확률은 모든 집단 동일로 둡니다.</p>
+        <div class="controls"><label class="f">집단변수<select id="da-g" data-kind="any"></select></label></div>
+        <p class="sublabel">판별변수 (숫자)</p>
+        <div class="checks tight" id="da-vars" data-kind="num"></div>
+        <button class="pill primary run" data-run="disc">분석 실행</button>
+        <div class="out" id="o-disc"></div>
+      </div>
+
+      <div class="panel" id="p-clus">
+        <span class="eyebrow">17 · K-means Cluster</span>
+        <h2>군집분석</h2>
+        <p class="desc">비슷한 응답자끼리 K개 군집으로 묶습니다 (K-평균, 시작점 20회 중 최적). 엘보우 그래프로 적절한 군집 수를 가늠하고, 결과를 새 변수로 추가해 교차분석·ANOVA에 쓸 수 있습니다.</p>
+        <div class="checks-head"><span class="sublabel">군집 변수 (숫자)</span><button class="mini" data-all="#cl-vars">전체 선택</button><button class="mini" data-none="#cl-vars">전체 해제</button></div>
+        <div class="checks tight" id="cl-vars" data-kind="num"></div>
+        <div class="controls"><label class="f">군집 수 (K)<select id="cl-k"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label></div>
+        <label class="opt"><input type="checkbox" id="cl-std" checked> 변수 표준화 (단위가 다른 변수를 함께 쓸 때 권장)</label>
+        <button class="pill primary run" data-run="clus">분석 실행</button>
+        <div class="out" id="o-clus"></div>
+      </div>
+
+      <div class="panel" id="p-surv">
+        <span class="eyebrow">18 · Survival Analysis</span>
+        <h2>생존분석</h2>
+        <p class="desc">사건(예: 이탈, 재발, 사망)이 일어나기까지의 시간을 Kaplan-Meier 생존곡선과 로그순위 검정으로 비교하고, Cox 비례위험 회귀로 위험비(HR)를 추정합니다. 사건이 일어나지 않은 사례는 중도절단으로 처리합니다.</p>
+        <div class="controls">
+          <label class="f">시간변수<select id="sv-t" data-kind="num"></select></label>
+          <label class="f">사건변수<select id="sv-e" data-kind="any"></select></label>
+          <label class="f">사건 발생 값<select id="sv-ev"></select></label>
+          <label class="f">비교 집단 (선택)<select id="sv-g" data-kind="any"></select></label>
+        </div>
+        <p class="sublabel">Cox 회귀 공변량 (선택, 숫자)</p>
+        <div class="checks tight" id="sv-cov" data-kind="num"></div>
+        <button class="pill primary run" data-run="surv">분석 실행</button>
+        <div class="out" id="o-surv"></div>
+      </div>
     </div>
   </section>
 
@@ -472,10 +539,11 @@ function setData(d){
   const nums=d.cols.filter(c=>c.num).map(c=>c.name);
   const cats=d.cols.filter(c=>{const u=new Set(c.values.filter(v=>v!==''));return u.size>=2&&u.size<=10;}).map(c=>c.name);
   const isIpa=n=>IPA_I.test(n)||IPA_P.test(n),isItem=n=>/\D\d+$/.test(n)&&!isIpa(n);
-  const core=nums.filter(n=>!/^(번호|id|no|순번)$/i.test(n)&&!isIpa(n)&&!isItem(n));
+  const TIME=/기간|개월|time|duration|생존/i;
+  const core=nums.filter(n=>!/^(번호|id|no|순번)$/i.test(n)&&!isIpa(n)&&!isItem(n)&&!TIME.test(n)&&levels(n).length>2);
   const two=cats.filter(n=>levels(n).length===2),twoText=two.filter(n=>!col(n).num);
   const pick=(id,v)=>{if(v)$(id).value=v;};
-  setChecks('#freq-vars',cats.filter(n=>!isIpa(n)&&!isItem(n)).slice(0,4));
+  setChecks('#freq-vars',cats.filter(n=>!isIpa(n)&&!isItem(n)).slice(0,5));
   const scale=nums.filter(isItem),groups={};scale.forEach(n=>(groups[n.replace(/\d+$/,'')]??=[]).push(n));
   setChecks('#rel-items',Object.values(groups).find(g=>g.length>=2)||[]);setChecks('#val-items',scale);
   pick('#tt-g',two[0]||cats[0]);pick('#an-g',cats.find(n=>levels(n).length>=3)||cats[0]);
@@ -490,6 +558,13 @@ function setData(d){
   const hrs=core.find(n=>/시간|time|hour/i.test(n));
   pick('#md-y',core.at(-1));pick('#md-x',hrs||core[0]);pick('#md-m',twoText[0]||core[1]);
   pick('#me-x',hrs||core[0]);pick('#me-m',core.at(-1));pick('#me-y',post||core[1]);
+  const tVar=nums.find(n=>TIME.test(n)),eVar=nums.find(n=>/이탈|사망|사건|재발|event|death|churn/i.test(n))||two.find(n=>n!==twoText[0]);
+  pick('#sv-t',tVar||core[0]);pick('#sv-e',eVar);
+  $('#sv-g').insertAdjacentHTML('afterbegin','<option value="">(없음 · 전체)</option>');$('#sv-g').value=twoText[0]||'';
+  setChecks('#sv-cov',core.slice(-1));fillSvEv();
+  pick('#da-g',twoText.at(-1)||cats[0]);setChecks('#da-vars',core.filter(n=>n!==pre).slice(-3));
+  setChecks('#cl-vars',core.filter(n=>n!==pre&&n!==post).slice(-3));
+  cfaInit();
   fillLevels();fillEvent();ipaInit();
   document.querySelectorAll('.out[id^="o-"]').forEach(o=>o.innerHTML='');}
 
@@ -507,13 +582,14 @@ function sample(){let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
   const items=['시설','강의','가격','접근성'],imp=[4.3,4.5,3.4,3.6],perf=[3.4,4.3,3.8,3.1];
   const lik=v=>Math.min(5,Math.max(1,Math.round(v)));
   const sv=['서비스1','서비스2','서비스3','서비스4'],ly=['충성1','충성2','충성3'];
-  const L=[['번호','성별','학년','사전점수','사후점수','공부시간','만족도','재방문',...items.map(n=>'중요_'+n),...items.map(n=>'만족_'+n),...sv,...ly].join('\t')];
+  const L=[['번호','성별','학년','사전점수','사후점수','공부시간','가입기간','이탈','만족도','재방문',...items.map(n=>'중요_'+n),...items.map(n=>'만족_'+n),...sv,...ly].join('\t')];
   for(let i=1;i<=120;i++){const g=rnd()<.5?'남':'여',y=1+Math.floor(rnd()*3),pre=Math.round(60+y*3+norm()*8),
     hrs=Math.max(0,Math.round((5+norm()*2)*10)/10),post=Math.round(pre+4+hrs*0.8+(g==='여'?3:0)+norm()*5),
     sat=lik(3+(post-pre-10)/6+(hrs-5)*(g==='여'?0.4:0)+norm()*0.6),
     re=rnd()<1/(1+Math.exp(-(-5.5+1.3*sat+0.2*hrs)))?'예':'아니오';
     const fa=norm(),fb=0.4*fa+0.9*norm();
-    L.push([i,g,y,pre,post,hrs,sat,re,...imp.map(m=>lik(m+norm()*0.7)),...perf.map(m=>lik(m+norm()*0.8)),
+    const rate=0.035*Math.exp((g==='남'?0.7:0)-0.45*(sat-3)),T=-Math.log(rnd()||1e-9)/rate,C=6+rnd()*30,dur=Math.round(Math.min(T,C)*10)/10;
+    L.push([i,g,y,pre,post,hrs,dur,T<=C?1:0,sat,re,...imp.map(m=>lik(m+norm()*0.7)),...perf.map(m=>lik(m+norm()*0.8)),
       ...sv.map(()=>lik(3.5+0.85*fa+0.6*norm())),...ly.map(()=>lik(3.2+0.85*fb+0.6*norm()))].join('\t'));}
   return L.join('\n');}
 
@@ -605,7 +681,7 @@ corr(){const names=[...document.querySelectorAll('#corr-vars input:checked')].ma
   const rows=names.map((ni,i)=>[esc(ni),...names.map((nj,j)=>{if(i===j)return '1';
     const x=[],y=[];vals[i].forEach((v,k)=>{if(isFinite(v)&&isFinite(vals[j][k])){x.push(v);y.push(vals[j][k]);}});
     if(x.length<3)return '-';const r=pearson(x,y),t=rTest(r,x.length);if(j>i)res.push({a:ni,b:nj,r,p:t.p});
-    return `<span class="${t.p<0.05?'sig':''}">${f(r)}${star(t.p)}</span><small>p=${fp(t.p)}, n=${x.length}</small>`;})]);
+    return `<span class="${t.p<0.05?'sig':''}">${f(r)}${star(t.p)}</span><small>${pEq(t.p)}, n=${x.length}</small>`;})]);
   const sig=res.filter(o=>o.p<0.05).sort((a,b)=>Math.abs(b.r)-Math.abs(a.r));
   const str=r=>{const a=Math.abs(r);return a>=.7?'강한':a>=.4?'중간 정도의':a>=.2?'약한':'매우 약한';};
   return table(['',...names.map(esc)],rows)+sigNote+
@@ -886,7 +962,228 @@ val(){const items=[...document.querySelectorAll('#val-items input:checked')].map
       '<br>요인별로 묶인 문항은 [신뢰도 분석]에서 Cronbach α도 확인해 보세요.');}
 });
 
+// ---------- 다변량 · 생존 · CFA 도구 ----------
+const PAL=['var(--lav-deep)','var(--sun)','var(--ink)','#e0897f','#5fae9c','#d49a4a','#7f9fe0','#b07fd6'];
+const mmul=(A,B)=>A.map(r=>B[0].map((_,j)=>r.reduce((s,v,k)=>s+v*B[k][j],0)));
+function chol(A){const n=A.length,L=A.map(()=>Array(n).fill(0));
+  for(let i=0;i<n;i++)for(let j=0;j<=i;j++){let s=A[i][j];for(let k=0;k<j;k++)s-=L[i][k]*L[j][k];
+    if(i===j){if(!(s>0))return null;L[i][i]=Math.sqrt(s);}else L[i][j]=s/L[j][j];}return L;}
+const logdet=A=>{const L=chol(A);return L?2*sum(L.map((r,i)=>Math.log(r[i]))):NaN;};
+
+function kmeans(X,k,starts,seed){const n=X.length,p=X[0].length,rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+  const d2=(a,b)=>{let s=0;for(let j=0;j<p;j++)s+=(a[j]-b[j])**2;return s;};let best=null;
+  for(let st=0;st<starts;st++){const C=[X[Math.floor(rnd()*n)].slice()];
+    while(C.length<k){const D=X.map(x=>Math.min(...C.map(c=>d2(x,c)))),tot=sum(D);let r=rnd()*tot,i=0;while(i<n-1&&(r-=D[i])>0)i++;C.push(X[i].slice());}
+    const lab=Array(n).fill(-1);
+    for(let it=0;it<200;it++){let ch=false;
+      X.forEach((x,i)=>{let b=0,bd=Infinity;C.forEach((c,j)=>{const d=d2(x,c);if(d<bd){bd=d;b=j;}});if(lab[i]!==b){lab[i]=b;ch=true;}});
+      for(let j=0;j<k;j++){const m=X.filter((_,i)=>lab[i]===j);if(m.length)C[j]=Array.from({length:p},(_,q)=>mean(m.map(r=>r[q])));}
+      if(!ch)break;}
+    const wss=sum(X.map((x,i)=>d2(x,C[lab[i]])));if(!best||wss<best.wss)best={lab:[...lab],C:C.map(c=>[...c]),wss};}
+  const size=Array.from({length:k},(_,j)=>best.lab.filter(l=>l===j).length),ord=size.map((_,j)=>j).sort((a,b)=>size[b]-size[a]),re=new Map(ord.map((j,i)=>[j,i]));
+  return {lab:best.lab.map(l=>re.get(l)),C:ord.map(j=>best.C[j]),wss:best.wss};}
+let LAST_CLUS=null;
+
+function kmCurve(rows){const s=[...rows].sort((a,b)=>a.t-b.t);let n=s.length,S=1,gv=0,i=0;const steps=[],cens=[];
+  while(i<s.length){const t=s[i].t;let d=0,c=0;while(i<s.length&&s[i].t===t){s[i].d?d++:c++;i++;}
+    if(d){S*=1-d/n;if(n>d)gv+=d/(n*(n-d));steps.push({t,n,d,S,se:S*Math.sqrt(gv)});}
+    if(c)cens.push({t,S});n-=d+c;}
+  const med=steps.find(o=>o.S<=0.5);return {steps,cens,median:med?med.t:null,N:rows.length,events:sum(rows.map(r=>r.d)),maxT:s.length?s.at(-1).t:0};}
+function logrank(groups){const G=groups.length,times=[...new Set(groups.flat().filter(r=>r.d).map(r=>r.t))].sort((a,b)=>a-b);
+  const O=Array(G).fill(0),E=Array(G).fill(0),V=Array.from({length:G},()=>Array(G).fill(0));
+  for(const t of times){const nr=groups.map(g=>g.filter(r=>r.t>=t).length),dr=groups.map(g=>g.filter(r=>r.t===t&&r.d).length),n=sum(nr),d=sum(dr);
+    for(let a=0;a<G;a++){O[a]+=dr[a];E[a]+=d*nr[a]/n;if(n>1)for(let b=0;b<G;b++)V[a][b]+=d*(n-d)/(n-1)*nr[a]/n*((a===b?1:0)-nr[b]/n);}}
+  const k=G-1,df=O.slice(0,k).map((o,a)=>o-E[a]),Vi=inv(V.slice(0,k).map(r=>r.slice(0,k)));
+  const chi=df.reduce((s,x,a)=>s+x*Vi[a].reduce((t,v,b)=>t+v*df[b],0),0);return {O,E,chi,df:k,p:pChi(chi,k)};}
+function coxFit(t,d,X){const n=t.length,p=X[0].length,mx=X[0].map((_,j)=>mean(X.map(r=>r[j]))),Z=X.map(r=>r.map((v,j)=>v-mx[j]));
+  const ord=t.map((_,i)=>i).sort((a,b)=>t[b]-t[a]);
+  const at=b=>{let ll=0,S0=0;const S1=Array(p).fill(0),S2=Array.from({length:p},()=>Array(p).fill(0)),g=Array(p).fill(0),I=Array.from({length:p},()=>Array(p).fill(0));
+    let i=0;while(i<n){const tc=t[ord[i]];let j=i;
+      while(j<n&&t[ord[j]]===tc){const z=Z[ord[j]],w=Math.exp(z.reduce((s,v,q)=>s+v*b[q],0));S0+=w;for(let a=0;a<p;a++){S1[a]+=w*z[a];for(let c=0;c<p;c++)S2[a][c]+=w*z[a]*z[c];}j++;}
+      for(let k=i;k<j;k++){const r=ord[k];if(!d[r])continue;const z=Z[r];ll+=z.reduce((s,v,q)=>s+v*b[q],0)-Math.log(S0);
+        for(let a=0;a<p;a++){g[a]+=z[a]-S1[a]/S0;for(let c=0;c<p;c++)I[a][c]+=S2[a][c]/S0-S1[a]*S1[c]/(S0*S0);}}
+      i=j;}
+    return {ll,g,I};};
+  let b=Array(p).fill(0),r=at(b);const ll0=r.ll;
+  for(let it=0;it<60;it++){const db=inv(r.I).map(row=>row.reduce((s,v,k)=>s+v*r.g[k],0));let h=1,nb=b.map((v,k)=>v+db[k]),nr=at(nb);
+    while(nr.ll<r.ll-1e-9&&h>1e-4){h/=2;nb=b.map((v,k)=>v+h*db[k]);nr=at(nb);}
+    const done=Math.abs(nr.ll-r.ll)<1e-10;b=nb;r=nr;if(done)break;}
+  const cov=inv(r.I);return {b,se:cov.map((row,i)=>Math.sqrt(row[i])),ll:r.ll,ll0};}
+
+function cfaFit(S,fa,nf,N){const p=S.length,pairs=[];for(let a=0;a<nf;a++)for(let b=a+1;b<nf;b++)pairs.push([a,b]);
+  const q=2*p+pairs.length,ldS=logdet(S);if(!isFinite(ldS))throw new Error('문항 공분산 행렬이 특이합니다. 서로 완전히 겹치는 문항이 있는지 확인하세요.');
+  const unpack=x=>{const lam=x.slice(0,p),th=x.slice(p,2*p).map(Math.exp),Ph=Array.from({length:nf},(_,a)=>Array.from({length:nf},(_,b)=>a===b?1:0));
+    pairs.forEach(([a,b],k)=>{Ph[a][b]=Ph[b][a]=Math.tanh(x[2*p+k]);});return {lam,th,Ph};};
+  const sigma=m=>S.map((_,i)=>S.map((_,j)=>m.lam[i]*m.lam[j]*m.Ph[fa[i]][fa[j]]+(i===j?m.th[i]:0)));
+  const ev=x=>{const m=unpack(x),Sg=sigma(m),ld=logdet(Sg);if(!isFinite(ld))return {F:Infinity};const Si=inv(Sg);
+    let tr=0;for(let i=0;i<p;i++)for(let j=0;j<p;j++)tr+=S[i][j]*Si[j][i];
+    const G=mmul(Si,mmul(S,Si)).map((r,i)=>r.map((v,j)=>Si[i][j]-v)),g=Array(q).fill(0),gn=Array(q).fill(0);
+    for(let i=0;i<p;i++){let s=0;for(let k=0;k<p;k++)s+=G[i][k]*m.lam[k]*m.Ph[fa[i]][fa[k]];g[i]=gn[i]=2*s;gn[p+i]=G[i][i];g[p+i]=G[i][i]*m.th[i];}
+    pairs.forEach(([a,b],k)=>{let s=0;for(let i=0;i<p;i++)for(let j=0;j<p;j++)if(fa[i]===a&&fa[j]===b)s+=G[i][j]*m.lam[i]*m.lam[j];gn[2*p+k]=2*s;g[2*p+k]=2*s*(1-m.Ph[a][b]**2);});
+    return {F:ld+tr-ldS-p,g,gn,m,Sg};};
+  let x=[...S.map((r,i)=>Math.sqrt(r[i])*0.7),...S.map((r,i)=>Math.log(r[i]*0.5)),...pairs.map(()=>0.3)],cur=ev(x);
+  let H=Array.from({length:q},(_,i)=>Array.from({length:q},(_,j)=>i===j?1:0));const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
+  for(let it=0;it<2000;it++){let d=H.map(r=>-dot(r,cur.g));if(dot(d,cur.g)>=0){H=H.map((r,i)=>r.map((_,j)=>i===j?1:0));d=cur.g.map(v=>-v);}
+    let st=1,nx,nv;while(st>1e-12){nx=x.map((v,i)=>v+st*d[i]);nv=ev(nx);if(nv.F<=cur.F+1e-4*st*dot(cur.g,d))break;st/=2;}
+    if(st<=1e-12)break;const s=nx.map((v,i)=>v-x[i]),y=nv.g.map((v,i)=>v-cur.g[i]),sy=dot(s,y);
+    if(sy>1e-14){const rho=1/sy,Hy=H.map(r=>dot(r,y)),yHy=dot(y,Hy);H=H.map((r,i)=>r.map((v,j)=>v-rho*(Hy[i]*s[j]+s[i]*Hy[j])+(rho*rho*yHy+rho)*s[i]*s[j]));}
+    const dF=cur.F-nv.F;x=nx;cur=nv;if(dF<1e-13&&Math.max(...cur.g.map(Math.abs))<1e-7)break;}
+  const m=cur.m,v0=[...m.lam,...m.th,...pairs.map(([a,b])=>m.Ph[a][b])];
+  const toX=v=>[...v.slice(0,p),...v.slice(p,2*p).map(t=>Math.log(Math.max(t,1e-10))),...v.slice(2*p).map(r=>Math.atanh(Math.max(-0.999999,Math.min(0.999999,r))))];
+  const Hn=v0.map((v,j)=>{const h=1e-5*Math.max(1,Math.abs(v)),up=[...v0],dn=[...v0];up[j]+=h;dn[j]-=h;const a=ev(toX(up)).gn,b=ev(toX(dn)).gn;return a.map((g,i)=>(g-b[i])/(2*h));});
+  const Hs=Hn.map((r,i)=>r.map((v,j)=>(v+Hn[j][i])/2));let se=Array(q).fill(NaN);
+  try{const C=inv(Hs);se=C.map((r,i)=>Math.sqrt(Math.max(r[i],0)*2/(N-1)));}catch(e){}
+  return {lam:m.lam,th:m.th,Ph:m.Ph,F:cur.F,se,Sg:cur.Sg,pairs};}
+
+function fillSvEv(){if(!DATA||!$('#sv-e').value)return;const lv=levels($('#sv-e').value);
+  $('#sv-ev').innerHTML=lv.map(v=>`<option>${esc(v)}</option>`).join('');const hit=lv.find(v=>/^(1|예|yes|사망|이탈|재발|event|true)$/i.test(v));$('#sv-ev').value=hit??lv.at(-1)??'';}
+function cfaBuild(nf,names,assign){const old=[...document.querySelectorAll('#cf-names input')].map(i=>i.value),prev={};
+  document.querySelectorAll('#cf-items select').forEach(s=>prev[s.dataset.v]=s.value);names=names||old;assign=assign||prev;
+  $('#cf-names').innerHTML=Array.from({length:nf},(_,j)=>`<input value="${esc(names[j]||'요인'+(j+1))}" aria-label="요인 ${j+1} 이름">`).join('');
+  $('#cf-items').innerHTML=DATA.cols.filter(c=>c.num).map(c=>{const a=assign[c.name]??'';
+    return `<label class="cf-item"><span>${esc(c.name)}</span><select data-v="${esc(c.name)}"><option value="">—</option>${Array.from({length:nf},(_,j)=>`<option value="${j}"${String(a)===String(j)?' selected':''}>요인${j+1}</option>`).join('')}</select></label>`;}).join('');}
+function cfaInit(){const groups={};DATA.cols.filter(c=>c.num&&/\D\d+$/.test(c.name)&&!IPA_I.test(c.name)&&!IPA_P.test(c.name)).forEach(c=>(groups[c.name.replace(/\d+$/,'')]??=[]).push(c.name));
+  const gs=Object.entries(groups).filter(([,v])=>v.length>=2).slice(0,6),nf=Math.max(1,gs.length),assign={};
+  gs.forEach(([,v],j)=>v.forEach(n=>assign[n]=j));$('#cf-nf').value=String(nf);$('#cf-names').innerHTML='';$('#cf-items').innerHTML='';cfaBuild(nf,gs.map(([k])=>k),assign);}
+
+Object.assign(RUN,{
+cfa(){const names=[...document.querySelectorAll('#cf-names input')].map((i,j)=>i.value.trim()||`요인${j+1}`);
+  const sel=[...document.querySelectorAll('#cf-items select')].filter(s=>s.value!=='').map(s=>({v:s.dataset.v,f:+s.value}));
+  if(!sel.length)return err('문항을 요인에 지정하세요.');
+  const used=[...new Set(sel.map(o=>o.f))].sort((a,b)=>a-b),cnt=used.map(f=>sel.filter(o=>o.f===f).length);
+  if(cnt.some(c=>c<2))return err('각 요인에 문항을 2개 이상 지정하세요.');if(used.length===1&&cnt[0]<3)return err('요인이 1개일 때는 문항이 3개 이상 필요합니다.');
+  const fmap=new Map(used.map((f,k)=>[f,k])),items=sel.map(o=>o.v),fa=sel.map(o=>fmap.get(o.f)),m=used.length,fn=used.map(f=>names[f]);
+  const rows=complete(items),n=rows.length,p=items.length;if(n<p+10)return err('결측 없는 응답 수가 너무 적습니다 (문항 수 + 10 이상 필요).');
+  const cs=items.map((_,j)=>rows.map(r=>r[j])),mu=cs.map(mean),S=cs.map((a,i)=>cs.map((b,j)=>sum(a.map((v,k)=>(v-mu[i])*(b[k]-mu[j])))/(n-1)));
+  if(S.some((r,i)=>!(r[i]>0)))return err('응답이 모두 같은 문항이 있습니다.');
+  const df=p*(p+1)/2-(2*p+m*(m-1)/2);if(df<0)return err('추정할 모수가 자료보다 많습니다. 요인당 문항을 늘려 주세요.');
+  const fit=cfaFit(S,fa,m,n),chi=(n-1)*fit.F,pc=df>0?pChi(chi,df):NaN;
+  const Rm=S.map((r,i)=>r.map((v,j)=>v/Math.sqrt(S[i][i]*S[j][j]))),chiB=-(n-1)*logdet(Rm),dfB=p*(p-1)/2;
+  const cfi=1-Math.max(chi-df,0)/Math.max(chiB-dfB,chi-df,1e-12),tli=df>0?((chiB/dfB)-(chi/df))/((chiB/dfB)-1):NaN,rmsea=df>0?Math.sqrt(Math.max(chi-df,0)/(df*(n-1))):0;
+  let sr=0,cn=0;for(let i=0;i<p;i++)for(let j=0;j<=i;j++){sr+=((S[i][j]-fit.Sg[i][j])/Math.sqrt(S[i][i]*S[j][j]))**2;cn++;}const srmr=Math.sqrt(sr/cn);
+  const std=items.map((_,i)=>fit.lam[i]/Math.sqrt(fit.lam[i]**2+fit.th[i]));
+  const fac=fn.map((nm,k)=>{const ix=items.map((_,i)=>i).filter(i=>fa[i]===k),l=ix.map(i=>std[i]),sl=sum(l);
+    return {nm,ix,ave:mean(l.map(v=>v*v)),cr:sl*sl/(sl*sl+sum(l.map(v=>1-v*v)))};});
+  const judge=(ok,mid)=>ok?'<span class="ok">양호</span>':mid?'보통':'<span class="sig">미흡</span>';
+  const fitRows=[['χ²',`${f(chi,2)} (df=${df}, p=${fp(pc)})`,'p &gt; .05',df>0?judge(pc>.05,false):'-'],['χ²/df',df?f(chi/df,2):'-','≤ 3',df?judge(chi/df<=3,chi/df<=5):'-'],
+    ['CFI',f(cfi),'≥ .90 (≥ .95 우수)',judge(cfi>=.9,cfi>=.8)],['TLI',f(tli),'≥ .90',judge(tli>=.9,tli>=.8)],
+    ['RMSEA',f(rmsea),'≤ .08 (≤ .05 우수)',judge(rmsea<=.08,rmsea<=.1)],['SRMR',f(srmr),'≤ .08',judge(srmr<=.08,srmr<=.1)]];
+  const ldRows=[];fac.forEach(F=>F.ix.forEach((i,k)=>{const se=fit.se[i],z=fit.lam[i]/se;
+    ldRows.push([k?'':`<b>${esc(F.nm)}</b>`,esc(items[i]),f(fit.lam[i]),f(se),f(z),sigP(pChi(z*z,1)),`<span class="${std[i]<.5?'sig':''}">${f(std[i])}</span>`]);}));
+  const phiIdx=(a,b)=>fit.pairs.findIndex(([x,y])=>x===Math.min(a,b)&&y===Math.max(a,b));
+  const fl=fac.map((A,a)=>[esc(A.nm),...fac.map((B,b)=>a===b?`<b>${f(Math.sqrt(A.ave))}</b>`:b<a?(()=>{const r=fit.Ph[a][b],bad=Math.abs(r)>Math.sqrt(A.ave)||Math.abs(r)>Math.sqrt(B.ave),k=phiIdx(a,b),se=fit.se[2*p+k];
+      return `<span class="${bad?'sig':''}">${f(r)}</span>${isFinite(se)?`<small>${pEq(pChi((r/se)**2,1))}</small>`:''}`;})():'')]);
+  const badItems=items.filter((_,i)=>std[i]<.5),badF=fac.filter(F=>F.ave<.5||F.cr<.7),goodFit=cfi>=.9&&tli>=.9&&rmsea<=.08;
+  const dvBad=[];fac.forEach((A,a)=>fac.forEach((B,b)=>{if(b<a&&(Math.abs(fit.Ph[a][b])>Math.sqrt(A.ave)||Math.abs(fit.Ph[a][b])>Math.sqrt(B.ave)))dvBad.push(`${esc(B.nm)}–${esc(A.nm)}`);}));
+  return `<h3>모형 적합도</h3>`+table(['지표','값','기준','판정'],fitRows)+
+    `<h3>요인 적재량</h3>`+table(['요인','문항','비표준화 λ','표준오차','C.R.','p','표준화 λ'],ldRows)+'<p class="legend">강조 표시: 표준화 적재량 &lt; .50</p>'+
+    `<h3>집중타당도</h3>`+table(['요인','문항 수','AVE','CR (개념신뢰도)','판정'],fac.map(F=>[esc(F.nm),F.ix.length,`<span class="${F.ave<.5?'sig':''}">${f(F.ave)}</span>`,`<span class="${F.cr<.7?'sig':''}">${f(F.cr)}</span>`,judge(F.ave>=.5&&F.cr>=.7,F.cr>=.7)]))+
+    '<p class="legend">기준: AVE ≥ .50, CR ≥ .70</p>'+
+    (m>1?`<h3>판별타당도 (Fornell-Larcker)</h3>`+table(['',...fac.map(F=>esc(F.nm))],fl)+'<p class="legend">대각선(굵게) = √AVE, 아래쪽 = 요인 간 상관. 상관이 √AVE보다 크면 강조 표시</p>':'')+sigNote+
+    note(`모형 적합도는 CFI = ${f(cfi,3)}, TLI = ${f(tli,3)}, RMSEA = ${f(rmsea,3)}, SRMR = ${f(srmr,3)}로 ${goodFit?'<b>양호</b>합니다':'기준에 다소 못 미칩니다'}. `+
+      (badItems.length?`표준화 적재량이 .50 미만인 문항(${badItems.map(esc).join(', ')})은 제거를 검토하세요. `:'모든 문항의 표준화 적재량이 .50 이상입니다. ')+
+      (badF.length?`집중타당도 기준에 못 미치는 요인: ${badF.map(F=>esc(F.nm)).join(', ')}. `:'모든 요인이 AVE ≥ .50, CR ≥ .70으로 집중타당도를 만족합니다. ')+
+      (m>1?(dvBad.length?`판별타당도가 의심되는 요인 쌍: ${dvBad.join(', ')}.`:'모든 요인 간 상관이 √AVE보다 작아 판별타당도를 만족합니다.'):''));},
+
+disc(){const g=$('#da-g').value,vars=checked('#da-vars').filter(v=>v!==g);if(!vars.length)return err('판별변수를 하나 이상 고르세요.');
+  const gc=col(g).values,xs=vars.map(v=>col(v).values.map(num)),lab=[],X=[];
+  for(let i=0;i<DATA.n;i++){if(gc[i]==='')continue;const r=xs.map(c=>c[i]);if(r.every(isFinite)){lab.push(gc[i]);X.push(r);}}
+  const lv=levels(g).filter(l=>lab.filter(v=>v===l).length>=2);if(lv.length<2)return err('사례가 2개 이상인 집단이 2개 이상 있어야 합니다.');if(lv.length>10)return err('집단이 10개 이하인 변수를 고르세요.');
+  const L=[],Xk=[];lab.forEach((l,i)=>{if(lv.includes(l)){L.push(l);Xk.push(X[i]);}});
+  const N=Xk.length,p=vars.length,G=lv.length;if(N<=p+G)return err('사례 수가 너무 적습니다.');
+  const gm=vars.map((_,j)=>mean(Xk.map(r=>r[j]))),mu=lv.map(l=>{const rs=Xk.filter((_,i)=>L[i]===l);return {n:rs.length,m:vars.map((_,j)=>mean(rs.map(r=>r[j]))),s:vars.map((_,j)=>sd(rs.map(r=>r[j])))};});
+  const W=vars.map(()=>vars.map(()=>0)),T=vars.map(()=>vars.map(()=>0));
+  Xk.forEach((r,i)=>{const m=mu[lv.indexOf(L[i])].m;for(let a=0;a<p;a++)for(let b=0;b<p;b++){W[a][b]+=(r[a]-m[a])*(r[b]-m[b]);T[a][b]+=(r[a]-gm[a])*(r[b]-gm[b]);}});
+  const B=T.map((row,a)=>row.map((v,b)=>v-W[a][b])),ew=eigSym(W);
+  if(Math.min(...ew.values)<=1e-10*Math.max(...ew.values))return err('판별변수끼리 완전히 겹칩니다(다중공선성). 변수를 줄여 보세요.');
+  const Wh=vars.map((_,a)=>vars.map((_,b)=>ew.values.reduce((s,l,k)=>s+ew.vectors[k][a]*ew.vectors[k][b]/Math.sqrt(l),0)));
+  const eb=eigSym(mmul(mmul(Wh,B),Wh)),nfun=Math.min(G-1,p),lam=eb.values.slice(0,nfun).map(v=>Math.max(v,0));
+  const V=eb.vectors.slice(0,nfun).map(u=>Wh.map(r=>dotp(r,u)*Math.sqrt(N-G))),stdc=V.map(v=>v.map((c,a)=>c*Math.sqrt(W[a][a]/(N-G))));
+  V.forEach((v,k)=>{const big=stdc[k].reduce((b,c,a)=>Math.abs(c)>Math.abs(stdc[k][b])?a:b,0);if(stdc[k][big]<0)v.forEach((_,a)=>{v[a]=-v[a];stdc[k][a]=-stdc[k][a];});});
+  const cons=V.map(v=>-dotp(v,gm)),struct=vars.map((_,a)=>V.map(v=>{const Wv=W.map(r=>dotp(r,v));return Wv[a]/Math.sqrt(W[a][a]*dotp(v,Wv));}));
+  const cent=mu.map(o=>V.map((v,k)=>cons[k]+dotp(v,o.m))),tl=sum(lam);let cum=0;
+  const eigRows=lam.map((l,k)=>{cum+=l/tl*100;return [`함수 ${k+1}`,f(l),f(l/tl*100,2),f(cum,2),f(Math.sqrt(l/(1+l)))];});
+  const wRows=lam.map((_,k)=>{const Lw=lam.slice(k).reduce((s,l)=>s/(1+l),1),chi=-(N-1-(p+G)/2)*Math.log(Lw),df=(p-k)*(G-k-1);return [k?`${k+1}${nfun>k+1?` ~ ${nfun}`:''}`:`1${nfun>1?` ~ ${nfun}`:''}`,f(Lw),f(chi,2),df,sigP(pChi(chi,df))];});
+  const uni=vars.map((v,a)=>{const wl=W[a][a]/T[a][a],F=((T[a][a]-W[a][a])/(G-1))/(W[a][a]/(N-G));return [esc(v),f(wl),f(F),G-1,N-G,sigP(pF(F,G-1,N-G))];});
+  const Si=inv(W.map(r=>r.map(v=>v/(N-G)))),cf=mu.map(o=>{const c=Si.map(r=>dotp(r,o.m));return {c,c0:-0.5*dotp(c,o.m)+Math.log(1/G)};});
+  const conf=lv.map(()=>lv.map(()=>0));Xk.forEach((r,i)=>{let best=0,bv=-Infinity;cf.forEach((o,k)=>{const s=o.c0+dotp(o.c,r);if(s>bv){bv=s;best=k;}});conf[lv.indexOf(L[i])][best]++;});
+  const acc=sum(lv.map((_,k)=>conf[k][k]))/N*100,chance=sum(mu.map(o=>(o.n/N)**2))*100;
+  return `<h3>집단별 평균</h3>`+table(['변수',...lv.map(l=>`${esc(l)} (n=${mu[lv.indexOf(l)].n})`),'전체'],vars.map((v,a)=>[esc(v),...mu.map(o=>`${f(o.m[a])}<small>SD ${f(o.s[a])}</small>`),f(gm[a])]))+
+    `<h3>집단 평균의 동일성 검정</h3>`+table(['변수','Wilks λ','F','df1','df2','p'],uni)+
+    `<h3>정준 판별함수 고유값</h3>`+table(['함수','고유값','분산 %','누적 %','정준상관'],eigRows)+
+    `<h3>Wilks의 람다</h3>`+table(['함수 검정','Wilks λ','χ²','자유도','p'],wRows)+
+    `<h3>표준화 정준 판별함수 계수</h3>`+table(['변수',...V.map((_,k)=>`함수 ${k+1}`)],vars.map((v,a)=>[esc(v),...stdc.map(s=>f(s[a]))]))+
+    `<h3>구조행렬 (판별변수–함수 상관)</h3>`+table(['변수',...V.map((_,k)=>`함수 ${k+1}`)],vars.map((v,a)=>[esc(v),...struct[a].map(x=>`<span class="${Math.abs(x)>=.3?'sig':''}">${f(x)}</span>`)]))+
+    `<h3>집단 중심점</h3>`+table(['집단',...V.map((_,k)=>`함수 ${k+1}`)],lv.map((l,k)=>[esc(l),...cent[k].map(x=>f(x))]))+
+    `<h3>분류 결과</h3>`+table(['실제 \\ 예측',...lv.map(esc),'정확도(%)'],lv.map((l,k)=>[esc(l),...conf[k],f(conf[k][k]/mu[k].n*100,1)]).concat([['<b>전체</b>',...lv.map(()=>''),`<b>${f(acc,1)}</b>`]]))+
+    `<h3>분류함수 계수 (Fisher)</h3>`+table(['변수',...lv.map(esc)],vars.map((v,a)=>[esc(v),...cf.map(o=>f(o.c[a]))]).concat([['(상수)',...cf.map(o=>f(o.c0))]]))+sigNote+
+    note(`판별함수 1의 정준상관은 ${f(Math.sqrt(lam[0]/(1+lam[0])),3)}이고 Wilks λ 검정은 ${wRows[0][4].includes('sig')?'<b>유의합니다</b>':'유의하지 않습니다'}. `+
+      `구조행렬에서 |r| ≥ .30인 변수(강조 표시)가 집단 구분에 크게 기여합니다. 판별함수로 사례의 <b>${f(acc,1)}%</b>를 올바르게 분류했습니다 (우연 분류율 ${f(chance,1)}%).`);},
+
+clus(){const vars=checked('#cl-vars'),k=+$('#cl-k').value;if(!vars.length)return err('군집 변수를 하나 이상 고르세요.');
+  const cs=vars.map(v=>col(v).values.map(num)),idx=[];for(let i=0;i<DATA.n;i++)if(cs.every(c=>isFinite(c[i])))idx.push(i);
+  if(idx.length<k*3)return err('결측 없는 사례가 너무 적습니다.');
+  const raw=idx.map(i=>cs.map(c=>c[i])),mu=vars.map((_,j)=>mean(raw.map(r=>r[j]))),sg=vars.map((_,j)=>sd(raw.map(r=>r[j]))||1);
+  const std=$('#cl-std').checked,X=std?raw.map(r=>r.map((v,j)=>(v-mu[j])/sg[j])):raw,res=kmeans(X,k,20,4242);
+  const tss=sum(X.map(r=>r.reduce((s,v,j)=>s+(v-(std?0:mu[j]))**2,0))),kmax=Math.min(8,idx.length-1);
+  const elbow=Array.from({length:kmax},(_,i)=>i+1).map(kk=>kk===k?res.wss:kmeans(X,kk,6,99+kk).wss);
+  LAST_CLUS={idx,lab:res.lab,k};
+  const size=Array.from({length:k},(_,j)=>res.lab.filter(l=>l===j).length),grp=Array.from({length:k},(_,j)=>raw.filter((_,i)=>res.lab[i]===j));
+  const cen=grp.map(g=>vars.map((_,a)=>mean(g.map(r=>r[a])))),an=vars.map((_,a)=>{const gs=grp.map(g=>g.map(r=>r[a])).filter(g=>g.length>0);return gs.length>1&&gs.every(g=>g.length>1)?oneway(gs):null;});
+  const ax=axes(460,240,46,16,16,44,1,kmax,0,Math.max(...elbow)*1.08,'군집 수 (K)','군집 내 제곱합');
+  const elbowSvg=`<svg class="plot" style="max-width:460px" viewBox="0 0 460 240" role="img" aria-label="엘보우 그래프">`+ax.g+`<polyline points="${elbow.map((w,i)=>`${ax.sx(i+1)},${ax.sy(w)}`).join(' ')}" style="fill:none;stroke:var(--lav-deep);stroke-width:2"/>`+
+    elbow.map((w,i)=>`<circle cx="${ax.sx(i+1)}" cy="${ax.sy(w)}" r="${i+1===k?6:4}" style="fill:${i+1===k?'var(--sun)':'var(--lav-deep)'}"/>`).join('')+'</svg>';
+  let scatter='';if(vars.length>=2){const xv=raw.map(r=>r[0]),yv=raw.map(r=>r[1]),px=(Math.max(...xv)-Math.min(...xv))*.06||1,py=(Math.max(...yv)-Math.min(...yv))*.06||1;
+    const a2=axes(560,340,50,16,16,46,Math.min(...xv)-px,Math.max(...xv)+px,Math.min(...yv)-py,Math.max(...yv)+py,vars[0],vars[1]);
+    scatter=`<h3>군집 산점도 (${esc(vars[0])} × ${esc(vars[1])})</h3><p class="legend">${size.map((s,j)=>`<span><i style="background:${PAL[j]}"></i>군집 ${j+1}</span>`).join('')}</p>`+
+      `<svg class="plot" viewBox="0 0 560 340" role="img" aria-label="군집 산점도">`+a2.g+raw.map((r,i)=>`<circle cx="${a2.sx(r[0])}" cy="${a2.sy(r[1])}" r="4" style="fill:${PAL[res.lab[i]]};opacity:.8"/>`).join('')+
+      cen.map((c,j)=>`<circle cx="${a2.sx(c[0])}" cy="${a2.sy(c[1])}" r="9" style="fill:none;stroke:${PAL[j]};stroke-width:3"/>`).join('')+'</svg>';}
+  const prof=cen.map((c,j)=>{const hi=[],lo=[];vars.forEach((v,a)=>{const z=(c[a]-mu[a])/sg[a];if(z>=.5)hi.push(esc(v));else if(z<=-.5)lo.push(esc(v));});
+    return `<b>군집 ${j+1}</b> (${size[j]}명): ${hi.length?hi.join(', ')+' 높음':''}${hi.length&&lo.length?' · ':''}${lo.length?lo.join(', ')+' 낮음':''}${!hi.length&&!lo.length?'전체 평균과 비슷':''}`;});
+  return `<h3>군집 크기</h3>`+table(['군집','사례 수','비율(%)'],size.map((s,j)=>[`<span style="color:${PAL[j]}">●</span> 군집 ${j+1}`,s,f(s/idx.length*100,1)]))+
+    `<h3>최종 군집 중심 (원래 단위)</h3>`+table(['변수',...size.map((_,j)=>`군집 ${j+1}`),'전체 평균','F','p'],vars.map((v,a)=>[esc(v),...cen.map(c=>f(c[a])),f(mu[a]),an[a]?f(an[a].F):'-',an[a]?sigP(an[a].p):'-']))+
+    `<h3>엘보우 그래프</h3><p class="legend">꺾이는 지점(팔꿈치)이 적절한 군집 수의 후보입니다. 노란 점 = 현재 K</p>`+elbowSvg+scatter+sigNote+
+    note(`${idx.length}명을 ${k}개 군집으로 나눴고, 군집이 전체 변동의 ${f((1-res.wss/tss)*100,1)}%를 설명합니다.<br>`+prof.join('<br>')+'<br>F검정은 군집 간 차이를 보여주지만, 군집이 그 차이가 크도록 만들어졌으므로 p값은 참고용입니다.')+
+    `<div class="row-btns" style="margin-top:12px"><button class="pill ghost" id="clus-add">군집 번호를 새 변수로 추가</button></div>`;},
+
+surv(){const Tn=$('#sv-t').value,En=$('#sv-e').value,ev=$('#sv-ev').value,Gn=$('#sv-g').value;if(Tn===En)return err('시간변수와 사건변수를 다르게 고르세요.');
+  const tv=col(Tn).values.map(num),evv=col(En).values,gv=Gn?col(Gn).values:null,recs=[];
+  for(let i=0;i<DATA.n;i++){if(!isFinite(tv[i])||tv[i]<0||evv[i]===''||(gv&&gv[i]===''))continue;recs.push({i,t:tv[i],d:evv[i]===ev?1:0,g:gv?gv[i]:'전체'});}
+  if(recs.length<5)return err('유효한 사례가 너무 적습니다.');if(!sum(recs.map(r=>r.d)))return err(`사건(${esc(ev)})이 한 번도 없습니다. 사건 발생 값을 확인하세요.`);
+  const gl=gv?levels(Gn).filter(l=>recs.some(r=>r.g===l)):['전체'];if(gl.length>8)return err('비교 집단은 8개 이하여야 합니다.');
+  const groups=gl.map(l=>recs.filter(r=>r.g===l)),kms=groups.map(kmCurve),maxT=Math.max(...recs.map(r=>r.t));
+  const ax=axes(600,340,50,20,16,46,0,maxT,0,1,`${Tn}`,'생존확률');let svg=`<svg class="plot" viewBox="0 0 600 340" role="img" aria-label="Kaplan-Meier 생존곡선">`+ax.g;
+  kms.forEach((km,k)=>{let d=`M${ax.sx(0)},${ax.sy(1)}`;km.steps.forEach(s=>{d+=`H${ax.sx(s.t)}V${ax.sy(s.S)}`;});d+=`H${ax.sx(km.maxT)}`;
+    svg+=`<path d="${d}" style="fill:none;stroke:${PAL[k]};stroke-width:2.5"/>`+km.cens.map(c=>`<line x1="${ax.sx(c.t)}" x2="${ax.sx(c.t)}" y1="${ax.sy(c.S)-5}" y2="${ax.sy(c.S)+5}" style="stroke:${PAL[k]};stroke-width:1.5"/>`).join('');});
+  svg+=`<line x1="50" x2="580" y1="${ax.sy(.5)}" y2="${ax.sy(.5)}" style="stroke:var(--muted);stroke-dasharray:3 4;opacity:.6"/></svg>`;
+  const legend=gv?`<p class="legend">${gl.map((l,k)=>`<span><i style="background:${PAL[k]}"></i>${esc(l)}</span>`).join('')} · 세로 눈금 = 중도절단</p>`:'<p class="legend">세로 눈금 = 중도절단, 점선 = 생존확률 .5</p>';
+  const sumRows=kms.map((km,k)=>[esc(gl[k]),km.N,km.events,km.N-km.events,f((km.N-km.events)/km.N*100,1),km.median==null?'도달 안 함':f(km.median,2)]);
+  let lr=null,html=`<h3>Kaplan-Meier 생존곡선</h3>`+legend+svg+`<h3>사례 요약</h3>`+table(['집단','N','사건','중도절단','중도절단 %','중앙생존기간'],sumRows);
+  if(gl.length>1){lr=logrank(groups);html+=`<h3>로그순위 (Log-rank) 검정</h3>`+table(['집단','관측 사건 (O)','기대 사건 (E)','O/E'],gl.map((l,k)=>[esc(l),lr.O[k],f(lr.E[k],2),f(lr.O[k]/lr.E[k],2)]))+table(['','χ²','자유도','p'],[['Log-rank',f(lr.chi),lr.df,sigP(lr.p)]]);}
+  const cov=checked('#sv-cov').filter(v=>v!==Tn&&v!==En);let cx=null;
+  if(cov.length){const cv=cov.map(v=>col(v).values.map(num)),rr=recs.filter(r=>cv.every(c=>isFinite(c[r.i])));
+    if(rr.length>cov.length+5&&sum(rr.map(r=>r.d))>cov.length){cx=coxFit(rr.map(r=>r.t),rr.map(r=>r.d),rr.map(r=>cv.map(c=>c[r.i])));
+      const lrc=2*(cx.ll-cx.ll0),plr=pChi(lrc,cov.length);cx.sig=cov.map((v,j)=>({v,hr:Math.exp(cx.b[j]),p:pChi((cx.b[j]/cx.se[j])**2,1)}));
+      html+=`<h3>Cox 비례위험 회귀</h3>`+table(['N','사건','−2LL','LR χ²','자유도','p'],[[rr.length,sum(rr.map(r=>r.d)),f(-2*cx.ll,2),f(lrc),cov.length,sigP(plr)]])+
+        table(['변수','B','표준오차','Wald','p','HR (위험비)','HR 95% CI'],cov.map((v,j)=>{const b=cx.b[j],se=cx.se[j];return [esc(v),f(b),f(se),f((b/se)**2),sigP(pChi((b/se)**2,1)),f(Math.exp(b)),`${f(Math.exp(b-1.96*se))} ~ ${f(Math.exp(b+1.96*se))}`];}));}
+    else html+=err('Cox 회귀에 필요한 사례나 사건 수가 부족합니다.');}
+  html+=kms.map((km,k)=>`<details class="km"><summary>생존표 보기 — ${esc(gl[k])}</summary>`+table([Tn,'위험집합','사건','생존확률','표준오차'],km.steps.map(s=>[f(s.t,2),s.n,s.d,f(s.S),f(s.se)]))+'</details>').join('');
+  const medTxt=kms.map((km,k)=>`${esc(gl[k])} ${km.median==null?'(50% 미도달)':f(km.median,1)}`).join(', ');
+  return html+sigNote+note(`'${esc(ev)}'을(를) 사건으로 보고 분석했습니다. 중앙생존기간: ${medTxt}. `+
+    (lr?`로그순위 검정 χ²(${lr.df}) = ${f(lr.chi,2)}, ${pEq(lr.p)}로 집단 간 생존곡선 차이는 ${sigWord(lr.p)}. `:'')+
+    (cx?cx.sig.filter(o=>o.p<0.05).map(o=>`${esc(o.v)}가 1 증가하면 사건 위험이 ${f(o.hr,2)}배${o.hr>=1?` (${f((o.hr-1)*100,0)}% 증가)`:` (${f((1-o.hr)*100,0)}% 감소)`}`).join(', ')+(cx.sig.some(o=>o.p<0.05)?'.':'Cox 회귀에서 유의한 공변량은 없습니다.'):''));}
+});
+function dotp(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s;}
+
 // ---------- 이벤트 ----------
+$('#sv-e').addEventListener('change',fillSvEv);
+$('#cf-nf').addEventListener('change',()=>{if(DATA)cfaBuild(+$('#cf-nf').value);});
+$('#o-clus').addEventListener('click',e=>{if(!e.target.closest('#clus-add')||!LAST_CLUS)return;
+  let name='군집',k=2;while(DATA.cols.some(c=>c.name===name))name='군집'+(k++);
+  const vals=Array(DATA.n).fill('');LAST_CLUS.idx.forEach((i,j)=>vals[i]=String(LAST_CLUS.lab[j]+1));
+  DATA.cols.push({name,values:vals,num:true});
+  $('#raw').value=[DATA.cols.map(c=>c.name).join('\t'),...Array.from({length:DATA.n},(_,i)=>DATA.cols.map(c=>c.values[i]).join('\t'))].join('\n');
+  const html=$('#o-clus').innerHTML;setData(DATA);$('#o-clus').innerHTML=html.replace(/<div class="row-btns"[\s\S]*$/,'')+note(`'${name}' 변수를 데이터에 추가했습니다. 교차분석, ANOVA, 판별분석 등에서 집단변수로 쓸 수 있습니다.`);});
 document.addEventListener('click',e=>{const a=e.target.closest('[data-all],[data-none]');if(!a)return;
   document.querySelectorAll((a.dataset.all||a.dataset.none)+' input').forEach(i=>i.checked=!!a.dataset.all);});
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;
