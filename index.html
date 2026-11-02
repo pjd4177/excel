@@ -1,32 +1,334 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>excel</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
-      background: #f6f8f7;
-      color: #1d2b24;
-    }
-    main { text-align: center; padding: 16px; }
-    h1 { margin: 0 0 8px; font-size: 2rem; }
-    p { margin: 0; color: #4b5d54; }
-    @media (prefers-color-scheme: dark) {
-      body { background: #141a17; color: #e6efe9; }
-      p { color: #a3b5ab; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>통계 분석 도구</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f6f8f7;--panel:#fff;--text:#1d2b24;--muted:#5b6b63;--line:#dfe6e2;--accent:#1f7a4d;--on-accent:#fff;--accent-weak:#e3f1ea;--sig:#b42318;--bar:#2f9e6a}
+@media (prefers-color-scheme:dark){:root{--bg:#121714;--panel:#1a211d;--text:#e6efe9;--muted:#9fb1a7;--line:#2c3631;--accent:#4cc38a;--on-accent:#0d1a13;--accent-weak:#1f3329;--sig:#ff8a7a;--bar:#4cc38a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.6rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+h2{font-size:1.1rem;margin:0 0 12px}
+h3{font-size:1rem;margin:16px 0 4px}
+textarea{width:100%;min-height:140px;font-family:ui-monospace,Consolas,monospace;font-size:13px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:10px}
+button,select{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:7px 12px;border-radius:8px}
+button{cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tab{border-radius:999px}
+.tab.active{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.panel{display:none}.panel.active{display:block}
+.desc{color:var(--muted);font-size:14px;margin:0 0 8px}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}
+.checks label{display:inline-flex;gap:4px;align-items:center;font-size:14px}
+.tbl{overflow-x:auto;margin:6px 0 12px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:right;white-space:nowrap}
+th{color:var(--muted);font-weight:600}
+th:first-child,td:first-child{text-align:left}
+td small{display:block;color:var(--muted);font-size:12px}
+.note{background:var(--accent-weak);border-radius:8px;padding:10px 12px;margin-top:8px}
+.err{color:var(--sig)}
+.sig{color:var(--sig);font-weight:600}
+.barcell{min-width:120px}
+.bar{height:12px;background:var(--bar);border-radius:3px}
+.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);margin:2px 4px 2px 0}
+.out:empty{display:none}
+</style>
 </head>
 <body>
-  <main>
-    <h1>excel</h1>
-    <p>GitHub + Vercel 연결 완료. 여기서부터 시작합니다.</p>
-  </main>
+<div class="wrap">
+  <h1>통계 분석 도구</h1>
+  <p class="sub">엑셀 데이터를 붙여넣거나 파일을 올리면 빈도분석, 기술통계, t검정, 분산분석, 상관분석을 바로 할 수 있습니다.</p>
+
+  <section class="card">
+    <h2>1. 데이터 입력</h2>
+    <p class="desc">엑셀에서 첫 행(변수명)을 포함해 범위를 복사해 붙여넣으세요. CSV, XLSX 파일도 됩니다. 빈 칸은 결측값으로 처리합니다.</p>
+    <textarea id="raw" placeholder="번호&#9;성별&#9;사전점수&#9;사후점수&#10;1&#9;남&#9;62&#9;70"></textarea>
+    <div class="row">
+      <button class="primary" id="apply">데이터 적용</button>
+      <button id="sample">예시 데이터</button>
+      <label><input type="file" id="file" accept=".csv,.txt,.tsv,.xlsx,.xls"></label>
+    </div>
+    <div id="summary" class="out" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. 분석</h2>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-p="freq">빈도분석</button>
+      <button class="tab" data-p="desc">기술통계</button>
+      <button class="tab" data-p="ttest">차이검증 (독립표본 t)</button>
+      <button class="tab" data-p="paired">사전사후검증 (대응표본 t)</button>
+      <button class="tab" data-p="anova">ANOVA (일원분산분석)</button>
+      <button class="tab" data-p="corr">상관관계</button>
+    </div>
+
+    <div class="panel active" id="p-freq">
+      <p class="desc">한 변수의 값별 빈도와 비율을 봅니다.</p>
+      <div class="row"><label class="f">변수<select id="freq-var" data-kind="any"></select></label><button class="primary" data-run="freq">분석 실행</button></div>
+      <div class="out" id="o-freq"></div>
+    </div>
+
+    <div class="panel" id="p-desc">
+      <p class="desc">숫자 변수의 평균, 표준편차, 사분위수, 왜도, 첨도를 봅니다.</p>
+      <div class="checks" id="desc-vars" data-kind="num"></div>
+      <div class="row"><button class="primary" data-run="desc">분석 실행</button></div>
+      <div class="out" id="o-desc"></div>
+    </div>
+
+    <div class="panel" id="p-ttest">
+      <p class="desc">두 집단의 평균이 다른지 검정합니다. (예: 성별에 따른 점수 차이)</p>
+      <div class="row">
+        <label class="f">검정변수 (숫자)<select id="tt-dv" data-kind="num"></select></label>
+        <label class="f">집단변수<select id="tt-g" data-kind="any"></select></label>
+        <label class="f">집단 1<select id="tt-a"></select></label>
+        <label class="f">집단 2<select id="tt-b"></select></label>
+        <button class="primary" data-run="ttest">분석 실행</button>
+      </div>
+      <div class="out" id="o-ttest"></div>
+    </div>
+
+    <div class="panel" id="p-paired">
+      <p class="desc">같은 대상의 사전·사후 점수가 달라졌는지 검정합니다.</p>
+      <div class="row">
+        <label class="f">사전<select id="pr-pre" data-kind="num"></select></label>
+        <label class="f">사후<select id="pr-post" data-kind="num"></select></label>
+        <button class="primary" data-run="paired">분석 실행</button>
+      </div>
+      <div class="out" id="o-paired"></div>
+    </div>
+
+    <div class="panel" id="p-anova">
+      <p class="desc">세 집단 이상의 평균 차이를 검정합니다. 사후검정은 Bonferroni 방식입니다.</p>
+      <div class="row">
+        <label class="f">종속변수 (숫자)<select id="an-dv" data-kind="num"></select></label>
+        <label class="f">집단변수<select id="an-g" data-kind="any"></select></label>
+        <button class="primary" data-run="anova">분석 실행</button>
+      </div>
+      <div class="out" id="o-anova"></div>
+    </div>
+
+    <div class="panel" id="p-corr">
+      <p class="desc">숫자 변수들 사이의 Pearson 상관계수를 봅니다. 결측값은 쌍별로 제외합니다.</p>
+      <div class="checks" id="corr-vars" data-kind="num"></div>
+      <div class="row"><button class="primary" data-run="corr">분석 실행</button></div>
+      <div class="out" id="o-corr"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// ---------- 분포 함수 ----------
+function lgamma(x){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];let y=x,t=x+5.5;t-=(x+0.5)*Math.log(t);let s=1.000000000190015;for(const ci of c)s+=ci/++y;return -t+Math.log(2.5066282746310005*s/x);}
+function betacf(x,a,b){const E=3e-14,F=1e-300;let qab=a+b,qap=a+1,qam=a-1,c=1,d=1-qab*x/qap;if(Math.abs(d)<F)d=F;d=1/d;let h=d;
+  for(let m=1;m<=300;m++){const m2=2*m;let aa=m*(b-m)*x/((qam+m2)*(a+m2));d=1+aa*d;if(Math.abs(d)<F)d=F;c=1+aa/c;if(Math.abs(c)<F)c=F;d=1/d;h*=d*c;
+    aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));d=1+aa*d;if(Math.abs(d)<F)d=F;c=1+aa/c;if(Math.abs(c)<F)c=F;d=1/d;const del=d*c;h*=del;if(Math.abs(del-1)<E)break;}return h;}
+function ibeta(x,a,b){if(x<=0)return 0;if(x>=1)return 1;const bt=Math.exp(lgamma(a+b)-lgamma(a)-lgamma(b)+a*Math.log(x)+b*Math.log(1-x));
+  return x<(a+1)/(a+b+2)?bt*betacf(x,a,b)/a:1-bt*betacf(1-x,b,a)/b;}
+const pT=(t,df)=>ibeta(df/(df+t*t),df/2,0.5);               // 양측 p
+const pF=(F,d1,d2)=>F<=0?1:ibeta(d2/(d2+d1*F),d2/2,d1/2);
+function tCrit(df,alpha=0.05){let lo=0,hi=1000;for(let i=0;i<100;i++){const m=(lo+hi)/2;pT(m,df)>alpha?lo=m:hi=m;}return (lo+hi)/2;}
+
+// ---------- 기본 통계 ----------
+const sum=a=>a.reduce((s,x)=>s+x,0);
+const mean=a=>sum(a)/a.length;
+const variance=a=>{const m=mean(a);return sum(a.map(x=>(x-m)**2))/(a.length-1);};
+const sd=a=>Math.sqrt(variance(a));
+function quantile(sorted,q){const p=(sorted.length-1)*q,i=Math.floor(p);return sorted[i]+(sorted[Math.min(i+1,sorted.length-1)]-sorted[i])*(p-i);}
+function skew(a){const n=a.length,m=mean(a),s=sd(a);if(n<3||!s)return NaN;return n/((n-1)*(n-2))*sum(a.map(x=>((x-m)/s)**3));}
+function kurt(a){const n=a.length,m=mean(a),s=sd(a);if(n<4||!s)return NaN;return n*(n+1)/((n-1)*(n-2)*(n-3))*sum(a.map(x=>((x-m)/s)**4))-3*(n-1)**2/((n-2)*(n-3));}
+function pearson(x,y){const mx=mean(x),my=mean(y);let sxy=0,sxx=0,syy=0;for(let i=0;i<x.length;i++){const dx=x[i]-mx,dy=y[i]-my;sxy+=dx*dy;sxx+=dx*dx;syy+=dy*dy;}return sxy/Math.sqrt(sxx*syy);}
+function rTest(r,n){const df=n-2;if(df<1||Math.abs(r)>=1)return {df,p:Math.abs(r)>=1?0:NaN};const t=r*Math.sqrt(df/(1-r*r));return {t,df,p:pT(t,df)};}
+function oneway(groups){const all=groups.flat(),gm=mean(all);let ssb=0,ssw=0;
+  for(const g of groups){const m=mean(g);ssb+=g.length*(m-gm)**2;ssw+=sum(g.map(x=>(x-m)**2));}
+  const dfb=groups.length-1,dfw=all.length-groups.length,msb=ssb/dfb,msw=ssw/dfw,F=msb/msw;
+  return {ssb,ssw,sst:ssb+ssw,dfb,dfw,msb,msw,F,p:pF(F,dfb,dfw),eta2:ssb/(ssb+ssw)};}
+function levene(groups){return oneway(groups.map(g=>{const m=mean(g);return g.map(x=>Math.abs(x-m));}));}
+
+// ---------- 표시 ----------
+const f=(x,d=3)=>x==null||!isFinite(x)?'-':x.toFixed(d);
+const fp=p=>!isFinite(p)?'-':p<0.001?'&lt;.001':p.toFixed(3).replace(/^0/,'');
+const pEq=p=>p<0.001?'p &lt; .001':'p = '+fp(p);
+const star=p=>p<0.001?'***':p<0.01?'**':p<0.05?'*':'';
+const sigP=p=>`<span class="${p<0.05?'sig':''}">${fp(p)}${star(p)}</span>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function table(head,rows){return `<div class="tbl"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
+const note=s=>`<div class="note">${s}</div>`;
+const err=s=>`<p class="err">${s}</p>`;
+const sigNote='<p class="desc">* p&lt;.05, ** p&lt;.01, *** p&lt;.001</p>';
+
+// ---------- 데이터 ----------
+let DATA=null;
+const $=s=>document.querySelector(s);
+const col=name=>DATA.cols.find(c=>c.name===name);
+const num=v=>v===''?NaN:+v;
+
+function splitCSV(line,d){const out=[];let cur='',q=false;
+  for(let i=0;i<line.length;i++){const c=line[i];
+    if(q){if(c==='"'){if(line[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}
+    else if(c==='"')q=true;else if(c===d){out.push(cur);cur='';}else cur+=c;}
+  out.push(cur);return out;}
+function parseText(txt){
+  const lines=txt.replace(/\r/g,'').split('\n').filter(l=>l.trim()!=='');
+  const d=lines[0]&&lines[0].includes('\t')?'\t':lines[0]&&lines[0].includes(',')?',':null;
+  return lines.map(l=>d?splitCSV(l,d):l.trim().split(/\s+/));}
+function build(grid){
+  if(grid.length<2)throw new Error('변수명 행과 데이터 행이 최소 1개씩 필요합니다.');
+  const seen={};
+  const header=grid[0].map((h,i)=>{let n=String(h).trim()||'변수'+(i+1);if(seen[n])n+='_'+(++seen[n]);else seen[n]=1;return n;});
+  const rows=grid.slice(1);
+  const cols=header.map((name,j)=>{const values=rows.map(r=>String(r[j]??'').trim());const ne=values.filter(v=>v!=='');
+    return {name,values,num:ne.length>0&&ne.every(v=>isFinite(+v))};});
+  return {cols,n:rows.length};}
+
+function setData(d){
+  DATA=d;
+  $('#summary').innerHTML=`<p><b>${d.n}</b>개 행, <b>${d.cols.length}</b>개 변수를 불러왔습니다.</p>`+
+    d.cols.map(c=>`<span class="badge">${esc(c.name)} · ${c.num?'숫자':'문자'}</span>`).join('');
+  for(const s of document.querySelectorAll('select[data-kind]')){
+    const list=d.cols.filter(c=>s.dataset.kind==='any'||c.num);
+    s.innerHTML=list.map(c=>`<option>${esc(c.name)}</option>`).join('');}
+  for(const box of document.querySelectorAll('.checks[data-kind]'))
+    box.innerHTML=d.cols.filter(c=>c.num).map(c=>`<label><input type="checkbox" value="${esc(c.name)}" checked>${esc(c.name)}</label>`).join('')||'<span class="desc">숫자 변수가 없습니다.</span>';
+  // 기본 선택을 보기 좋게
+  const nums=d.cols.filter(c=>c.num).map(c=>c.name);
+  const cats=d.cols.filter(c=>{const u=new Set(c.values.filter(v=>v!==''));return u.size>=2&&u.size<=10;}).map(c=>c.name);
+  const pick=(id,v)=>{if(v)$(id).value=v;};
+  pick('#freq-var',cats[0]);pick('#tt-g',cats.find(n=>levels(n).length===2)||cats[0]);pick('#an-g',cats.find(n=>levels(n).length>=3)||cats[0]);
+  pick('#tt-dv',nums.at(-1));pick('#an-dv',nums.at(-1));pick('#pr-pre',nums[nums.length>=2?nums.length-2:0]);pick('#pr-post',nums.at(-1));
+  const pre=nums.find(n=>/사전|pre/i.test(n)),post=nums.find(n=>/사후|post/i.test(n));pick('#pr-pre',pre);pick('#pr-post',post);
+  if(post){pick('#tt-dv',post);pick('#an-dv',post);}
+  fillLevels();
+  document.querySelectorAll('.out[id^="o-"]').forEach(o=>o.innerHTML='');}
+
+function levels(name){const c=col(name);const u=[...new Set(c.values.filter(v=>v!==''))];
+  return c.num?u.sort((a,b)=>a-b):u.sort((a,b)=>a.localeCompare(b,'ko'));}
+function fillLevels(){if(!DATA||!$('#tt-g').value)return;const lv=levels($('#tt-g').value);
+  for(const [id,i] of [['#tt-a',0],['#tt-b',1]]){$(id).innerHTML=lv.map(v=>`<option>${esc(v)}</option>`).join('');if(lv[i]!=null)$(id).value=lv[i];}}
+function groupsOf(dv,g,only){const d=col(dv),gc=col(g),map=new Map();
+  for(const k of only||levels(g))map.set(k,[]);
+  d.values.forEach((v,i)=>{const k=gc.values[i],x=num(v);if(map.has(k)&&isFinite(x))map.get(k).push(x);});
+  return map;}
+
+function sample(){let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
+  const norm=()=>Math.sqrt(-2*Math.log(rnd()||1e-9))*Math.cos(2*Math.PI*rnd());
+  const L=['번호\t성별\t학년\t사전점수\t사후점수\t공부시간\t만족도'];
+  for(let i=1;i<=60;i++){const g=rnd()<.5?'남':'여',y=1+Math.floor(rnd()*3),pre=Math.round(60+y*3+norm()*8),
+    hrs=Math.max(0,Math.round((5+norm()*2)*10)/10),post=Math.round(pre+4+hrs*0.8+(g==='여'?3:0)+norm()*5),
+    sat=Math.min(5,Math.max(1,Math.round(3+(post-pre-9)/5+norm()*0.8)));L.push([i,g,y,pre,post,hrs,sat].join('\t'));}
+  return L.join('\n');}
+
+// ---------- 분석 ----------
+const RUN={
+freq(){const name=$('#freq-var').value,c=col(name),valid=c.values.filter(v=>v!==''),miss=c.values.length-valid.length;
+  const counts=new Map();for(const k of levels(name))counts.set(k,0);for(const v of valid)counts.set(v,counts.get(v)+1);
+  if(counts.size>50)return err(`값의 종류가 ${counts.size}개로 너무 많습니다. 범주형 변수를 고르세요.`);
+  const max=Math.max(...counts.values());let cum=0;
+  const rows=[...counts].map(([k,n])=>{cum+=n;return [esc(k),n,f(n/valid.length*100,1),f(cum/valid.length*100,1),`<div class="barcell"><div class="bar" style="width:${n/max*100}%"></div></div>`];});
+  rows.push(['<b>합계</b>',`<b>${valid.length}</b>`,'100.0','','']);
+  if(miss)rows.push(['결측',miss,'','','']);
+  const top=[...counts].sort((a,b)=>b[1]-a[1])[0];
+  return `<h3>${esc(name)} 빈도표</h3>`+table(['값','빈도','유효 퍼센트(%)','누적 퍼센트(%)',''],rows)+
+    note(`유효 응답 ${valid.length}개 중 가장 많은 값은 <b>${esc(top[0])}</b> (${top[1]}개, ${f(top[1]/valid.length*100,1)}%)입니다.`);},
+
+desc(){const names=[...document.querySelectorAll('#desc-vars input:checked')].map(i=>i.value);
+  if(!names.length)return err('변수를 하나 이상 선택하세요.');
+  const rows=names.map(n=>{const a=col(n).values.map(num).filter(isFinite),s=[...a].sort((x,y)=>x-y);
+    if(!a.length)return [esc(n),0,'-','-','-','-','-','-','-','-','-','-'];
+    return [esc(n),a.length,f(mean(a)),f(sd(a)),f(sd(a)/Math.sqrt(a.length)),f(s[0],2),f(quantile(s,.25),2),f(quantile(s,.5),2),f(quantile(s,.75),2),f(s.at(-1),2),f(skew(a)),f(kurt(a))];});
+  return table(['변수','N','평균','표준편차','표준오차','최소','Q1','중앙값','Q3','최대','왜도','첨도'],rows)+
+    note('왜도·첨도의 절대값이 각각 2, 7보다 작으면 대체로 정규분포에 가깝다고 봅니다. 첨도는 정규분포를 0으로 둔 값입니다.');},
+
+ttest(){const dv=$('#tt-dv').value,g=$('#tt-g').value,A=$('#tt-a').value,B=$('#tt-b').value;
+  if(dv===g)return err('검정변수와 집단변수를 다르게 고르세요.');
+  if(A===B)return err('서로 다른 두 집단을 고르세요.');
+  const m=groupsOf(dv,g,[A,B]),a=m.get(A),b=m.get(B);
+  if(a.length<2||b.length<2)return err('각 집단에 값이 2개 이상 있어야 합니다.');
+  const n1=a.length,n2=b.length,m1=mean(a),m2=mean(b),v1=variance(a),v2=variance(b),diff=m1-m2;
+  const lev=levene([a,b]);
+  const sp=((n1-1)*v1+(n2-1)*v2)/(n1+n2-2),se1=Math.sqrt(sp*(1/n1+1/n2)),df1=n1+n2-2,t1=diff/se1;
+  const se2=Math.sqrt(v1/n1+v2/n2),df2=(v1/n1+v2/n2)**2/((v1/n1)**2/(n1-1)+(v2/n2)**2/(n2-1)),t2=diff/se2;
+  const d=diff/Math.sqrt(sp);
+  const row=(lab,t,df,se)=>{const p=pT(t,df),c=tCrit(df)*se;return [lab,f(t),f(df,df%1?2:0),sigP(p),f(diff),f(se),`${f(diff-c)} ~ ${f(diff+c)}`];};
+  const eq=lev.p>=0.05,pu=eq?pT(t1,df1):pT(t2,df2),tu=eq?t1:t2,dfu=eq?df1:df2;
+  return `<h3>집단별 기술통계</h3>`+table(['집단','N','평균','표준편차','표준오차'],[[esc(A),n1,f(m1),f(Math.sqrt(v1)),f(Math.sqrt(v1/n1))],[esc(B),n2,f(m2),f(Math.sqrt(v2)),f(Math.sqrt(v2/n2))]])+
+    `<h3>Levene 등분산 검정</h3>`+table(['','F','df1','df2','p'],[['등분산',f(lev.F),lev.dfb,lev.dfw,sigP(lev.p)]])+
+    `<h3>독립표본 t검정</h3>`+table(['','t','df','p (양측)','평균차','표준오차','95% 신뢰구간'],[row('등분산 가정',t1,df1,se1),row('등분산 가정 안 함 (Welch)',t2,df2,se2)])+sigNote+
+    note(`Levene 검정 p ${eq?'≥':'<'} .05이므로 <b>${eq?'등분산 가정':'등분산 가정 안 함 (Welch)'}</b> 결과를 봅니다. `+
+      `t(${f(dfu,dfu%1?2:0)}) = ${f(tu,2)}, ${pEq(pu)}로, ${esc(A)}(M=${f(m1,2)})와 ${esc(B)}(M=${f(m2,2)})의 ${esc(dv)} 차이는 `+
+      (pu<0.05?`<b>통계적으로 유의합니다</b>.`:`통계적으로 유의하지 않습니다.`)+` 효과크기 Cohen's d = ${f(Math.abs(d),2)} (${effD(d)}).`);},
+
+paired(){const P=$('#pr-pre').value,Q=$('#pr-post').value;if(P===Q)return err('사전과 사후 변수를 다르게 고르세요.');
+  const x=[],y=[];col(P).values.forEach((v,i)=>{const a=num(v),b=num(col(Q).values[i]);if(isFinite(a)&&isFinite(b)){x.push(a);y.push(b);}});
+  const n=x.length;if(n<3)return err('사전·사후 값이 모두 있는 행이 3개 이상 필요합니다.');
+  const dd=y.map((v,i)=>v-x[i]),md=mean(dd),sdd=sd(dd),se=sdd/Math.sqrt(n),df=n-1,t=md/se,p=pT(t,df),c=tCrit(df)*se,r=pearson(x,y),rt=rTest(r,n);
+  return `<h3>대응표본 기술통계</h3>`+table(['변수','N','평균','표준편차','표준오차'],[[esc(P),n,f(mean(x)),f(sd(x)),f(sd(x)/Math.sqrt(n))],[esc(Q),n,f(mean(y)),f(sd(y)),f(sd(y)/Math.sqrt(n))]])+
+    `<h3>사전-사후 상관</h3>`+table(['','N','r','p'],[[`${esc(P)} & ${esc(Q)}`,n,f(r),sigP(rt.p)]])+
+    `<h3>대응표본 t검정 (사후 − 사전)</h3>`+table(['','평균차','표준편차','표준오차','95% 신뢰구간','t','df','p (양측)'],[[`${esc(Q)} − ${esc(P)}`,f(md),f(sdd),f(se),`${f(md-c)} ~ ${f(md+c)}`,f(t),df,sigP(p)]])+sigNote+
+    note(`사전 평균 ${f(mean(x),2)}에서 사후 평균 ${f(mean(y),2)}로 ${f(Math.abs(md),2)}만큼 ${md>=0?'증가':'감소'}했습니다. `+
+      `t(${df}) = ${f(t,2)}, ${pEq(p)}로 변화는 `+(p<0.05?'<b>통계적으로 유의합니다</b>.':'통계적으로 유의하지 않습니다.')+
+      ` 효과크기 d = ${f(Math.abs(md/sdd),2)} (${effD(md/sdd)}).`);},
+
+anova(){const dv=$('#an-dv').value,g=$('#an-g').value;if(dv===g)return err('종속변수와 집단변수를 다르게 고르세요.');
+  const lv=levels(g);if(lv.length>20)return err(`집단이 ${lv.length}개로 너무 많습니다. 범주형 변수를 고르세요.`);
+  const m=groupsOf(dv,g),ks=[...m.keys()].filter(k=>m.get(k).length>0),gs=ks.map(k=>m.get(k));
+  if(gs.length<2)return err('집단이 2개 이상 있어야 합니다.');
+  if(gs.some(a=>a.length<2))return err('각 집단에 값이 2개 이상 있어야 합니다.');
+  const r=oneway(gs),lev=levene(gs),all=gs.flat();
+  const desc=ks.map((k,i)=>{const a=gs[i];return [esc(k),a.length,f(mean(a)),f(sd(a)),f(sd(a)/Math.sqrt(a.length)),f(Math.min(...a),2),f(Math.max(...a),2)];});
+  desc.push(['<b>전체</b>',all.length,f(mean(all)),f(sd(all)),f(sd(all)/Math.sqrt(all.length)),f(Math.min(...all),2),f(Math.max(...all),2)]);
+  const pairs=[],k=gs.length,nc=k*(k-1)/2;
+  for(let i=0;i<k;i++)for(let j=i+1;j<k;j++){const diff=mean(gs[i])-mean(gs[j]),se=Math.sqrt(r.msw*(1/gs[i].length+1/gs[j].length)),t=diff/se,p=Math.min(1,pT(t,r.dfw)*nc);
+    pairs.push([`${esc(ks[i])} − ${esc(ks[j])}`,f(diff),f(se),f(t),sigP(p)]);}
+  const best=ks[gs.map(mean).indexOf(Math.max(...gs.map(mean)))];
+  return `<h3>집단별 기술통계</h3>`+table(['집단','N','평균','표준편차','표준오차','최소','최대'],desc)+
+    `<h3>Levene 등분산 검정</h3>`+table(['','F','df1','df2','p'],[['등분산',f(lev.F),lev.dfb,lev.dfw,sigP(lev.p)]])+
+    `<h3>분산분석표</h3>`+table(['','제곱합','자유도','평균제곱','F','p'],[['집단 간',f(r.ssb),r.dfb,f(r.msb),f(r.F),sigP(r.p)],['집단 내',f(r.ssw),r.dfw,f(r.msw),'',''],['전체',f(r.sst),r.dfb+r.dfw,'','','']])+
+    `<h3>사후검정 (Bonferroni)</h3>`+table(['비교','평균차','표준오차','t','p (보정)'],pairs)+sigNote+
+    note(`F(${r.dfb}, ${r.dfw}) = ${f(r.F,2)}, ${pEq(r.p)}로 ${esc(g)}에 따른 ${esc(dv)}의 차이는 `+
+      (r.p<0.05?`<b>통계적으로 유의합니다</b>. 평균이 가장 높은 집단은 ${esc(best)}이며, 어느 집단끼리 다른지는 사후검정 표에서 p&lt;.05인 쌍을 보세요.`:'통계적으로 유의하지 않습니다.')+
+      ` 효과크기 η² = ${f(r.eta2,3)} (${r.eta2>=.14?'큼':r.eta2>=.06?'중간':r.eta2>=.01?'작음':'매우 작음'}).`+
+      (lev.p<0.05?' <br>Levene 검정이 유의하여 등분산 가정이 맞지 않으니 해석에 주의하세요.':''));},
+
+corr(){const names=[...document.querySelectorAll('#corr-vars input:checked')].map(i=>i.value);
+  if(names.length<2)return err('변수를 2개 이상 선택하세요.');
+  const vals=names.map(n=>col(n).values.map(num)),res=[];
+  const rows=names.map((ni,i)=>[esc(ni),...names.map((nj,j)=>{if(i===j)return '1';
+    const x=[],y=[];vals[i].forEach((v,k)=>{if(isFinite(v)&&isFinite(vals[j][k])){x.push(v);y.push(vals[j][k]);}});
+    if(x.length<3)return '-';const r=pearson(x,y),t=rTest(r,x.length);if(j>i)res.push({a:ni,b:nj,r,p:t.p});
+    return `<span class="${t.p<0.05?'sig':''}">${f(r)}${star(t.p)}</span><small>p=${fp(t.p)}, n=${x.length}</small>`;})]);
+  const sig=res.filter(o=>o.p<0.05).sort((a,b)=>Math.abs(b.r)-Math.abs(a.r));
+  const str=r=>{const a=Math.abs(r);return a>=.7?'강한':a>=.4?'중간 정도의':a>=.2?'약한':'매우 약한';};
+  return table(['',...names.map(esc)],rows)+sigNote+
+    note(sig.length?'유의한 상관: '+sig.map(o=>`${esc(o.a)}–${esc(o.b)} (r=${f(o.r,2)}, ${str(o.r)} ${o.r>0?'정적':'부적'} 상관)`).join(', ')+'.':'유의한 상관(p&lt;.05)이 있는 변수 쌍이 없습니다.');}
+};
+function effD(d){const a=Math.abs(d);return a>=.8?'큼':a>=.5?'중간':a>=.2?'작음':'매우 작음';}
+
+// ---------- 이벤트 ----------
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===b));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+b.dataset.p));});
+$('#tt-g').addEventListener('change',fillLevels);
+$('#apply').addEventListener('click',()=>{try{setData(build(parseText($('#raw').value)));}catch(e){$('#summary').innerHTML=err(e.message);}});
+$('#sample').addEventListener('click',()=>{$('#raw').value=sample();$('#apply').click();});
+$('#file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;
+  try{if(/\.xlsx?$/i.test(file.name)){if(!window.XLSX)throw new Error('엑셀 파일을 읽는 라이브러리를 불러오지 못했습니다. CSV로 저장해 올려 주세요.');
+      const wb=XLSX.read(await file.arrayBuffer());const grid=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''});
+      const g=grid.filter(r=>r.some(c=>String(c).trim()!==''));$('#raw').value=g.map(r=>r.join('\t')).join('\n');setData(build(g));}
+    else{$('#raw').value=await file.text();setData(build(parseText($('#raw').value)));}}
+  catch(x){$('#summary').innerHTML=err(x.message);}});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(!b)return;const k=b.dataset.run,o=$('#o-'+k);
+  if(!DATA){o.innerHTML=err('먼저 데이터를 입력하고 [데이터 적용]을 누르세요.');return;}
+  try{o.innerHTML=RUN[k]();}catch(x){o.innerHTML=err('분석 중 오류: '+x.message);}});
+</script>
 </body>
 </html>
