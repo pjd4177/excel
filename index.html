@@ -4,126 +4,249 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>통계 분석 도구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{--bg:#f6f8f7;--panel:#fff;--text:#1d2b24;--muted:#5b6b63;--line:#dfe6e2;--accent:#1f7a4d;--on-accent:#fff;--accent-weak:#e3f1ea;--sig:#b42318;--bar:#2f9e6a}
-@media (prefers-color-scheme:dark){:root{--bg:#121714;--panel:#1a211d;--text:#e6efe9;--muted:#9fb1a7;--line:#2c3631;--accent:#4cc38a;--on-accent:#0d1a13;--accent-weak:#1f3329;--sig:#ff8a7a;--bar:#4cc38a}}
+:root{
+  --bg:#f3f0ea;--card:#fffdf9;--ink:#1e2350;--text:#2c3050;--muted:#7d8098;--line:#ebe6dc;
+  --lav:#c9c8f0;--lav-soft:#ecebfa;--lav-deep:#7f7ed0;--sun:#f8dc7e;--sun-soft:#fdf4d3;
+  --btn:#262b55;--on-btn:#fbf9f5;--shadow:0 10px 30px rgba(52,50,110,.08);
+  --hero:linear-gradient(135deg,#e4e3f8 0%,#eeedfb 55%,#fbf3d6 100%);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141733;--card:#1e2245;--ink:#f4f0e6;--text:#e3e1f1;--muted:#a2a4c4;--line:#30355f;
+  --lav:#57569e;--lav-soft:#2a2e5c;--lav-deep:#aeadf3;--sun:#f3d778;--sun-soft:#3a3a52;
+  --btn:#f3d778;--on-btn:#1b1f3d;--shadow:0 10px 30px rgba(0,0,0,.25);
+  --hero:linear-gradient(135deg,#262a58 0%,#22264f 60%,#34324f 100%);}}
+:root[data-theme="dark"]{
+  --bg:#141733;--card:#1e2245;--ink:#f4f0e6;--text:#e3e1f1;--muted:#a2a4c4;--line:#30355f;
+  --lav:#57569e;--lav-soft:#2a2e5c;--lav-deep:#aeadf3;--sun:#f3d778;--sun-soft:#3a3a52;
+  --btn:#f3d778;--on-btn:#1b1f3d;--shadow:0 10px 30px rgba(0,0,0,.25);
+  --hero:linear-gradient(135deg,#262a58 0%,#22264f 60%,#34324f 100%);}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.5}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:1.6rem;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 20px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
-h2{font-size:1.1rem;margin:0 0 12px}
-h3{font-size:1rem;margin:16px 0 4px}
-textarea{width:100%;min-height:140px;font-family:ui-monospace,Consolas,monospace;font-size:13px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)}
-.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:10px}
-button,select{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:7px 12px;border-radius:8px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",system-ui,"Malgun Gothic",sans-serif;font-weight:400;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 16px 48px}
+.eyebrow{font-family:Jost,"Noto Sans KR",sans-serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+
+/* 헤더 */
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:32px}
+.brand h1{font-family:Jost,sans-serif;font-weight:400;font-size:clamp(44px,8vw,76px);letter-spacing:.02em;line-height:1;margin:0;color:var(--ink)}
+.brand p{margin:12px 0 0}
+.words{display:flex;align-items:center;gap:28px;font-family:Jost,sans-serif;font-size:11px;letter-spacing:.3em;color:var(--muted);line-height:2.1;text-transform:uppercase}
+.words i{display:block;width:64px;height:1px;background:var(--muted);opacity:.6}
+
+.card{background:var(--card);border-radius:28px;box-shadow:var(--shadow);border:1px solid var(--line)}
+h2{font-family:"Noto Sans KR",sans-serif;font-weight:400;font-size:26px;line-height:1.25;margin:6px 0 6px;color:var(--ink)}
+.desc{color:var(--muted);font-size:14px;margin:0}
+
+/* 1. 데이터: 가로 띠 */
+.data{background:var(--hero);border:none;padding:28px;display:grid;grid-template-columns:240px 1fr 230px;gap:24px;align-items:stretch;margin-bottom:24px;position:relative;overflow:hidden}
+.data::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:var(--sun);opacity:.55;pointer-events:none}
+.data-intro{display:flex;flex-direction:column;gap:14px;position:relative;z-index:1}
+.data-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+textarea{width:100%;height:100%;min-height:180px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:13px;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--text);position:relative;z-index:1}
+textarea:focus,select:focus{outline:2px solid var(--lav-deep);outline-offset:1px}
+.sum{background:var(--card);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:4px;position:relative;z-index:1;border:1px solid var(--line)}
+.big{font-family:Jost,sans-serif;font-size:56px;font-weight:400;line-height:1;color:var(--ink);margin-top:6px}
+.big span{font-size:18px;margin-left:4px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;max-height:110px;overflow:auto}
+.badge{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--lav-soft);color:var(--text)}
+.badge.n{background:var(--sun-soft)}
+
+button,select{font:inherit;color:var(--text)}
 button{cursor:pointer}
-button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.tab{border-radius:999px}
-.tab.active{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+.pill{border:none;border-radius:999px;padding:12px 20px;display:inline-flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.pill.primary{background:var(--btn);color:var(--on-btn)}
+.pill.primary::after{content:"→"}
+.pill.ghost{background:var(--card);border:1px solid var(--line)}
+.pill:hover{filter:brightness(1.06)}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* 2. 분석: 세로 메뉴 + 결과 */
+.analysis{display:grid;grid-template-columns:330px 1fr;gap:24px;align-items:start}
+.menu{padding:24px 18px 14px;position:sticky;top:16px}
+.menu-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 10px}
+.menu-head h3{font-weight:400;font-size:20px;margin:0;color:var(--ink)}
+.nav{display:flex;flex-direction:column}
+.nav-item{position:relative;display:grid;grid-template-columns:30px 22px 34px 1fr 12px;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;border-radius:18px;padding:14px 12px;min-height:70px}
+.nav-item::after{content:"";position:absolute;left:63px;top:calc(50% + 11px);height:calc(100% - 22px);width:1px;background:var(--line)}
+.nav-item:last-child::after{display:none}
+.nav-item:hover{background:var(--lav-soft)}
+.nav-item.active{background:var(--lav-soft)}
+.idx{font-family:Jost,sans-serif;font-size:13px;color:var(--muted)}
+.dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--lav);background:var(--card);display:grid;place-items:center;font-size:12px;color:var(--on-btn);position:relative;z-index:1}
+.nav-item.done .dot{background:var(--btn);border-color:var(--btn)}
+.nav-item.done .dot::before{content:"✓"}
+.ico{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
+.ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active .ico{background:var(--sun-soft)}
+.nt b{display:block;font-weight:500;font-size:15px;color:var(--ink)}
+.nt small{display:block;color:var(--muted);font-size:12px}
+.chev{color:var(--muted);font-size:18px}
+.quote{font-style:italic;color:var(--muted);font-size:14px;padding:14px 8px 4px;border-top:1px solid var(--line);margin-top:8px}
+
+.result{padding:28px;min-width:0}
 .panel{display:none}.panel.active{display:block}
-.desc{color:var(--muted);font-size:14px;margin:0 0 8px}
-.checks{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}
-.checks label{display:inline-flex;gap:4px;align-items:center;font-size:14px}
-.tbl{overflow-x:auto;margin:6px 0 12px}
-table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
-th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:right;white-space:nowrap}
-th{color:var(--muted);font-weight:600}
-th:first-child,td:first-child{text-align:left}
-td small{display:block;color:var(--muted);font-size:12px}
-.note{background:var(--accent-weak);border-radius:8px;padding:10px 12px;margin-top:8px}
-.err{color:var(--sig)}
-.sig{color:var(--sig);font-weight:600}
-.barcell{min-width:120px}
-.bar{height:12px;background:var(--bar);border-radius:3px}
-.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);margin:2px 4px 2px 0}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:22px 0 4px;align-items:end}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+select{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:11px 12px}
+.checks{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 4px}
+.checks label{display:inline-flex;gap:6px;align-items:center;font-size:14px;padding:7px 14px;border-radius:999px;background:var(--lav-soft);cursor:pointer}
+.checks input{accent-color:var(--lav-deep)}
+.run{margin-top:16px}
+.out{margin-top:24px;border-top:1px solid var(--line);padding-top:8px}
 .out:empty{display:none}
+.out h3{font-weight:500;font-size:15px;margin:20px 0 6px;color:var(--ink)}
+.tbl{overflow-x:auto;margin:4px 0 12px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:right;white-space:nowrap}
+th{font-family:Jost,"Noto Sans KR",sans-serif;font-weight:400;font-size:12px;letter-spacing:.06em;color:var(--muted)}
+th:first-child,td:first-child{text-align:left;color:var(--ink)}
+td small{display:block;color:var(--muted);font-size:11px}
+.note{background:var(--sun-soft);border-radius:18px;padding:14px 18px;margin-top:10px;color:var(--text)}
+.err{color:#c0504d}
+.sig{color:var(--ink);font-weight:700;background:linear-gradient(transparent 60%,var(--sun) 60%)}
+.barcell{min-width:140px}
+.bar{height:12px;background:var(--lav);border-radius:999px}
+
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:40px;font-family:Jost,sans-serif;font-size:11px;letter-spacing:.3em;line-height:2.1;color:var(--muted);text-transform:uppercase}
+footer div:last-child{text-align:right}
+
+@media (max-width:900px){
+  .data{grid-template-columns:1fr}
+  .analysis{grid-template-columns:1fr}
+  .menu{position:static}
+  .words{display:none}
+}
+@media (max-width:480px){
+  .wrap{padding-top:28px}
+  .data,.result{padding:20px}
+  .card{border-radius:24px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>통계 분석 도구</h1>
-  <p class="sub">엑셀 데이터를 붙여넣거나 파일을 올리면 빈도분석, 기술통계, t검정, 분산분석, 상관분석을 바로 할 수 있습니다.</p>
-
-  <section class="card">
-    <h2>1. 데이터 입력</h2>
-    <p class="desc">엑셀에서 첫 행(변수명)을 포함해 범위를 복사해 붙여넣으세요. CSV, XLSX 파일도 됩니다. 빈 칸은 결측값으로 처리합니다.</p>
-    <textarea id="raw" placeholder="번호&#9;성별&#9;사전점수&#9;사후점수&#10;1&#9;남&#9;62&#9;70"></textarea>
-    <div class="row">
-      <button class="primary" id="apply">데이터 적용</button>
-      <button id="sample">예시 데이터</button>
-      <label><input type="file" id="file" accept=".csv,.txt,.tsv,.xlsx,.xls"></label>
+  <header class="top">
+    <div class="brand">
+      <h1>STATLIGHT</h1>
+      <p class="eyebrow">엑셀 데이터를 가볍게, 결과는 선명하게</p>
     </div>
-    <div id="summary" class="out" style="margin-top:12px"></div>
+    <div class="words">
+      <div>Frequency<br>Descriptive<br>T-test<br>Paired</div><i></i><div>ANOVA<br>Correlation<br>Clear<br>Results</div>
+    </div>
+  </header>
+
+  <!-- 1. 데이터 넣기 (가로) -->
+  <section class="card data">
+    <div class="data-intro">
+      <span class="eyebrow">Step 01 · Data</span>
+      <h2>데이터 넣기</h2>
+      <p class="desc">엑셀에서 첫 행(변수명)을 포함해 복사해 붙여넣으세요. 빈 칸은 결측값으로 처리합니다.</p>
+      <div class="data-actions">
+        <button class="pill primary" id="apply">데이터 적용</button>
+        <button class="pill ghost" id="sample">예시 데이터</button>
+        <label class="pill ghost file">CSV · XLSX 파일 선택<input type="file" id="file" accept=".csv,.txt,.tsv,.xlsx,.xls"></label>
+      </div>
+    </div>
+    <textarea id="raw" placeholder="번호&#9;성별&#9;사전점수&#9;사후점수&#10;1&#9;남&#9;62&#9;70&#10;2&#9;여&#9;66&#9;80"></textarea>
+    <div class="sum" id="summary">
+      <span class="eyebrow">불러온 데이터</span>
+      <div class="big">0<span>행</span></div>
+      <small class="desc">데이터를 넣고 [데이터 적용]을 누르세요.</small>
+    </div>
   </section>
 
-  <section class="card">
-    <h2>2. 분석</h2>
-    <div class="tabs" id="tabs">
-      <button class="tab active" data-p="freq">빈도분석</button>
-      <button class="tab" data-p="desc">기술통계</button>
-      <button class="tab" data-p="ttest">차이검증 (독립표본 t)</button>
-      <button class="tab" data-p="paired">사전사후검증 (대응표본 t)</button>
-      <button class="tab" data-p="anova">ANOVA (일원분산분석)</button>
-      <button class="tab" data-p="corr">상관관계</button>
-    </div>
-
-    <div class="panel active" id="p-freq">
-      <p class="desc">한 변수의 값별 빈도와 비율을 봅니다.</p>
-      <div class="row"><label class="f">변수<select id="freq-var" data-kind="any"></select></label><button class="primary" data-run="freq">분석 실행</button></div>
-      <div class="out" id="o-freq"></div>
-    </div>
-
-    <div class="panel" id="p-desc">
-      <p class="desc">숫자 변수의 평균, 표준편차, 사분위수, 왜도, 첨도를 봅니다.</p>
-      <div class="checks" id="desc-vars" data-kind="num"></div>
-      <div class="row"><button class="primary" data-run="desc">분석 실행</button></div>
-      <div class="out" id="o-desc"></div>
-    </div>
-
-    <div class="panel" id="p-ttest">
-      <p class="desc">두 집단의 평균이 다른지 검정합니다. (예: 성별에 따른 점수 차이)</p>
-      <div class="row">
-        <label class="f">검정변수 (숫자)<select id="tt-dv" data-kind="num"></select></label>
-        <label class="f">집단변수<select id="tt-g" data-kind="any"></select></label>
-        <label class="f">집단 1<select id="tt-a"></select></label>
-        <label class="f">집단 2<select id="tt-b"></select></label>
-        <button class="primary" data-run="ttest">분석 실행</button>
+  <!-- 2. 분석 (세로 메뉴) -->
+  <section class="analysis">
+    <aside class="card menu">
+      <div class="menu-head"><h3>분석 방법</h3><span class="eyebrow">Step 02</span></div>
+      <div class="nav" id="nav">
+        <button class="nav-item active" data-p="freq"><span class="idx">01</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6M3 20h18"/></svg></span><span class="nt"><b>빈도분석</b><small>값별 개수와 비율</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="desc"><span class="idx">02</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span><span class="nt"><b>기술통계</b><small>평균 · 표준편차 · 분포</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="ttest"><span class="idx">03</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/></svg></span><span class="nt"><b>차이검증</b><small>독립표본 t검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="paired"><span class="idx">04</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></span><span class="nt"><b>사전사후검증</b><small>대응표본 t검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="anova"><span class="idx">05</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="4" height="10" rx="2"/><rect x="10" y="5" width="4" height="15" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></svg></span><span class="nt"><b>ANOVA</b><small>일원분산분석 · 사후검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="corr"><span class="idx">06</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="1.5"/><circle cx="10" cy="13" r="1.5"/><circle cx="13" cy="14" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="19" cy="6" r="1.5"/><path d="M4 20 20 4" opacity=".35"/></svg></span><span class="nt"><b>상관관계</b><small>Pearson 상관계수</small></span><span class="chev">›</span></button>
       </div>
-      <div class="out" id="o-ttest"></div>
-    </div>
+      <p class="quote">“숫자가 가벼워지면, 결론은 선명해집니다.”</p>
+    </aside>
 
-    <div class="panel" id="p-paired">
-      <p class="desc">같은 대상의 사전·사후 점수가 달라졌는지 검정합니다.</p>
-      <div class="row">
-        <label class="f">사전<select id="pr-pre" data-kind="num"></select></label>
-        <label class="f">사후<select id="pr-post" data-kind="num"></select></label>
-        <button class="primary" data-run="paired">분석 실행</button>
+    <div class="card result" id="result">
+      <div class="panel active" id="p-freq">
+        <span class="eyebrow">01 · Frequency</span>
+        <h2>빈도분석</h2>
+        <p class="desc">한 변수의 값별 빈도와 비율을 봅니다.</p>
+        <div class="controls"><label class="f">변수<select id="freq-var" data-kind="any"></select></label></div>
+        <button class="pill primary run" data-run="freq">분석 실행</button>
+        <div class="out" id="o-freq"></div>
       </div>
-      <div class="out" id="o-paired"></div>
-    </div>
 
-    <div class="panel" id="p-anova">
-      <p class="desc">세 집단 이상의 평균 차이를 검정합니다. 사후검정은 Bonferroni 방식입니다.</p>
-      <div class="row">
-        <label class="f">종속변수 (숫자)<select id="an-dv" data-kind="num"></select></label>
-        <label class="f">집단변수<select id="an-g" data-kind="any"></select></label>
-        <button class="primary" data-run="anova">분석 실행</button>
+      <div class="panel" id="p-desc">
+        <span class="eyebrow">02 · Descriptive</span>
+        <h2>기술통계</h2>
+        <p class="desc">숫자 변수의 평균, 표준편차, 사분위수, 왜도, 첨도를 봅니다.</p>
+        <div class="checks" id="desc-vars" data-kind="num"></div>
+        <button class="pill primary run" data-run="desc">분석 실행</button>
+        <div class="out" id="o-desc"></div>
       </div>
-      <div class="out" id="o-anova"></div>
-    </div>
 
-    <div class="panel" id="p-corr">
-      <p class="desc">숫자 변수들 사이의 Pearson 상관계수를 봅니다. 결측값은 쌍별로 제외합니다.</p>
-      <div class="checks" id="corr-vars" data-kind="num"></div>
-      <div class="row"><button class="primary" data-run="corr">분석 실행</button></div>
-      <div class="out" id="o-corr"></div>
+      <div class="panel" id="p-ttest">
+        <span class="eyebrow">03 · Independent t-test</span>
+        <h2>차이검증</h2>
+        <p class="desc">두 집단의 평균이 다른지 검정합니다. (예: 성별에 따른 점수 차이)</p>
+        <div class="controls">
+          <label class="f">검정변수 (숫자)<select id="tt-dv" data-kind="num"></select></label>
+          <label class="f">집단변수<select id="tt-g" data-kind="any"></select></label>
+          <label class="f">집단 1<select id="tt-a"></select></label>
+          <label class="f">집단 2<select id="tt-b"></select></label>
+        </div>
+        <button class="pill primary run" data-run="ttest">분석 실행</button>
+        <div class="out" id="o-ttest"></div>
+      </div>
+
+      <div class="panel" id="p-paired">
+        <span class="eyebrow">04 · Paired t-test</span>
+        <h2>사전사후검증</h2>
+        <p class="desc">같은 대상의 사전·사후 점수가 달라졌는지 검정합니다.</p>
+        <div class="controls">
+          <label class="f">사전<select id="pr-pre" data-kind="num"></select></label>
+          <label class="f">사후<select id="pr-post" data-kind="num"></select></label>
+        </div>
+        <button class="pill primary run" data-run="paired">분석 실행</button>
+        <div class="out" id="o-paired"></div>
+      </div>
+
+      <div class="panel" id="p-anova">
+        <span class="eyebrow">05 · One-way ANOVA</span>
+        <h2>ANOVA</h2>
+        <p class="desc">세 집단 이상의 평균 차이를 검정합니다. 사후검정은 Bonferroni 방식입니다.</p>
+        <div class="controls">
+          <label class="f">종속변수 (숫자)<select id="an-dv" data-kind="num"></select></label>
+          <label class="f">집단변수<select id="an-g" data-kind="any"></select></label>
+        </div>
+        <button class="pill primary run" data-run="anova">분석 실행</button>
+        <div class="out" id="o-anova"></div>
+      </div>
+
+      <div class="panel" id="p-corr">
+        <span class="eyebrow">06 · Correlation</span>
+        <h2>상관관계</h2>
+        <p class="desc">숫자 변수들 사이의 Pearson 상관계수를 봅니다. 결측값은 쌍별로 제외합니다.</p>
+        <div class="checks" id="corr-vars" data-kind="num"></div>
+        <button class="pill primary run" data-run="corr">분석 실행</button>
+        <div class="out" id="o-corr"></div>
+      </div>
     </div>
   </section>
+
+  <footer>
+    <div>Statistics<br>for a clearer tomorrow</div>
+    <div>A calmer mind<br>a clearer result</div>
+  </footer>
 </div>
 
 <script>
@@ -192,8 +315,9 @@ function build(grid){
 
 function setData(d){
   DATA=d;
-  $('#summary').innerHTML=`<p><b>${d.n}</b>개 행, <b>${d.cols.length}</b>개 변수를 불러왔습니다.</p>`+
-    d.cols.map(c=>`<span class="badge">${esc(c.name)} · ${c.num?'숫자':'문자'}</span>`).join('');
+  $('#summary').innerHTML=`<span class="eyebrow">불러온 데이터</span><div class="big">${d.n}<span>행</span></div><small class="desc">${d.cols.length}개 변수 · 노랑은 숫자, 보라는 문자</small>`+
+    `<div class="chips">${d.cols.map(c=>`<span class="badge${c.num?' n':''}">${esc(c.name)}</span>`).join('')}</div>`;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('done'));
   for(const s of document.querySelectorAll('select[data-kind]')){
     const list=d.cols.filter(c=>s.dataset.kind==='any'||c.num);
     s.innerHTML=list.map(c=>`<option>${esc(c.name)}</option>`).join('');}
@@ -314,9 +438,10 @@ corr(){const names=[...document.querySelectorAll('#corr-vars input:checked')].ma
 function effD(d){const a=Math.abs(d);return a>=.8?'큼':a>=.5?'중간':a>=.2?'작음':'매우 작음';}
 
 // ---------- 이벤트 ----------
-$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===b));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+b.dataset.p));});
+$('#nav').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;
+  document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active',t===b));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+b.dataset.p));
+  if(window.innerWidth<=900)$('#result').scrollIntoView({behavior:'smooth',block:'start'});});
 $('#tt-g').addEventListener('change',fillLevels);
 $('#apply').addEventListener('click',()=>{try{setData(build(parseText($('#raw').value)));}catch(e){$('#summary').innerHTML=err(e.message);}});
 $('#sample').addEventListener('click',()=>{$('#raw').value=sample();$('#apply').click();});
@@ -328,7 +453,7 @@ $('#file').addEventListener('change',async e=>{const file=e.target.files[0];if(!
   catch(x){$('#summary').innerHTML=err(x.message);}});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(!b)return;const k=b.dataset.run,o=$('#o-'+k);
   if(!DATA){o.innerHTML=err('먼저 데이터를 입력하고 [데이터 적용]을 누르세요.');return;}
-  try{o.innerHTML=RUN[k]();}catch(x){o.innerHTML=err('분석 중 오류: '+x.message);}});
+  try{o.innerHTML=RUN[k]();if(!o.querySelector('.err'))$(`.nav-item[data-p="${k}"]`).classList.add('done');}catch(x){o.innerHTML=err('분석 중 오류: '+x.message);}});
 </script>
 </body>
 </html>
