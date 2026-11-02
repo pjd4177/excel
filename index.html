@@ -67,7 +67,8 @@ button{cursor:pointer}
 
 /* 2. 분석: 세로 메뉴 + 결과 */
 .analysis{display:grid;grid-template-columns:330px 1fr;gap:24px;align-items:start}
-.menu{padding:24px 18px 14px;position:sticky;top:16px}
+.menu{padding:24px 18px 14px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+.nav-group{font-family:Jost,"Noto Sans KR",sans-serif;font-size:11px;letter-spacing:.2em;color:var(--muted);margin:14px 12px 4px}
 .menu-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 10px}
 .menu-head h3{font-weight:400;font-size:20px;margin:0;color:var(--ink)}
 .nav{display:flex;flex-direction:column}
@@ -87,6 +88,24 @@ button{cursor:pointer}
 .nt small{display:block;color:var(--muted);font-size:12px}
 .chev{color:var(--muted);font-size:18px}
 .quote{font-style:italic;color:var(--muted);font-size:14px;padding:14px 8px 4px;border-top:1px solid var(--line);margin-top:8px}
+.nav-item{min-height:62px;padding:11px 12px}
+.sublabel{font-size:13px;color:var(--muted);margin:18px 0 0}
+.checks.tight{margin-top:8px}
+.opt{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:14px;color:var(--text)}
+.opt input{accent-color:var(--lav-deep)}
+.ipa-head,.ipa-row{display:grid;grid-template-columns:1.1fr 1fr 1fr 40px;gap:8px;align-items:center}
+.ipa-head{font-size:12px;color:var(--muted);margin:20px 0 6px}
+.ipa-row{margin-bottom:8px}
+.ipa-row input{font:inherit;color:var(--text);border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;min-width:0}
+.ipa-row select{min-width:0}
+.ipa-row .x{border:1px solid var(--line);background:var(--card);border-radius:50%;width:36px;height:36px;color:var(--muted)}
+.row-btns{margin-top:4px}
+.plot{width:100%;max-width:640px;height:auto;display:block;margin:10px 0 6px}
+.plot text{font-size:12px;fill:var(--muted)}
+.plot .lbl{fill:var(--ink);font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin:0 0 8px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+@media (max-width:560px){.ipa-head{display:none}.ipa-row{grid-template-columns:1fr 1fr;padding:10px;border:1px solid var(--line);border-radius:16px}.ipa-row input{grid-column:1/-1}}
 
 .result{padding:28px;min-width:0}
 .panel{display:none}.panel.active{display:block}
@@ -164,13 +183,22 @@ footer div:last-child{text-align:right}
   <section class="analysis">
     <aside class="card menu">
       <div class="menu-head"><h3>분석 방법</h3><span class="eyebrow">Step 02</span></div>
+      <p class="nav-group">기본 분석</p>
       <div class="nav" id="nav">
         <button class="nav-item active" data-p="freq"><span class="idx">01</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6M3 20h18"/></svg></span><span class="nt"><b>빈도분석</b><small>값별 개수와 비율</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="desc"><span class="idx">02</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span><span class="nt"><b>기술통계</b><small>평균 · 표준편차 · 분포</small></span><span class="chev">›</span></button>
-        <button class="nav-item" data-p="ttest"><span class="idx">03</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/></svg></span><span class="nt"><b>차이검증</b><small>독립표본 t검정</small></span><span class="chev">›</span></button>
-        <button class="nav-item" data-p="paired"><span class="idx">04</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></span><span class="nt"><b>사전사후검증</b><small>대응표본 t검정</small></span><span class="chev">›</span></button>
-        <button class="nav-item" data-p="anova"><span class="idx">05</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="4" height="10" rx="2"/><rect x="10" y="5" width="4" height="15" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></svg></span><span class="nt"><b>ANOVA</b><small>일원분산분석 · 사후검정</small></span><span class="chev">›</span></button>
-        <button class="nav-item" data-p="corr"><span class="idx">06</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="1.5"/><circle cx="10" cy="13" r="1.5"/><circle cx="13" cy="14" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="19" cy="6" r="1.5"/><path d="M4 20 20 4" opacity=".35"/></svg></span><span class="nt"><b>상관관계</b><small>Pearson 상관계수</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="cross"><span class="idx">03</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 12h16M12 4v16"/></svg></span><span class="nt"><b>교차분석</b><small>교차표 · 카이제곱 검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="ttest"><span class="idx">04</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/></svg></span><span class="nt"><b>차이검증</b><small>독립표본 t검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="paired"><span class="idx">05</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></span><span class="nt"><b>사전사후검증</b><small>대응표본 t검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="anova"><span class="idx">06</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="4" height="10" rx="2"/><rect x="10" y="5" width="4" height="15" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></svg></span><span class="nt"><b>ANOVA</b><small>일원분산분석 · 사후검정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="corr"><span class="idx">07</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="1.5"/><circle cx="10" cy="13" r="1.5"/><circle cx="13" cy="14" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="19" cy="6" r="1.5"/><path d="M4 20 20 4" opacity=".35"/></svg></span><span class="nt"><b>상관관계</b><small>Pearson 상관계수</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group">회귀 · 심화 분석</p>
+      <div class="nav">
+        <button class="nav-item" data-p="reg"><span class="idx">08</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 19 20 6"/><circle cx="7" cy="15" r="1.4"/><circle cx="10" cy="11" r="1.4"/><circle cx="14" cy="12" r="1.4"/><circle cx="17" cy="7" r="1.4"/></svg></span><span class="nt"><b>회귀분석</b><small>다중 선형회귀</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="logit"><span class="idx">09</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 19c8 0 6-14 18-14"/><path d="M3 21h18" opacity=".35"/></svg></span><span class="nt"><b>로지스틱 회귀분석</b><small>이항 결과 예측 · 오즈비</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="ipa"><span class="idx">10</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="16.5" cy="7.5" r="1.6"/><circle cx="7" cy="16" r="1.6"/></svg></span><span class="nt"><b>IPA 분석</b><small>중요도 · 성과 매트릭스</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="mod"><span class="idx">11</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 18 20 5M4 14l16 3"/></svg></span><span class="nt"><b>조절효과</b><small>Interaction · 단순기울기</small></span><span class="chev">›</span></button>
       </div>
       <p class="quote">“숫자가 가벼워지면, 결론은 선명해집니다.”</p>
     </aside>
@@ -194,8 +222,20 @@ footer div:last-child{text-align:right}
         <div class="out" id="o-desc"></div>
       </div>
 
+      <div class="panel" id="p-cross">
+        <span class="eyebrow">03 · Crosstab · Chi-square</span>
+        <h2>교차분석</h2>
+        <p class="desc">두 범주형 변수의 관계를 교차표와 카이제곱(χ²) 검정으로 봅니다. (예: 성별에 따른 재방문 여부)</p>
+        <div class="controls">
+          <label class="f">행 변수<select id="cr-row" data-kind="any"></select></label>
+          <label class="f">열 변수<select id="cr-col" data-kind="any"></select></label>
+        </div>
+        <button class="pill primary run" data-run="cross">분석 실행</button>
+        <div class="out" id="o-cross"></div>
+      </div>
+
       <div class="panel" id="p-ttest">
-        <span class="eyebrow">03 · Independent t-test</span>
+        <span class="eyebrow">04 · Independent t-test</span>
         <h2>차이검증</h2>
         <p class="desc">두 집단의 평균이 다른지 검정합니다. (예: 성별에 따른 점수 차이)</p>
         <div class="controls">
@@ -209,7 +249,7 @@ footer div:last-child{text-align:right}
       </div>
 
       <div class="panel" id="p-paired">
-        <span class="eyebrow">04 · Paired t-test</span>
+        <span class="eyebrow">05 · Paired t-test</span>
         <h2>사전사후검증</h2>
         <p class="desc">같은 대상의 사전·사후 점수가 달라졌는지 검정합니다.</p>
         <div class="controls">
@@ -221,7 +261,7 @@ footer div:last-child{text-align:right}
       </div>
 
       <div class="panel" id="p-anova">
-        <span class="eyebrow">05 · One-way ANOVA</span>
+        <span class="eyebrow">06 · One-way ANOVA</span>
         <h2>ANOVA</h2>
         <p class="desc">세 집단 이상의 평균 차이를 검정합니다. 사후검정은 Bonferroni 방식입니다.</p>
         <div class="controls">
@@ -233,12 +273,62 @@ footer div:last-child{text-align:right}
       </div>
 
       <div class="panel" id="p-corr">
-        <span class="eyebrow">06 · Correlation</span>
+        <span class="eyebrow">07 · Correlation</span>
         <h2>상관관계</h2>
         <p class="desc">숫자 변수들 사이의 Pearson 상관계수를 봅니다. 결측값은 쌍별로 제외합니다.</p>
         <div class="checks" id="corr-vars" data-kind="num"></div>
         <button class="pill primary run" data-run="corr">분석 실행</button>
         <div class="out" id="o-corr"></div>
+      </div>
+
+      <div class="panel" id="p-reg">
+        <span class="eyebrow">08 · Multiple Regression</span>
+        <h2>회귀분석</h2>
+        <p class="desc">여러 독립변수가 종속변수에 미치는 영향을 봅니다. 결측값이 있는 행은 제외합니다.</p>
+        <div class="controls"><label class="f">종속변수 (Y)<select id="rg-dv" data-kind="num"></select></label></div>
+        <p class="sublabel">독립변수 (X)</p>
+        <div class="checks tight" id="rg-ivs" data-kind="num"></div>
+        <button class="pill primary run" data-run="reg">분석 실행</button>
+        <div class="out" id="o-reg"></div>
+      </div>
+
+      <div class="panel" id="p-logit">
+        <span class="eyebrow">09 · Logistic Regression</span>
+        <h2>로지스틱 회귀분석</h2>
+        <p class="desc">예/아니오처럼 두 값을 갖는 결과가 일어날 확률에 영향을 주는 변수를 찾습니다.</p>
+        <div class="controls">
+          <label class="f">종속변수 (2개 값)<select id="lg-dv" data-kind="any"></select></label>
+          <label class="f">관심 사건 (=1)<select id="lg-ev"></select></label>
+        </div>
+        <p class="sublabel">독립변수 (X)</p>
+        <div class="checks tight" id="lg-ivs" data-kind="num"></div>
+        <button class="pill primary run" data-run="logit">분석 실행</button>
+        <div class="out" id="o-logit"></div>
+      </div>
+
+      <div class="panel" id="p-ipa">
+        <span class="eyebrow">10 · Importance-Performance</span>
+        <h2>IPA 분석</h2>
+        <p class="desc">속성마다 중요도 변수와 성과(만족도) 변수를 짝지어 주세요. 변수명이 '중요_시설', '만족_시설'처럼 되어 있으면 자동으로 짝을 맞춥니다.</p>
+        <div class="ipa-head"><span>속성 이름</span><span>중요도 변수</span><span>성과 변수</span><span></span></div>
+        <div id="ipa-rows"></div>
+        <div class="row-btns"><button class="pill ghost" id="ipa-add">+ 속성 추가</button></div>
+        <button class="pill primary run" data-run="ipa">분석 실행</button>
+        <div class="out" id="o-ipa"></div>
+      </div>
+
+      <div class="panel" id="p-mod">
+        <span class="eyebrow">11 · Moderation · Interaction</span>
+        <h2>조절효과</h2>
+        <p class="desc">조절변수(M)에 따라 X가 Y에 미치는 영향이 달라지는지 상호작용항(X × M)으로 검정합니다. 조절변수는 숫자이거나 값이 2개인 문자 변수(예: 남/여)여야 합니다.</p>
+        <div class="controls">
+          <label class="f">종속변수 (Y)<select id="md-y" data-kind="num"></select></label>
+          <label class="f">독립변수 (X)<select id="md-x" data-kind="num"></select></label>
+          <label class="f">조절변수 (M)<select id="md-m" data-kind="any"></select></label>
+        </div>
+        <label class="opt"><input type="checkbox" id="md-center" checked> 평균중심화 (다중공선성 줄이기, 권장)</label>
+        <button class="pill primary run" data-run="mod">분석 실행</button>
+        <div class="out" id="o-mod"></div>
       </div>
     </div>
   </section>
@@ -322,16 +412,25 @@ function setData(d){
     const list=d.cols.filter(c=>s.dataset.kind==='any'||c.num);
     s.innerHTML=list.map(c=>`<option>${esc(c.name)}</option>`).join('');}
   for(const box of document.querySelectorAll('.checks[data-kind]'))
-    box.innerHTML=d.cols.filter(c=>c.num).map(c=>`<label><input type="checkbox" value="${esc(c.name)}" checked>${esc(c.name)}</label>`).join('')||'<span class="desc">숫자 변수가 없습니다.</span>';
+    box.innerHTML=d.cols.filter(c=>c.num).map(c=>`<label><input type="checkbox" value="${esc(c.name)}">${esc(c.name)}</label>`).join('')||'<span class="desc">숫자 변수가 없습니다.</span>';
   // 기본 선택을 보기 좋게
   const nums=d.cols.filter(c=>c.num).map(c=>c.name);
   const cats=d.cols.filter(c=>{const u=new Set(c.values.filter(v=>v!==''));return u.size>=2&&u.size<=10;}).map(c=>c.name);
+  const core=nums.filter(n=>!/^(번호|id|no|순번)$/i.test(n)&&!IPA_I.test(n)&&!IPA_P.test(n));
+  const two=cats.filter(n=>levels(n).length===2),twoText=two.filter(n=>!col(n).num);
   const pick=(id,v)=>{if(v)$(id).value=v;};
-  pick('#freq-var',cats[0]);pick('#tt-g',cats.find(n=>levels(n).length===2)||cats[0]);pick('#an-g',cats.find(n=>levels(n).length>=3)||cats[0]);
+  pick('#freq-var',cats[0]);pick('#tt-g',two[0]||cats[0]);pick('#an-g',cats.find(n=>levels(n).length>=3)||cats[0]);
   pick('#tt-dv',nums.at(-1));pick('#an-dv',nums.at(-1));pick('#pr-pre',nums[nums.length>=2?nums.length-2:0]);pick('#pr-post',nums.at(-1));
   const pre=nums.find(n=>/사전|pre/i.test(n)),post=nums.find(n=>/사후|post/i.test(n));pick('#pr-pre',pre);pick('#pr-post',post);
   if(post){pick('#tt-dv',post);pick('#an-dv',post);}
-  fillLevels();
+  pick('#cr-row',twoText[0]||cats[0]);pick('#cr-col',twoText[1]||cats.find(n=>n!==$('#cr-row').value));
+  setChecks('#desc-vars',core.slice(0,6));setChecks('#corr-vars',core.slice(0,6));
+  const ydv=post||core.at(-1);pick('#rg-dv',ydv);setChecks('#rg-ivs',core.filter(n=>n!==ydv&&n!==pre).slice(0,3));
+  if(pre)setChecks('#rg-ivs',[pre,...core.filter(n=>n!==ydv&&n!==pre).slice(1,3)]);
+  pick('#lg-dv',twoText.at(-1)||two.at(-1));setChecks('#lg-ivs',core.filter(n=>n!==post&&n!==pre).slice(-2));
+  const hrs=core.find(n=>/시간|time|hour/i.test(n));
+  pick('#md-y',core.at(-1));pick('#md-x',hrs||core[0]);pick('#md-m',twoText[0]||core[1]);
+  fillLevels();fillEvent();ipaInit();
   document.querySelectorAll('.out[id^="o-"]').forEach(o=>o.innerHTML='');}
 
 function levels(name){const c=col(name);const u=[...new Set(c.values.filter(v=>v!==''))];
@@ -345,10 +444,14 @@ function groupsOf(dv,g,only){const d=col(dv),gc=col(g),map=new Map();
 
 function sample(){let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
   const norm=()=>Math.sqrt(-2*Math.log(rnd()||1e-9))*Math.cos(2*Math.PI*rnd());
-  const L=['번호\t성별\t학년\t사전점수\t사후점수\t공부시간\t만족도'];
-  for(let i=1;i<=60;i++){const g=rnd()<.5?'남':'여',y=1+Math.floor(rnd()*3),pre=Math.round(60+y*3+norm()*8),
+  const items=['시설','강의','가격','접근성'],imp=[4.3,4.5,3.4,3.6],perf=[3.4,4.3,3.8,3.1];
+  const lik=v=>Math.min(5,Math.max(1,Math.round(v)));
+  const L=[['번호','성별','학년','사전점수','사후점수','공부시간','만족도','재방문',...items.map(n=>'중요_'+n),...items.map(n=>'만족_'+n)].join('\t')];
+  for(let i=1;i<=120;i++){const g=rnd()<.5?'남':'여',y=1+Math.floor(rnd()*3),pre=Math.round(60+y*3+norm()*8),
     hrs=Math.max(0,Math.round((5+norm()*2)*10)/10),post=Math.round(pre+4+hrs*0.8+(g==='여'?3:0)+norm()*5),
-    sat=Math.min(5,Math.max(1,Math.round(3+(post-pre-9)/5+norm()*0.8)));L.push([i,g,y,pre,post,hrs,sat].join('\t'));}
+    sat=lik(3+(post-pre-10)/6+(hrs-5)*(g==='여'?0.4:0)+norm()*0.6),
+    re=rnd()<1/(1+Math.exp(-(-5.5+1.3*sat+0.2*hrs)))?'예':'아니오';
+    L.push([i,g,y,pre,post,hrs,sat,re,...imp.map(m=>lik(m+norm()*0.7)),...perf.map(m=>lik(m+norm()*0.8))].join('\t'));}
   return L.join('\n');}
 
 // ---------- 분석 ----------
@@ -437,12 +540,176 @@ corr(){const names=[...document.querySelectorAll('#corr-vars input:checked')].ma
 };
 function effD(d){const a=Math.abs(d);return a>=.8?'큼':a>=.5?'중간':a>=.2?'작음':'매우 작음';}
 
+// ---------- 추가 도구: 카이제곱 분포, 행렬, 회귀 ----------
+function gammq(a,x){if(x<=0)return 1;const gln=lgamma(a),pre=Math.exp(-x+a*Math.log(x)-gln);
+  if(x<a+1){let ap=a,s=1/a,d=s;for(let n=0;n<1000;n++){ap++;d*=x/ap;s+=d;if(Math.abs(d)<Math.abs(s)*1e-15)break;}return Math.max(0,1-s*pre);}
+  let b=x+1-a,c=1e300,d=1/b,h=d;for(let i=1;i<1000;i++){const an=-i*(i-a);b+=2;d=an*d+b;if(Math.abs(d)<1e-300)d=1e-300;c=b+an/c;if(Math.abs(c)<1e-300)c=1e-300;d=1/d;const del=d*c;h*=del;if(Math.abs(del-1)<1e-15)break;}
+  return pre*h;}
+const pChi=(x,df)=>gammq(df/2,x/2);
+function inv(M){const n=M.length,A=M.map((r,i)=>[...r,...r.map((_,j)=>i===j?1:0)]);
+  for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(A[r][c])>Math.abs(A[p][c]))p=r;
+    if(Math.abs(A[p][c])<1e-10)throw new Error('독립변수끼리 완전히 겹칩니다(다중공선성). 변수를 줄여 보세요.');
+    [A[c],A[p]]=[A[p],A[c]];const v=A[c][c];for(let j=0;j<2*n;j++)A[c][j]/=v;
+    for(let r=0;r<n;r++)if(r!==c){const k=A[r][c];if(k)for(let j=0;j<2*n;j++)A[r][j]-=k*A[c][j];}}
+  return A.map(r=>r.slice(n));}
+function ols(y,X){const n=y.length,k=X[0].length,Z=X.map(r=>[1,...r]),p=k+1;
+  const XtX=Array.from({length:p},(_,i)=>Array.from({length:p},(_,j)=>Z.reduce((s,r)=>s+r[i]*r[j],0)));
+  const Xty=Array.from({length:p},(_,i)=>Z.reduce((s,r,t)=>s+r[i]*y[t],0));
+  const XI=inv(XtX),b=XI.map(r=>r.reduce((s,v,j)=>s+v*Xty[j],0));
+  const res=Z.map((r,t)=>y[t]-r.reduce((s,v,j)=>s+v*b[j],0));
+  const my=mean(y),sse=sum(res.map(e=>e*e)),sst=sum(y.map(v=>(v-my)**2)),ssr=sst-sse,dfe=n-k-1,mse=sse/dfe;
+  const se=XI.map((r,i)=>Math.sqrt(r[i]*mse)),t=b.map((v,i)=>v/se[i]),R2=ssr/sst,F=(ssr/k)/mse;
+  return {n,k,b,se,t,p:t.map(v=>pT(v,dfe)),R2,adjR2:1-(1-R2)*(n-1)/dfe,F,pF:pF(F,k,dfe),dfr:k,dfe,sse,ssr,sst,mse,
+    cov:XI.map(r=>r.map(v=>v*mse)),dw:sum(res.slice(1).map((e,i)=>(e-res[i])**2))/sse};}
+function complete(names){const cs=names.map(n=>col(n).values.map(num)),rows=[];
+  for(let i=0;i<DATA.n;i++){const r=cs.map(c=>c[i]);if(r.every(isFinite))rows.push(r);}return rows;}
+const checked=sel=>[...document.querySelectorAll(sel+' input:checked')].map(i=>i.value);
+const setChecks=(sel,names)=>document.querySelectorAll(sel+' input').forEach(i=>i.checked=names.includes(i.value));
+const sigWord=p=>p<0.05?'<b>통계적으로 유의합니다</b>':'통계적으로 유의하지 않습니다';
+
+// ---------- 그래프 (SVG) ----------
+function axes(W,H,L,R,T,B,x0,x1,y0,y1,xl,yl){
+  const sx=v=>L+(v-x0)/(x1-x0)*(W-L-R),sy=v=>H-B-(v-y0)/(y1-y0)*(H-T-B);let g='';
+  for(let i=0;i<=4;i++){const xv=x0+(x1-x0)*i/4,yv=y0+(y1-y0)*i/4;
+    g+=`<line x1="${sx(xv)}" y1="${H-B}" x2="${sx(xv)}" y2="${H-B+4}" style="stroke:var(--muted)"/><text x="${sx(xv)}" y="${H-B+18}" text-anchor="middle">${f(xv,2)}</text>`;
+    g+=`<line x1="${L-4}" y1="${sy(yv)}" x2="${L}" y2="${sy(yv)}" style="stroke:var(--muted)"/><text x="${L-8}" y="${sy(yv)+4}" text-anchor="end">${f(yv,2)}</text>`;}
+  g+=`<rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" style="fill:none;stroke:var(--line)"/>`;
+  g+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">${esc(xl)}</text><text transform="translate(14 ${(T+H-B)/2}) rotate(-90)" text-anchor="middle">${esc(yl)}</text>`;
+  return {sx,sy,g};}
+
+// ---------- IPA 입력 줄 ----------
+const IPA_I=/^(중요도?|imp(ortance)?|I)[_\s-]+/i,IPA_P=/^(만족도?|성과|perf(ormance)?|P)[_\s-]+/i;
+function numOpts(sel){return DATA.cols.filter(c=>c.num).map(c=>`<option${c.name===sel?' selected':''}>${esc(c.name)}</option>`).join('');}
+function ipaRow(name='',i='',p=''){const d=document.createElement('div');d.className='ipa-row';
+  d.innerHTML=`<input class="ipa-name" placeholder="속성 이름" value="${esc(name)}"><select class="ipa-i">${numOpts(i)}</select><select class="ipa-p">${numOpts(p)}</select><button class="x" title="삭제">×</button>`;
+  $('#ipa-rows').appendChild(d);}
+function ipaInit(){$('#ipa-rows').innerHTML='';const nums=DATA.cols.filter(c=>c.num).map(c=>c.name);let n=0;
+  for(const a of nums.filter(x=>IPA_I.test(x))){const key=a.replace(IPA_I,''),b=nums.find(x=>IPA_P.test(x)&&x.replace(IPA_P,'')===key);if(b){ipaRow(key,a,b);n++;}}
+  if(!n)for(let k=0;k<3;k++)ipaRow('',nums[k]||'',nums[k+1]||'');}
+function fillEvent(){if(!DATA||!$('#lg-dv').value)return;const lv=levels($('#lg-dv').value);
+  $('#lg-ev').innerHTML=lv.map(v=>`<option>${esc(v)}</option>`).join('');const yes=lv.find(v=>/^(예|yes|y|1|있음|true)$/i.test(v));$('#lg-ev').value=yes??lv.at(-1)??'';}
+
+Object.assign(RUN,{
+cross(){const R=$('#cr-row').value,C=$('#cr-col').value;if(R===C)return err('행 변수와 열 변수를 다르게 고르세요.');
+  const rl=levels(R),cl=levels(C);if(rl.length>15||cl.length>15)return err('범주가 15개 이하인 변수를 고르세요.');
+  const O=rl.map(()=>cl.map(()=>0)),rv=col(R).values,cv=col(C).values;let n=0;
+  rv.forEach((v,i)=>{const a=rl.indexOf(v),b=cl.indexOf(cv[i]);if(a>=0&&b>=0){O[a][b]++;n++;}});
+  const rs=O.map(r=>sum(r)),cs=cl.map((_,j)=>sum(O.map(r=>r[j]))),nr=rs.filter(x=>x>0).length,nc=cs.filter(x=>x>0).length,df=(nr-1)*(nc-1);
+  if(df<1)return err('두 변수 모두 응답이 있는 범주가 2개 이상이어야 합니다.');
+  let chi=0,low=0,cells=0;
+  O.forEach((r,i)=>r.forEach((o,j)=>{if(!rs[i]||!cs[j])return;const e=rs[i]*cs[j]/n;chi+=(o-e)**2/e;cells++;if(e<5)low++;}));
+  const p=pChi(chi,df),V=Math.sqrt(chi/(n*(Math.min(nr,nc)-1))),lowPct=low/cells*100;
+  const rows=rl.map((r,i)=>[esc(r),...cl.map((c,j)=>`${O[i][j]}<small>${rs[i]?f(O[i][j]/rs[i]*100,1):'-'}%</small>`),`<b>${rs[i]}</b>`]);
+  rows.push(['<b>합계</b>',...cs.map(c=>`<b>${c}</b><small>${f(c/n*100,1)}%</small>`),`<b>${n}</b>`]);
+  return `<h3>교차표 (빈도 / 행 %)</h3>`+table([`${esc(R)} × ${esc(C)}`,...cl.map(esc),'합계'],rows)+
+    `<h3>카이제곱 검정</h3>`+table(['','값','자유도','p'],[['Pearson χ²',f(chi),df,sigP(p)],["Cramer's V",f(V),'','']])+sigNote+
+    note(`χ²(${df}) = ${f(chi,2)}, ${pEq(p)}로 ${esc(R)}와(과) ${esc(C)}의 관계는 ${sigWord(p)}. Cramer's V = ${f(V,2)} (${V>=.5?'강함':V>=.3?'중간':V>=.1?'약함':'매우 약함'}).`+
+      (lowPct>20?`<br>기대빈도가 5보다 작은 칸이 ${f(lowPct,0)}%로 20%를 넘습니다. 범주를 합치거나 해석에 주의하세요.`:''));},
+
+reg(){const dv=$('#rg-dv').value,ivs=checked('#rg-ivs').filter(v=>v!==dv);
+  if(!ivs.length)return err('독립변수를 하나 이상 고르세요. (종속변수와 같은 변수는 빠집니다)');
+  const rows=complete([dv,...ivs]);if(rows.length<ivs.length+3)return err('결측 없는 사례 수가 너무 적습니다.');
+  const y=rows.map(r=>r[0]),X=rows.map(r=>r.slice(1)),m=ols(y,X),sy=sd(y),sx=ivs.map((_,j)=>sd(X.map(r=>r[j])));
+  const vif=ivs.length>1?ivs.map((_,j)=>1/(1-ols(X.map(r=>r[j]),X.map(r=>r.filter((_,q)=>q!==j))).R2)):[1];
+  const info=ivs.map((v,j)=>({v,b:m.b[j+1],beta:m.b[j+1]*sx[j]/sy,p:m.p[j+1]}));
+  const coef=[['(상수)',f(m.b[0]),f(m.se[0]),'',f(m.t[0]),sigP(m.p[0]),'']].concat(info.map((o,j)=>[esc(o.v),f(o.b),f(m.se[j+1]),f(o.beta),f(m.t[j+1]),sigP(o.p),f(vif[j],2)]));
+  const sig=info.filter(o=>o.p<0.05).sort((a,b)=>Math.abs(b.beta)-Math.abs(a.beta));
+  return `<h3>모형 요약</h3>`+table(['N','R','R²','수정된 R²','추정값 표준오차','Durbin-Watson'],[[m.n,f(Math.sqrt(m.R2)),f(m.R2),f(m.adjR2),f(Math.sqrt(m.mse)),f(m.dw)]])+
+    `<h3>분산분석</h3>`+table(['','제곱합','자유도','평균제곱','F','p'],[['회귀',f(m.ssr),m.dfr,f(m.ssr/m.dfr),f(m.F),sigP(m.pF)],['잔차',f(m.sse),m.dfe,f(m.mse),'',''],['합계',f(m.sst),m.n-1,'','','']])+
+    `<h3>회귀계수</h3>`+table(['','B','표준오차','β','t','p','VIF'],coef)+sigNote+
+    note(`회귀모형은 F(${m.dfr}, ${m.dfe}) = ${f(m.F,2)}, ${pEq(m.pF)}로 ${sigWord(m.pF)}. 독립변수들이 ${esc(dv)}의 변동을 ${f(m.R2*100,1)}% 설명합니다 (R² = ${f(m.R2,3)}). `+
+      (sig.length?'유의한 변수: '+sig.map(o=>`${esc(o.v)} (β = ${f(o.beta,2)}, ${o.b>0?'정(+)':'부(−)'}의 영향)`).join(', ')+'. 영향력은 β 절대값이 클수록 큽니다.':'유의한 독립변수가 없습니다.')+
+      (Math.max(...vif)>10?'<br>VIF가 10을 넘는 변수가 있어 다중공선성이 의심됩니다.':'')+(m.dw<1.5||m.dw>2.5?'<br>Durbin-Watson이 2에서 멀어 잔차의 자기상관을 확인해 보세요.':''));},
+
+logit(){const dv=$('#lg-dv').value,ev=$('#lg-ev').value,ivs=checked('#lg-ivs').filter(v=>v!==dv),lv=levels(dv);
+  if(lv.length!==2)return err(`종속변수는 값이 2개(예: 예/아니오)여야 합니다. 지금은 ${lv.length}개입니다.`);
+  if(!ivs.length)return err('독립변수를 하나 이상 고르세요.');
+  const yc=col(dv).values,xs=ivs.map(n=>col(n).values.map(num)),y=[],X=[];
+  for(let i=0;i<DATA.n;i++){if(yc[i]==='')continue;const r=xs.map(c=>c[i]);if(r.every(isFinite)){y.push(yc[i]===ev?1:0);X.push([1,...r]);}}
+  const n=y.length,k=ivs.length+1,n1=sum(y);if(n<k+5)return err('결측 없는 사례 수가 너무 적습니다.');
+  if(n1===0||n1===n)return err('두 값이 모두 있어야 분석할 수 있습니다.');
+  const prob=b=>X.map(r=>1/(1+Math.exp(-r.reduce((s,v,j)=>s+v*b[j],0))));
+  let b=Array(k).fill(0),cov,it=0;
+  for(;it<100;it++){const pr=prob(b),g=Array(k).fill(0),H=Array.from({length:k},()=>Array(k).fill(0));
+    X.forEach((r,i)=>{const w=pr[i]*(1-pr[i]),e=y[i]-pr[i];for(let a=0;a<k;a++){g[a]+=r[a]*e;for(let c=0;c<k;c++)H[a][c]+=w*r[a]*r[c];}});
+    cov=inv(H);const d=cov.map(row=>row.reduce((s,v,j)=>s+v*g[j],0));b=b.map((v,j)=>v+d[j]);if(Math.max(...d.map(Math.abs))<1e-9)break;}
+  const pr=prob(b),ll=sum(y.map((v,i)=>Math.log(Math.max(v?pr[i]:1-pr[i],1e-300)))),p0=n1/n,ll0=n1*Math.log(p0)+(n-n1)*Math.log(1-p0);
+  const chi=2*(ll-ll0),df=ivs.length,pm=pChi(chi,df),cs=1-Math.exp(2*(ll0-ll)/n),nk=cs/(1-Math.exp(2*ll0/n));
+  const se=b.map((_,j)=>Math.sqrt(cov[j][j])),W=b.map((v,j)=>(v/se[j])**2),pw=W.map(w=>pChi(w,1));
+  let tp=0,tn=0,fp_=0,fn=0;pr.forEach((q,i)=>{const h=q>=.5?1:0;if(h&&y[i])tp++;else if(!h&&!y[i])tn++;else if(h)fp_++;else fn++;});
+  const other=lv.find(v=>v!==ev),names=['(상수)',...ivs];
+  const coef=names.map((nm,j)=>[esc(nm),f(b[j]),f(se[j]),f(W[j]),1,sigP(pw[j]),f(Math.exp(b[j])),j?`${f(Math.exp(b[j]-1.96*se[j]))} ~ ${f(Math.exp(b[j]+1.96*se[j]))}`:'']);
+  const sig=ivs.map((v,j)=>({v,or:Math.exp(b[j+1]),p:pw[j+1]})).filter(o=>o.p<0.05);
+  return `<h3>모형 적합도</h3>`+table(['N','−2LL','모형 χ²','자유도','p','Cox & Snell R²','Nagelkerke R²'],[[n,f(-2*ll),f(chi),df,sigP(pm),f(cs),f(nk)]])+
+    `<h3>분류표 (기준 확률 .5)</h3>`+table(['실제 \\ 예측',esc(other),esc(ev),'정확도(%)'],[[esc(other),tn,fp_,f(tn/(tn+fp_)*100,1)],[esc(ev),fn,tp,f(tp/(tp+fn)*100,1)],['<b>전체</b>','','',`<b>${f((tp+tn)/n*100,1)}</b>`]])+
+    `<h3>회귀계수</h3>`+table(['','B','표준오차','Wald','자유도','p','Exp(B)','Exp(B) 95% CI'],coef)+sigNote+
+    note(`'${esc(ev)}'일 확률을 예측하는 모형은 χ²(${df}) = ${f(chi,2)}, ${pEq(pm)}로 ${sigWord(pm)}. Nagelkerke R² = ${f(nk,3)}, 전체 분류 정확도는 ${f((tp+tn)/n*100,1)}%입니다. `+
+      (sig.length?sig.map(o=>`${esc(o.v)}가 1 증가하면 '${esc(ev)}'일 오즈가 ${f(o.or,2)}배${o.or>=1?` (${f((o.or-1)*100,0)}% 증가)`:` (${f((1-o.or)*100,0)}% 감소)`}`).join(', ')+'.':'유의한 독립변수가 없습니다.')+
+      (it>=99||b.some(v=>Math.abs(v)>15)?'<br>계수가 수렴하지 않았거나 매우 큽니다. 완전분리 여부를 확인하세요.':''));},
+
+ipa(){const items=[...document.querySelectorAll('#ipa-rows .ipa-row')].map((r,k)=>({name:r.querySelector('.ipa-name').value.trim()||`속성${k+1}`,I:r.querySelector('.ipa-i').value,P:r.querySelector('.ipa-p').value})).filter(o=>o.I&&o.P);
+  if(items.length<2)return err('속성을 2개 이상 넣어 주세요.');
+  for(const o of items){const rows=complete([o.I,o.P]);if(rows.length<3)return err(`'${esc(o.name)}'의 응답이 너무 적습니다.`);
+    const iv=rows.map(r=>r[0]),pv=rows.map(r=>r[1]),d=pv.map((v,i)=>v-iv[i]),s=sd(d);
+    Object.assign(o,{n:rows.length,i:mean(iv),p:mean(pv),gap:mean(d),t:s?mean(d)/(s/Math.sqrt(rows.length)):0});o.pt=s?pT(o.t,o.n-1):1;}
+  const gi=mean(items.map(o=>o.i)),gp=mean(items.map(o=>o.p));
+  const quad=o=>o.i>=gi?(o.p>=gp?'유지관리':'집중개선'):(o.p>=gp?'과잉투자':'저순위');
+  const W=600,H=420,L=56,R=20,T=20,B=50;let x0=Math.min(...items.map(o=>o.p)),x1=Math.max(...items.map(o=>o.p)),y0=Math.min(...items.map(o=>o.i)),y1=Math.max(...items.map(o=>o.i));
+  const px=Math.max((x1-x0)*.25,.2),py=Math.max((y1-y0)*.25,.2);x0-=px;x1+=px;y0-=py;y1+=py;
+  const ax=axes(W,H,L,R,T,B,x0,x1,y0,y1,'성과 (Performance)','중요도 (Importance)'),cx=ax.sx(gp),cy=ax.sy(gi);
+  let svg=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="IPA 매트릭스">`+
+    `<rect x="${L}" y="${T}" width="${cx-L}" height="${cy-T}" style="fill:var(--sun-soft)"/>`+ax.g+
+    `<line x1="${cx}" y1="${T}" x2="${cx}" y2="${H-B}" style="stroke:var(--muted);stroke-dasharray:4 4"/><line x1="${L}" y1="${cy}" x2="${W-R}" y2="${cy}" style="stroke:var(--muted);stroke-dasharray:4 4"/>`+
+    `<text x="${L+8}" y="${T+16}">A 집중개선</text><text x="${W-R-8}" y="${T+16}" text-anchor="end">B 유지관리</text><text x="${L+8}" y="${H-B-8}">C 저순위</text><text x="${W-R-8}" y="${H-B-8}" text-anchor="end">D 과잉투자</text>`;
+  for(const o of items){const x=ax.sx(o.p),y=ax.sy(o.i);svg+=`<circle cx="${x}" cy="${y}" r="6" style="fill:var(--lav-deep)"/><text class="lbl" x="${x+9}" y="${y-8}">${esc(o.name)}</text>`;}
+  svg+='</svg>';
+  const order={'집중개선':0,'유지관리':1,'저순위':2,'과잉투자':3};
+  const rows=items.map(o=>[esc(o.name),o.n,f(o.i),f(o.p),f(o.gap),f(o.t),sigP(o.pt),quad(o)]);
+  const by=q=>items.filter(o=>quad(o)===q).map(o=>esc(o.name)).join(', ')||'없음';
+  return `<h3>IPA 매트릭스</h3><p class="legend">가로선·세로선은 전체 평균 (중요도 ${f(gi,2)}, 성과 ${f(gp,2)})</p>`+svg+
+    `<h3>속성별 중요도 · 성과</h3>`+table(['속성','N','중요도 평균','성과 평균','차이 (성과−중요도)','t','p','사분면'],rows.sort((a,b)=>order[a[7]]-order[b[7]]))+sigNote+
+    note(`<b>A 집중개선</b> (중요하지만 성과 낮음, 가장 먼저 개선): ${by('집중개선')}<br><b>B 유지관리</b> (중요하고 성과 높음): ${by('유지관리')}<br><b>C 저순위</b> (덜 중요하고 성과 낮음): ${by('저순위')}<br><b>D 과잉투자</b> (덜 중요한데 성과 높음): ${by('과잉투자')}`);},
+
+mod(){const Y=$('#md-y').value,Xn=$('#md-x').value,Mn=$('#md-m').value;if(new Set([Y,Xn,Mn]).size<3)return err('Y, X, M을 서로 다른 변수로 고르세요.');
+  const mc=col(Mn);let code=num,lv=null;
+  if(!mc.num){lv=levels(Mn);if(lv.length!==2)return err('조절변수가 문자형이면 값이 2개여야 합니다. (예: 남/여)');code=v=>v===''?NaN:v===lv[1]?1:0;}
+  const yv=col(Y).values.map(num),xv=col(Xn).values.map(num),mv=mc.values.map(code),rows=[];
+  for(let i=0;i<DATA.n;i++)if(isFinite(yv[i])&&isFinite(xv[i])&&isFinite(mv[i]))rows.push([yv[i],xv[i],mv[i]]);
+  if(rows.length<10)return err('결측 없는 사례가 10개 이상 필요합니다.');
+  const center=$('#md-center').checked,mx=mean(rows.map(r=>r[1])),mmRaw=mean(rows.map(r=>r[2]));
+  const cx=center?mx:0,cm=center&&!lv?mmRaw:0;
+  const y=rows.map(r=>r[0]),x=rows.map(r=>r[1]-cx),m=rows.map(r=>r[2]-cm);
+  const m1=ols(y,x.map((v,i)=>[v,m[i]])),m2=ols(y,x.map((v,i)=>[v,m[i],v*m[i]]));
+  const dR2=m2.R2-m1.R2,Fc=dR2/((1-m2.R2)/m2.dfe),pc=pF(Fc,1,m2.dfe),[b0,b1,b2,b3]=m2.b,V=m2.cov;
+  const mm=mean(m),sdm=sd(m);
+  const lvls=lv?[[`${esc(Mn)} = ${esc(lv[0])}`,0],[`${esc(Mn)} = ${esc(lv[1])}`,1]]:[['M − 1SD (낮음)',mm-sdm],['M 평균',mm],['M + 1SD (높음)',mm+sdm]];
+  const slopes=lvls.map(([lab,w])=>{const s=b1+b3*w,se=Math.sqrt(V[1][1]+w*w*V[3][3]+2*w*V[1][3]),t=s/se;return {lab,w,s,se,t,p:pT(t,m2.dfe)};});
+  const xm=mean(x),xs=sd(x),xa=xm-xs,xb=xm+xs,pred=(xx,w)=>b0+b1*xx+b2*w+b3*xx*w;
+  const ys=slopes.flatMap(o=>[pred(xa,o.w),pred(xb,o.w)]);let y0=Math.min(...ys),y1=Math.max(...ys);const pad=Math.max((y1-y0)*.2,.1);y0-=pad;y1+=pad;
+  const W=600,H=380,L=56,R=20,T=20,B=50,ax=axes(W,H,L,R,T,B,xa+cx,xb+cx,y0,y1,`${Xn} (X)`,`${Y} (Y)`);
+  const colors=['var(--lav-deep)','var(--sun)','var(--ink)'],dash=['','6 4',''];
+  let svg=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="단순기울기 그래프">`+ax.g;
+  slopes.forEach((o,k)=>{const c=lv?colors[k*2]:colors[k];svg+=`<line x1="${ax.sx(xa+cx)}" y1="${ax.sy(pred(xa,o.w))}" x2="${ax.sx(xb+cx)}" y2="${ax.sy(pred(xb,o.w))}" style="stroke:${c};stroke-width:3;stroke-linecap:round${dash[k]?';stroke-dasharray:'+dash[k]:''}"/>`;});
+  svg+='</svg>';
+  const legend='<p class="legend">'+slopes.map((o,k)=>`<span><i style="background:${lv?colors[k*2]:colors[k]}"></i>${o.lab}</span>`).join('')+'</p>';
+  const xName=esc(Xn)+(center?' (중심화)':''),mName=esc(Mn)+(lv?` (${esc(lv[1])}=1)`:center?' (중심화)':'');
+  return `<h3>모형 비교</h3>`+table(['','R²','ΔR²','F 변화량','자유도','p'],[['1단계: X + M',f(m1.R2),'','','',''],['2단계: + X × M',f(m2.R2),f(dR2),f(Fc),`1, ${m2.dfe}`,sigP(pc)]])+
+    `<h3>회귀계수 (2단계)</h3>`+table(['','B','표준오차','t','p'],[['(상수)',f(b0),f(m2.se[0]),f(m2.t[0]),sigP(m2.p[0])],[xName,f(b1),f(m2.se[1]),f(m2.t[1]),sigP(m2.p[1])],[mName,f(b2),f(m2.se[2]),f(m2.t[2]),sigP(m2.p[2])],[`<b>${esc(Xn)} × ${esc(Mn)}</b>`,f(b3),f(m2.se[3]),f(m2.t[3]),sigP(m2.p[3])]])+
+    `<h3>단순기울기 (조절변수 수준별 X의 효과)</h3>`+table(['조절변수 수준','기울기','표준오차','t','p'],slopes.map(o=>[o.lab,f(o.s),f(o.se),f(o.t),sigP(o.p)]))+
+    `<h3>상호작용 그래프</h3>`+legend+svg+sigNote+
+    note(`상호작용항(${esc(Xn)} × ${esc(Mn)})은 B = ${f(b3,3)}, ${pEq(m2.p[3])}로 ${sigWord(m2.p[3])}. `+
+      (m2.p[3]<0.05?`즉 ${esc(Mn)}이(가) ${esc(Xn)} → ${esc(Y)}의 관계를 <b>조절합니다</b> (ΔR² = ${f(dR2,3)}). `+slopes.map(o=>`${o.lab}에서 기울기 ${f(o.s,2)} (${fp(o.p)==='&lt;.001'?'p&lt;.001':'p='+fp(o.p)})`).join(', ')+'.':`즉 ${esc(Mn)}의 조절효과는 확인되지 않았습니다.`));}
+});
+
 // ---------- 이벤트 ----------
-$('#nav').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;
+document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;
   document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active',t===b));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+b.dataset.p));
   if(window.innerWidth<=900)$('#result').scrollIntoView({behavior:'smooth',block:'start'});});
 $('#tt-g').addEventListener('change',fillLevels);
+$('#lg-dv').addEventListener('change',fillEvent);
+$('#ipa-add').addEventListener('click',()=>{if(DATA)ipaRow();});
+$('#ipa-rows').addEventListener('click',e=>{const x=e.target.closest('.x');if(x)x.parentElement.remove();});
 $('#apply').addEventListener('click',()=>{try{setData(build(parseText($('#raw').value)));}catch(e){$('#summary').innerHTML=err(e.message);}});
 $('#sample').addEventListener('click',()=>{$('#raw').value=sample();$('#apply').click();});
 $('#file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;
