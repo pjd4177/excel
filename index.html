@@ -69,6 +69,17 @@ button{cursor:pointer}
 .analysis{display:grid;grid-template-columns:330px 1fr;gap:24px;align-items:start}
 .menu{padding:24px 18px 14px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
 .nav-group{font-family:Jost,"Noto Sans KR",sans-serif;font-size:11px;letter-spacing:.2em;color:var(--muted);margin:14px 12px 4px}
+.checks-head{display:flex;align-items:center;gap:8px;margin-top:20px}
+.checks-head .sublabel{margin:0 auto 0 0}
+.mini{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--muted);cursor:pointer}
+.freq-block{border-top:1px solid var(--line);padding-top:4px;margin-top:12px}
+.freq-grid{display:grid;grid-template-columns:minmax(200px,1fr) minmax(260px,1.25fr);gap:24px;align-items:center}
+@media (max-width:700px){.freq-grid{grid-template-columns:1fr;gap:4px}}
+.all-freq td,.all-freq th{text-align:left}
+.all-freq td:nth-last-child(-n+2),.all-freq th:nth-last-child(-n+2){text-align:right}
+.all-freq td[rowspan]{vertical-align:top;color:var(--ink)}
+.all-freq tr.grp td{border-top:2px solid var(--lav)}
+.all-freq tr.sub td{color:var(--muted);font-size:13px}
 .menu-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 10px}
 .menu-head h3{font-weight:400;font-size:20px;margin:0;color:var(--ink)}
 .nav{display:flex;flex-direction:column}
@@ -198,7 +209,13 @@ footer div:last-child{text-align:right}
         <button class="nav-item" data-p="reg"><span class="idx">08</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 19 20 6"/><circle cx="7" cy="15" r="1.4"/><circle cx="10" cy="11" r="1.4"/><circle cx="14" cy="12" r="1.4"/><circle cx="17" cy="7" r="1.4"/></svg></span><span class="nt"><b>회귀분석</b><small>다중 선형회귀</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="logit"><span class="idx">09</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 19c8 0 6-14 18-14"/><path d="M3 21h18" opacity=".35"/></svg></span><span class="nt"><b>로지스틱 회귀분석</b><small>이항 결과 예측 · 오즈비</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="ipa"><span class="idx">10</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="16.5" cy="7.5" r="1.6"/><circle cx="7" cy="16" r="1.6"/></svg></span><span class="nt"><b>IPA 분석</b><small>중요도 · 성과 매트릭스</small></span><span class="chev">›</span></button>
-        <button class="nav-item" data-p="mod"><span class="idx">11</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 18 20 5M4 14l16 3"/></svg></span><span class="nt"><b>조절효과</b><small>Interaction · 단순기울기</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="med"><span class="idx">11</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="5" cy="17" r="2.2"/><circle cx="12" cy="6" r="2.2"/><circle cx="19" cy="17" r="2.2"/><path d="M6.3 15.2 10.7 8M13.3 8l4.4 7.2M7.4 17h9.2"/></svg></span><span class="nt"><b>매개효과</b><small>간접효과 · 부트스트랩</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="mod"><span class="idx">12</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 18 20 5M4 14l16 3"/></svg></span><span class="nt"><b>조절효과</b><small>Interaction · 단순기울기</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group">척도 검증</p>
+      <div class="nav">
+        <button class="nav-item" data-p="rel"><span class="idx">13</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nt"><b>신뢰도 분석</b><small>Cronbach's α</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="val"><span class="idx">14</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="2"/><rect x="14" y="4" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span><span class="nt"><b>타당도 분석</b><small>탐색적 요인분석 · KMO</small></span><span class="chev">›</span></button>
       </div>
       <p class="quote">“숫자가 가벼워지면, 결론은 선명해집니다.”</p>
     </aside>
@@ -207,8 +224,9 @@ footer div:last-child{text-align:right}
       <div class="panel active" id="p-freq">
         <span class="eyebrow">01 · Frequency</span>
         <h2>빈도분석</h2>
-        <p class="desc">한 변수의 값별 빈도와 비율을 봅니다.</p>
-        <div class="controls"><label class="f">변수<select id="freq-var" data-kind="any"></select></label></div>
+        <p class="desc">보고 싶은 변수를 체크하면 변수별 빈도표·막대그래프와 전체 빈도분석표를 한 번에 보여줍니다.</p>
+        <div class="checks-head"><span class="sublabel">변수 선택</span><button class="mini" data-all="#freq-vars">전체 선택</button><button class="mini" data-none="#freq-vars">전체 해제</button></div>
+        <div class="checks tight" id="freq-vars" data-kind="any"></div>
         <button class="pill primary run" data-run="freq">분석 실행</button>
         <div class="out" id="o-freq"></div>
       </div>
@@ -317,8 +335,21 @@ footer div:last-child{text-align:right}
         <div class="out" id="o-ipa"></div>
       </div>
 
+      <div class="panel" id="p-med">
+        <span class="eyebrow">11 · Mediation</span>
+        <h2>매개효과</h2>
+        <p class="desc">X가 Y에 주는 영향이 매개변수(M)를 거쳐 전달되는지 검정합니다. Baron &amp; Kenny 3단계, Sobel 검정, 부트스트랩(2,000회) 95% 신뢰구간을 함께 봅니다.</p>
+        <div class="controls">
+          <label class="f">독립변수 (X)<select id="me-x" data-kind="num"></select></label>
+          <label class="f">매개변수 (M)<select id="me-m" data-kind="num"></select></label>
+          <label class="f">종속변수 (Y)<select id="me-y" data-kind="num"></select></label>
+        </div>
+        <button class="pill primary run" data-run="med">분석 실행</button>
+        <div class="out" id="o-med"></div>
+      </div>
+
       <div class="panel" id="p-mod">
-        <span class="eyebrow">11 · Moderation · Interaction</span>
+        <span class="eyebrow">12 · Moderation · Interaction</span>
         <h2>조절효과</h2>
         <p class="desc">조절변수(M)에 따라 X가 Y에 미치는 영향이 달라지는지 상호작용항(X × M)으로 검정합니다. 조절변수는 숫자이거나 값이 2개인 문자 변수(예: 남/여)여야 합니다.</p>
         <div class="controls">
@@ -329,6 +360,30 @@ footer div:last-child{text-align:right}
         <label class="opt"><input type="checkbox" id="md-center" checked> 평균중심화 (다중공선성 줄이기, 권장)</label>
         <button class="pill primary run" data-run="mod">분석 실행</button>
         <div class="out" id="o-mod"></div>
+      </div>
+
+      <div class="panel" id="p-rel">
+        <span class="eyebrow">13 · Reliability</span>
+        <h2>신뢰도 분석</h2>
+        <p class="desc">같은 개념을 재는 문항들이 일관되게 응답되었는지 Cronbach's α로 확인합니다. 한 번에 한 요인(척도)의 문항만 선택하고, 역문항은 미리 역코딩해 주세요.</p>
+        <div class="checks-head"><span class="sublabel">문항 선택</span><button class="mini" data-all="#rel-items">전체 선택</button><button class="mini" data-none="#rel-items">전체 해제</button></div>
+        <div class="checks tight" id="rel-items" data-kind="num"></div>
+        <button class="pill primary run" data-run="rel">분석 실행</button>
+        <div class="out" id="o-rel"></div>
+      </div>
+
+      <div class="panel" id="p-val">
+        <span class="eyebrow">14 · Validity · Factor Analysis</span>
+        <h2>타당도 분석</h2>
+        <p class="desc">탐색적 요인분석(주성분 추출, 베리맥스 회전)으로 문항들이 의도한 요인으로 묶이는지(구성타당도) 확인합니다. KMO와 Bartlett 검정으로 요인분석이 적합한지도 봅니다.</p>
+        <div class="checks-head"><span class="sublabel">문항 선택</span><button class="mini" data-all="#val-items">전체 선택</button><button class="mini" data-none="#val-items">전체 해제</button></div>
+        <div class="checks tight" id="val-items" data-kind="num"></div>
+        <div class="controls">
+          <label class="f">요인 수<select id="va-nf"><option value="auto">자동 (고유값 1 이상)</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+          <label class="f">회전 방법<select id="va-rot"><option value="varimax">베리맥스 (직교)</option><option value="none">회전 없음</option></select></label>
+        </div>
+        <button class="pill primary run" data-run="val">분석 실행</button>
+        <div class="out" id="o-val"></div>
       </div>
     </div>
   </section>
@@ -412,14 +467,18 @@ function setData(d){
     const list=d.cols.filter(c=>s.dataset.kind==='any'||c.num);
     s.innerHTML=list.map(c=>`<option>${esc(c.name)}</option>`).join('');}
   for(const box of document.querySelectorAll('.checks[data-kind]'))
-    box.innerHTML=d.cols.filter(c=>c.num).map(c=>`<label><input type="checkbox" value="${esc(c.name)}">${esc(c.name)}</label>`).join('')||'<span class="desc">숫자 변수가 없습니다.</span>';
+    box.innerHTML=d.cols.filter(c=>box.dataset.kind==='any'||c.num).map(c=>`<label><input type="checkbox" value="${esc(c.name)}">${esc(c.name)}</label>`).join('')||'<span class="desc">숫자 변수가 없습니다.</span>';
   // 기본 선택을 보기 좋게
   const nums=d.cols.filter(c=>c.num).map(c=>c.name);
   const cats=d.cols.filter(c=>{const u=new Set(c.values.filter(v=>v!==''));return u.size>=2&&u.size<=10;}).map(c=>c.name);
-  const core=nums.filter(n=>!/^(번호|id|no|순번)$/i.test(n)&&!IPA_I.test(n)&&!IPA_P.test(n));
+  const isIpa=n=>IPA_I.test(n)||IPA_P.test(n),isItem=n=>/\D\d+$/.test(n)&&!isIpa(n);
+  const core=nums.filter(n=>!/^(번호|id|no|순번)$/i.test(n)&&!isIpa(n)&&!isItem(n));
   const two=cats.filter(n=>levels(n).length===2),twoText=two.filter(n=>!col(n).num);
   const pick=(id,v)=>{if(v)$(id).value=v;};
-  pick('#freq-var',cats[0]);pick('#tt-g',two[0]||cats[0]);pick('#an-g',cats.find(n=>levels(n).length>=3)||cats[0]);
+  setChecks('#freq-vars',cats.filter(n=>!isIpa(n)&&!isItem(n)).slice(0,4));
+  const scale=nums.filter(isItem),groups={};scale.forEach(n=>(groups[n.replace(/\d+$/,'')]??=[]).push(n));
+  setChecks('#rel-items',Object.values(groups).find(g=>g.length>=2)||[]);setChecks('#val-items',scale);
+  pick('#tt-g',two[0]||cats[0]);pick('#an-g',cats.find(n=>levels(n).length>=3)||cats[0]);
   pick('#tt-dv',nums.at(-1));pick('#an-dv',nums.at(-1));pick('#pr-pre',nums[nums.length>=2?nums.length-2:0]);pick('#pr-post',nums.at(-1));
   const pre=nums.find(n=>/사전|pre/i.test(n)),post=nums.find(n=>/사후|post/i.test(n));pick('#pr-pre',pre);pick('#pr-post',post);
   if(post){pick('#tt-dv',post);pick('#an-dv',post);}
@@ -430,6 +489,7 @@ function setData(d){
   pick('#lg-dv',twoText.at(-1)||two.at(-1));setChecks('#lg-ivs',core.filter(n=>n!==post&&n!==pre).slice(-2));
   const hrs=core.find(n=>/시간|time|hour/i.test(n));
   pick('#md-y',core.at(-1));pick('#md-x',hrs||core[0]);pick('#md-m',twoText[0]||core[1]);
+  pick('#me-x',hrs||core[0]);pick('#me-m',core.at(-1));pick('#me-y',post||core[1]);
   fillLevels();fillEvent();ipaInit();
   document.querySelectorAll('.out[id^="o-"]').forEach(o=>o.innerHTML='');}
 
@@ -446,26 +506,39 @@ function sample(){let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
   const norm=()=>Math.sqrt(-2*Math.log(rnd()||1e-9))*Math.cos(2*Math.PI*rnd());
   const items=['시설','강의','가격','접근성'],imp=[4.3,4.5,3.4,3.6],perf=[3.4,4.3,3.8,3.1];
   const lik=v=>Math.min(5,Math.max(1,Math.round(v)));
-  const L=[['번호','성별','학년','사전점수','사후점수','공부시간','만족도','재방문',...items.map(n=>'중요_'+n),...items.map(n=>'만족_'+n)].join('\t')];
+  const sv=['서비스1','서비스2','서비스3','서비스4'],ly=['충성1','충성2','충성3'];
+  const L=[['번호','성별','학년','사전점수','사후점수','공부시간','만족도','재방문',...items.map(n=>'중요_'+n),...items.map(n=>'만족_'+n),...sv,...ly].join('\t')];
   for(let i=1;i<=120;i++){const g=rnd()<.5?'남':'여',y=1+Math.floor(rnd()*3),pre=Math.round(60+y*3+norm()*8),
     hrs=Math.max(0,Math.round((5+norm()*2)*10)/10),post=Math.round(pre+4+hrs*0.8+(g==='여'?3:0)+norm()*5),
     sat=lik(3+(post-pre-10)/6+(hrs-5)*(g==='여'?0.4:0)+norm()*0.6),
     re=rnd()<1/(1+Math.exp(-(-5.5+1.3*sat+0.2*hrs)))?'예':'아니오';
-    L.push([i,g,y,pre,post,hrs,sat,re,...imp.map(m=>lik(m+norm()*0.7)),...perf.map(m=>lik(m+norm()*0.8))].join('\t'));}
+    const fa=norm(),fb=0.4*fa+0.9*norm();
+    L.push([i,g,y,pre,post,hrs,sat,re,...imp.map(m=>lik(m+norm()*0.7)),...perf.map(m=>lik(m+norm()*0.8)),
+      ...sv.map(()=>lik(3.5+0.85*fa+0.6*norm())),...ly.map(()=>lik(3.2+0.85*fb+0.6*norm()))].join('\t'));}
   return L.join('\n');}
 
 // ---------- 분석 ----------
 const RUN={
-freq(){const name=$('#freq-var').value,c=col(name),valid=c.values.filter(v=>v!==''),miss=c.values.length-valid.length;
-  const counts=new Map();for(const k of levels(name))counts.set(k,0);for(const v of valid)counts.set(v,counts.get(v)+1);
-  if(counts.size>50)return err(`값의 종류가 ${counts.size}개로 너무 많습니다. 범주형 변수를 고르세요.`);
-  const max=Math.max(...counts.values());let cum=0;
-  const rows=[...counts].map(([k,n])=>{cum+=n;return [esc(k),n,f(n/valid.length*100,1),f(cum/valid.length*100,1),`<div class="barcell"><div class="bar" style="width:${n/max*100}%"></div></div>`];});
-  rows.push(['<b>합계</b>',`<b>${valid.length}</b>`,'100.0','','']);
-  if(miss)rows.push(['결측',miss,'','','']);
-  const top=[...counts].sort((a,b)=>b[1]-a[1])[0];
-  return `<h3>${esc(name)} 빈도표</h3>`+table(['값','빈도','유효 퍼센트(%)','누적 퍼센트(%)',''],rows)+
-    note(`유효 응답 ${valid.length}개 중 가장 많은 값은 <b>${esc(top[0])}</b> (${top[1]}개, ${f(top[1]/valid.length*100,1)}%)입니다.`);},
+freq(){const names=[...document.querySelectorAll('#freq-vars input:checked')].map(i=>i.value);
+  if(!names.length)return err('변수를 하나 이상 체크하세요.');
+  const res=[],skip=[];
+  for(const name of names){const c=col(name),N=c.values.length,lv=levels(name);
+    if(lv.length>30){skip.push(`${esc(name)} (${lv.length}개 값)`);continue;}
+    const idx=new Map(lv.map((k,i)=>[k,i])),counts=lv.map(k=>[k,0]);let miss=0;
+    c.values.forEach(v=>{if(v==='')miss++;else counts[idx.get(v)][1]++;});res.push({name,N,miss,counts});}
+  if(!res.length)return err('값의 종류가 30개 이하인 변수를 골라 주세요.');
+  const pct=(n,N)=>f(n/N*100,1);
+  let html='<p class="legend">비율(%)은 전체 응답자 수(결측 포함)를 기준으로 계산합니다.</p>';
+  for(const r of res){const rows=r.counts.map(([k,n])=>[esc(k),n,pct(n,r.N)]);
+    if(r.miss)rows.push(['결측',r.miss,pct(r.miss,r.N)]);rows.push(['<b>합계</b>',`<b>${r.N}</b>`,'<b>100.0</b>']);
+    html+=`<div class="freq-block"><h3>${esc(r.name)}</h3><div class="freq-grid">${table(['값','빈도','비율(%)'],rows)}${barChart(r.counts,r.N)}</div></div>`;}
+  let body='';
+  for(const r of res){const list=[...r.counts.map(([k,n])=>[esc(k),n]),...(r.miss?[['결측',r.miss]]:[])];
+    list.forEach(([k,n],i)=>{body+=`<tr${i?'':' class="grp"'}>${i?'':`<td rowspan="${list.length+1}"><b>${esc(r.name)}</b></td>`}<td>${k}</td><td>${n}</td><td>${pct(n,r.N)}</td></tr>`;});
+    body+=`<tr class="sub"><td>합계</td><td>${r.N}</td><td>100.0</td></tr>`;}
+  html+=`<div class="freq-block"><h3>전체 빈도분석표</h3><div class="tbl"><table class="all-freq"><thead><tr><th>변수</th><th>값</th><th>빈도</th><th>비율(%)</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+  const modes=res.map(r=>{const t=[...r.counts].sort((a,b)=>b[1]-a[1])[0];return `${esc(r.name)}은(는) <b>${esc(t[0])}</b> (${t[1]}명, ${pct(t[1],r.N)}%)`;});
+  return html+note('가장 많은 응답: '+modes.join(', ')+'.'+(skip.length?`<br>값의 종류가 30개를 넘어 제외한 변수: ${skip.join(', ')}`:''));},
 
 desc(){const names=[...document.querySelectorAll('#desc-vars input:checked')].map(i=>i.value);
   if(!names.length)return err('변수를 하나 이상 선택하세요.');
@@ -701,7 +774,121 @@ mod(){const Y=$('#md-y').value,Xn=$('#md-x').value,Mn=$('#md-m').value;if(new Se
       (m2.p[3]<0.05?`즉 ${esc(Mn)}이(가) ${esc(Xn)} → ${esc(Y)}의 관계를 <b>조절합니다</b> (ΔR² = ${f(dR2,3)}). `+slopes.map(o=>`${o.lab}에서 기울기 ${f(o.s,2)} (${fp(o.p)==='&lt;.001'?'p&lt;.001':'p='+fp(o.p)})`).join(', ')+'.':`즉 ${esc(Mn)}의 조절효과는 확인되지 않았습니다.`));}
 });
 
+// ---------- 빈도 막대그래프 ----------
+function barChart(counts,N){const W=420,H=250,L=38,R=10,T=26,B=48,k=counts.length,max=Math.max(1,...counts.map(c=>c[1]));
+  const bw=(W-L-R)/k,gap=Math.min(bw*.3,22),w=bw-gap;let s=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="빈도 막대그래프">`;
+  for(let i=0;i<=4;i++){const y=H-B-(H-T-B)*i/4;s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" style="stroke:var(--line)"/><text x="${L-6}" y="${y+4}" text-anchor="end">${Math.round(max*i/4)}</text>`;}
+  counts.forEach(([lab,n],i)=>{const h=(H-T-B)*n/max,x=L+i*bw+gap/2,y=H-B-h,t=String(lab);
+    s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${Math.min(8,w/2,h/2)}" style="fill:${n===max?'var(--sun)':'var(--lav)'}"/>`+
+      `<text class="lbl" x="${x+w/2}" y="${y-7}" text-anchor="middle">${n}</text>`+
+      `<text x="${x+w/2}" y="${H-B+17}" text-anchor="middle">${esc(t.length>6?t.slice(0,6)+'…':t)}</text>`+
+      (k<=12?`<text x="${x+w/2}" y="${H-B+33}" text-anchor="middle" style="font-size:11px">${f(n/N*100,1)}%</text>`:'');});
+  return s+'</svg>';}
+
+// ---------- 고유값 분해, 베리맥스 ----------
+function eigSym(A){const n=A.length,a=A.map(r=>[...r]),V=a.map((_,i)=>a.map((_,j)=>i===j?1:0));
+  for(let sweep=0;sweep<100;sweep++){let off=0;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)off+=a[i][j]**2;if(off<1e-22)break;
+    for(let p=0;p<n;p++)for(let q=p+1;q<n;q++){if(Math.abs(a[p][q])<1e-15)continue;
+      const th=(a[q][q]-a[p][p])/(2*a[p][q]),t=(th>=0?1:-1)/(Math.abs(th)+Math.sqrt(th*th+1)),c=1/Math.sqrt(t*t+1),s=t*c;
+      for(let k=0;k<n;k++){const x=a[k][p],y=a[k][q];a[k][p]=c*x-s*y;a[k][q]=s*x+c*y;}
+      for(let k=0;k<n;k++){const x=a[p][k],y=a[q][k];a[p][k]=c*x-s*y;a[q][k]=s*x+c*y;}
+      for(let k=0;k<n;k++){const x=V[k][p],y=V[k][q];V[k][p]=c*x-s*y;V[k][q]=s*x+c*y;}}}
+  const idx=a.map((_,i)=>i).sort((i,j)=>a[j][j]-a[i][i]);return {values:idx.map(i=>a[i][i]),vectors:idx.map(i=>V.map(r=>r[i]))};}
+function varimax(Lm){const p=Lm.length,m=Lm[0].length;if(m<2)return Lm.map(r=>[...r]);
+  const h=Lm.map(r=>Math.sqrt(sum(r.map(v=>v*v)))||1),X=Lm.map((r,i)=>r.map(v=>v/h[i]));
+  for(let it=0;it<500;it++){let rot=false;
+    for(let j=0;j<m-1;j++)for(let k=j+1;k<m;k++){let A=0,B=0,C=0,D=0;
+      for(let i=0;i<p;i++){const u=X[i][j]**2-X[i][k]**2,v=2*X[i][j]*X[i][k];A+=u;B+=v;C+=u*u-v*v;D+=2*u*v;}
+      const phi=Math.atan2(D-2*A*B/p,C-(A*A-B*B)/p)/4;
+      if(Math.abs(phi)>1e-8){rot=true;const c=Math.cos(phi),s=Math.sin(phi);for(let i=0;i<p;i++){const x=X[i][j],y=X[i][k];X[i][j]=c*x+s*y;X[i][k]=-s*x+c*y;}}}
+    if(!rot)break;}
+  return X.map((r,i)=>r.map(v=>v*h[i]));}
+
+Object.assign(RUN,{
+med(){const Xn=$('#me-x').value,Mn=$('#me-m').value,Yn=$('#me-y').value;if(new Set([Xn,Mn,Yn]).size<3)return err('X, M, Y를 서로 다른 변수로 고르세요.');
+  const rows=complete([Xn,Mn,Yn]),n=rows.length;if(n<10)return err('결측 없는 사례가 10개 이상 필요합니다.');
+  const x=rows.map(r=>r[0]),m=rows.map(r=>r[1]),y=rows.map(r=>r[2]);
+  const s1=ols(y,x.map(v=>[v])),s2=ols(m,x.map(v=>[v])),s3=ols(y,x.map((v,i)=>[v,m[i]]));
+  const c=s1.b[1],a=s2.b[1],b=s3.b[2],cp=s3.b[1],sa=s2.se[1],sb=s3.se[2],ab=a*b;
+  const sob=Math.sqrt(b*b*sa*sa+a*a*sb*sb),z=ab/sob,pz=pChi(z*z,1);
+  let seed=20261102;const rnd=()=>(seed=seed*16807%2147483647)/2147483647,boots=[];
+  for(let r=0;r<2000;r++){const ix=Array.from({length:n},()=>Math.floor(rnd()*n));let mx=0,mm=0,my=0;
+    for(const k of ix){mx+=x[k];mm+=m[k];my+=y[k];}mx/=n;mm/=n;my/=n;let xx=0,m2=0,xm=0,xy=0,mY=0;
+    for(const k of ix){const dx=x[k]-mx,dm=m[k]-mm,dy=y[k]-my;xx+=dx*dx;m2+=dm*dm;xm+=dx*dm;xy+=dx*dy;mY+=dm*dy;}
+    const det=xx*m2-xm*xm;if(xx&&det)boots.push(xm/xx*(xx*mY-xm*xy)/det);}
+  boots.sort((p,q)=>p-q);const lo=quantile(boots,.025),hi=quantile(boots,.975),sig=lo>0||hi<0;
+  const type=!sig?'매개효과 없음':s3.p[1]<0.05?'부분매개':'완전매개';
+  const W=600,H=230,bw=136,bh=46,P={X:[24,160],M:[232,22],Y:[440,160]};
+  const box=(k,lab)=>`<rect x="${P[k][0]}" y="${P[k][1]}" width="${bw}" height="${bh}" rx="14" style="fill:var(--lav-soft);stroke:var(--lav)"/><text class="lbl" x="${P[k][0]+bw/2}" y="${P[k][1]+bh/2+5}" text-anchor="middle">${esc(lab.length>9?lab.slice(0,9)+'…':lab)}</text>`;
+  const arr=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:var(--muted);stroke-width:1.6" marker-end="url(#ah)"/>`;
+  const lab=(v,p)=>`${f(v,3)}${star(p)}`;
+  const svg=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="매개모형 경로도"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--muted)"/></marker></defs>`+
+    arr(P.X[0]+bw*.6,P.X[1],P.M[0]+12,P.M[1]+bh+2)+arr(P.M[0]+bw-12,P.M[1]+bh+2,P.Y[0]+bw*.4,P.Y[1]-2)+arr(P.X[0]+bw,P.X[1]+bh/2,P.Y[0]-2,P.Y[1]+bh/2)+
+    `<text class="lbl" x="${(P.X[0]+bw*.6+P.M[0])/2-18}" y="${(P.X[1]+P.M[1]+bh)/2}" text-anchor="end">a = ${lab(a,s2.p[1])}</text>`+
+    `<text class="lbl" x="${(P.M[0]+bw+P.Y[0]+bw*.4)/2+18}" y="${(P.Y[1]+P.M[1]+bh)/2}">b = ${lab(b,s3.p[2])}</text>`+
+    `<text class="lbl" x="${W/2}" y="${P.X[1]+bh/2-8}" text-anchor="middle">c′ = ${lab(cp,s3.p[1])}</text>`+
+    `<text x="${W/2}" y="${P.X[1]+bh/2+22}" text-anchor="middle">(총효과 c = ${lab(c,s1.p[1])})</text>`+
+    box('X',Xn)+box('M',Mn)+box('Y',Yn)+'</svg>';
+  const pr=(lab2,o,j)=>[lab2,f(o.b[j]),f(o.se[j]),f(o.t[j]),sigP(o.p[j])];
+  return `<h3>매개모형 경로도</h3>`+svg+
+    `<h3>경로계수</h3>`+table(['경로','B','표준오차','t','p'],[pr(`a: ${esc(Xn)} → ${esc(Mn)}`,s2,1),pr(`b: ${esc(Mn)} → ${esc(Yn)} (X 통제)`,s3,2),pr(`c: ${esc(Xn)} → ${esc(Yn)} (총효과)`,s1,1),pr(`c′: ${esc(Xn)} → ${esc(Yn)} (직접효과)`,s3,1)])+
+    `<h3>단계별 모형</h3>`+table(['단계','모형','R²','F','p'],[['1단계','X → Y',f(s1.R2),f(s1.F),sigP(s1.pF)],['2단계','X → M',f(s2.R2),f(s2.F),sigP(s2.pF)],['3단계','X + M → Y',f(s3.R2),f(s3.F),sigP(s3.pF)]])+
+    `<h3>간접효과 검정</h3>`+table(['','간접효과 (a×b)','Sobel 표준오차','z','p','Boot 95% CI'],[[`${esc(Xn)} → ${esc(Mn)} → ${esc(Yn)}`,f(ab),f(sob),f(z),sigP(pz),`<span class="${sig?'sig':''}">${f(lo)} ~ ${f(hi)}</span>`]])+sigNote+
+    note(`간접효과는 ${f(ab,3)}이며, 부트스트랩 95% 신뢰구간 [${f(lo,3)}, ${f(hi,3)}]이 0을 ${sig?'포함하지 않으므로 <b>매개효과가 유의합니다</b>':'포함하므로 매개효과가 유의하지 않습니다'} (Sobel z = ${f(z,2)}, ${pEq(pz)}). `+
+      `결론: <b>${type}</b>`+(sig?` — ${esc(Mn)}을(를) 통제한 뒤 ${esc(Xn)}의 직접효과(c′)가 ${s3.p[1]<0.05?'여전히 유의하므로 일부만':'유의하지 않으므로 대부분'} ${esc(Mn)}을(를) 거쳐 전달됩니다.`+(c&&ab/c>0&&ab/c<=1?` 총효과 중 간접효과 비율은 ${f(ab/c*100,1)}%입니다.`:Math.sign(cp)!==Math.sign(ab)&&s3.p[1]<0.05?' 직접효과와 간접효과의 방향이 반대(비일관 매개)이니 해석에 주의하세요.':''):'.'));},
+
+rel(){const items=[...document.querySelectorAll('#rel-items input:checked')].map(i=>i.value);if(items.length<2)return err('문항을 2개 이상 선택하세요.');
+  const rows=complete(items),n=rows.length,k=items.length;if(n<3)return err('결측 없는 응답이 너무 적습니다.');
+  const cs=items.map((_,j)=>rows.map(r=>r[j])),tot=rows.map(r=>sum(r));
+  const alphaOf=c=>{const t=c[0].map((_,i)=>sum(c.map(v=>v[i])));return c.length/(c.length-1)*(1-sum(c.map(variance))/variance(t));};
+  const alpha=alphaOf(cs);let rs=0,cnt=0;for(let i=0;i<k;i++)for(let j=i+1;j<k;j++){rs+=pearson(cs[i],cs[j]);cnt++;}
+  const rbar=rs/cnt,sa=k*rbar/(1+(k-1)*rbar);
+  const st=items.map((nm,j)=>{const rest=tot.map((t,i)=>t-cs[j][i]);return {nm,m:mean(cs[j]),s:sd(cs[j]),sm:mean(rest),sv:variance(rest),r:pearson(cs[j],rest),ad:k>2?alphaOf(cs.filter((_,q)=>q!==j)):NaN};});
+  const lvl=alpha>=.9?'매우 높음':alpha>=.8?'높음':alpha>=.7?'양호 (수용 가능)':alpha>=.6?'다소 낮음 (탐색적 연구에서는 수용)':'낮음';
+  const weak=st.filter(o=>o.r<.3||o.ad>alpha+.005);
+  return `<h3>신뢰도 통계</h3>`+table(['N (결측 제외)','문항 수','Cronbach α','표준화 문항 α','평균 문항간 상관'],[[n,k,`<b>${f(alpha)}</b>`,f(sa),f(rbar)]])+
+    `<h3>문항-총점 통계</h3>`+table(['문항','평균','표준편차','삭제 시 척도 평균','삭제 시 척도 분산','수정된 문항-총점 상관','삭제 시 α'],
+      st.map(o=>[esc(o.nm),f(o.m),f(o.s),f(o.sm),f(o.sv),`<span class="${o.r<.3?'sig':''}">${f(o.r)}</span>`,`<span class="${o.ad>alpha+.005?'sig':''}">${f(o.ad)}</span>`]))+
+    note(`${k}개 문항의 Cronbach α = <b>${f(alpha,3)}</b>로 신뢰도는 <b>${lvl}</b>입니다. 일반적으로 .70 이상이면 수용 가능, .80 이상이면 좋은 수준으로 봅니다.`+
+      (weak.length?`<br>검토가 필요한 문항: ${weak.map(o=>`${esc(o.nm)} (${o.r<.3?'문항-총점 상관 < .30':''}${o.r<.3&&o.ad>alpha+.005?', ':''}${o.ad>alpha+.005?`삭제 시 α가 ${f(o.ad,3)}로 높아짐`:''})`).join(', ')}`:'<br>모든 문항의 문항-총점 상관이 .30 이상이고, 어떤 문항을 빼도 α가 높아지지 않습니다.'));},
+
+val(){const items=[...document.querySelectorAll('#val-items input:checked')].map(i=>i.value);if(items.length<3)return err('문항을 3개 이상 선택하세요.');
+  const rows=complete(items),n=rows.length,p=items.length;if(n<p+3)return err('결측 없는 응답 수가 문항 수보다 충분히 많아야 합니다.');
+  const cs=items.map((_,j)=>rows.map(r=>r[j]));const flat=items.filter((_,j)=>!sd(cs[j]));if(flat.length)return err(`응답이 모두 같은 문항이 있습니다: ${flat.map(esc).join(', ')}`);
+  const R=cs.map(a=>cs.map(b=>pearson(a,b))),{values,vectors}=eigSym(R),det=values.reduce((s,v)=>s*v,1);
+  let kmo=NaN;try{const Ri=inv(R);let r2=0,a2=0;for(let i=0;i<p;i++)for(let j=0;j<p;j++)if(i!==j){r2+=R[i][j]**2;a2+=(Ri[i][j]/Math.sqrt(Ri[i][i]*Ri[j][j]))**2;}kmo=r2/(r2+a2);}catch(e){}
+  const bchi=-(n-1-(2*p+5)/6)*Math.log(Math.max(det,1e-300)),bdf=p*(p-1)/2,bp=pChi(bchi,bdf);
+  const sel=$('#va-nf').value,rot=$('#va-rot').value==='varimax';let nf=Math.max(1,sel==='auto'?values.filter(v=>v>=1).length:Math.min(+sel,p));
+  let Lm=items.map((_,i)=>vectors.slice(0,nf).map((v,j)=>v[i]*Math.sqrt(Math.max(values[j],0))));if(rot)Lm=varimax(Lm);
+  let ss=Array.from({length:nf},(_,j)=>sum(Lm.map(r=>r[j]**2)));const ord=ss.map((_,j)=>j).sort((a,b)=>ss[b]-ss[a]);
+  Lm=Lm.map(r=>ord.map(j=>r[j]));ss=ord.map(j=>ss[j]);for(let j=0;j<nf;j++)if(sum(Lm.map(r=>r[j]))<0)Lm.forEach(r=>r[j]=-r[j]);
+  const comm=Lm.map(r=>sum(r.map(v=>v*v))),prim=Lm.map(r=>r.reduce((b,v,j)=>Math.abs(v)>Math.abs(r[b])?j:b,0));
+  const order=items.map((_,i)=>i).sort((a,b)=>prim[a]-prim[b]||Math.abs(Lm[b][prim[b]])-Math.abs(Lm[a][prim[a]]));
+  let cum=0,cumR=0;const varRows=values.map((v,j)=>{cum+=v/p*100;const r=[`${j+1}`,f(v),f(v/p*100,2),f(cum,2)];
+    if(j<nf){cumR+=ss[j]/p*100;r.push(f(ss[j]),f(ss[j]/p*100,2),f(cumR,2));}else r.push('','','');return r;});
+  const ld=order.map(i=>[esc(items[i]),...Lm[i].map((v,j)=>`<span class="${Math.abs(v)>=.5&&j===prim[i]?'sig':''}">${f(v)}</span>`),f(comm[i])]);
+  const sx=v=>v,ax=axes(460,240,46,16,16,44,1,p,0,Math.max(...values)*1.1,'요인 번호','고유값');
+  let scree=`<svg class="plot" style="max-width:460px" viewBox="0 0 460 240" role="img" aria-label="스크리 도표">`+ax.g+
+    `<line x1="46" x2="444" y1="${ax.sy(1)}" y2="${ax.sy(1)}" style="stroke:var(--sun);stroke-dasharray:5 4"/>`+
+    `<polyline points="${values.map((v,j)=>`${ax.sx(j+1)},${ax.sy(v)}`).join(' ')}" style="fill:none;stroke:var(--lav-deep);stroke-width:2"/>`+
+    values.map((v,j)=>`<circle cx="${ax.sx(j+1)}" cy="${ax.sy(v)}" r="4" style="fill:${j<nf?'var(--lav-deep)':'var(--card)'};stroke:var(--lav-deep)"/>`).join('')+'</svg>';
+  const kl=kmo>=.9?'훌륭함':kmo>=.8?'좋음':kmo>=.7?'보통':kmo>=.6?'평범함':kmo>=.5?'미흡함':'부적합';
+  const groups=Array.from({length:nf},(_,j)=>order.filter(i=>prim[i]===j).map(i=>esc(items[i])));
+  const bad=items.map((nm,i)=>{const s=Lm[i].map(Math.abs).sort((a,b)=>b-a),why=[];if(s[0]<.5)why.push('적재량 < .50');if(s[1]>=.4)why.push('교차적재 ≥ .40');if(comm[i]<.4)why.push('공통성 < .40');return why.length?`${esc(nm)} (${why.join(', ')})`:null;}).filter(Boolean);
+  return `<h3>KMO와 Bartlett 검정</h3>`+table(['N','KMO 표본적합도','Bartlett χ²','자유도','p'],[[n,f(kmo),f(bchi,2),bdf,sigP(bp)]])+
+    `<h3>설명된 총분산</h3>`+table(['요인','고유값','분산 %','누적 %',`${rot?'회전':'추출'} 제곱합`,'분산 %','누적 %'],varRows)+
+    `<h3>스크리 도표</h3><p class="legend">노란 점선은 고유값 1 기준선</p>`+scree+
+    `<h3>${rot?'회전된 ':''}요인 적재량</h3>`+table(['문항',...groups.map((_,j)=>`요인 ${j+1}`),'공통성'],ld)+
+    '<p class="legend">강조 표시: 해당 문항이 속한 요인의 적재량 ≥ .50</p>'+
+    note(`KMO = ${f(kmo,3)} (${kl}), Bartlett χ²(${bdf}) = ${f(bchi,2)}, ${pEq(bp)}로 ${kmo>=.6&&bp<.05?'요인분석에 <b>적합한</b> 자료입니다':'요인분석 적합성이 낮으니 해석에 주의하세요'}. `+
+      `${nf}개 요인이 전체 분산의 ${f(cumR,1)}%를 설명합니다.<br>`+groups.map((g,j)=>`<b>요인 ${j+1}</b>: ${g.join(', ')||'없음'}`).join('<br>')+
+      (bad.length?`<br>검토가 필요한 문항: ${bad.join(', ')}`:'<br>모든 문항이 한 요인에 .50 이상으로 적재되고 교차적재가 없어 구성타당도가 양호합니다.')+
+      '<br>요인별로 묶인 문항은 [신뢰도 분석]에서 Cronbach α도 확인해 보세요.');}
+});
+
 // ---------- 이벤트 ----------
+document.addEventListener('click',e=>{const a=e.target.closest('[data-all],[data-none]');if(!a)return;
+  document.querySelectorAll((a.dataset.all||a.dataset.none)+' input').forEach(i=>i.checked=!!a.dataset.all);});
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;
   document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active',t===b));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+b.dataset.p));
