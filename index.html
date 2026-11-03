@@ -1122,7 +1122,7 @@ logit(){const dv=$('#lg-dv').value,ev=$('#lg-ev').value,ivs=checked('#lg-ivs').f
     `<h3>분류표 (기준 확률 .5)</h3>`+table(['실제 \\ 예측',esc(other),esc(ev),'정확도(%)'],[[esc(other),tn,fp_,f(tn/(tn+fp_)*100,1)],[esc(ev),fn,tp,f(tp/(tp+fn)*100,1)],['<b>전체</b>','','',`<b>${f((tp+tn)/n*100,1)}</b>`]])+
     `<h3>회귀계수</h3>`+table(['','B','표준오차','Wald','자유도','p','Exp(B)','Exp(B) 95% CI'],coef)+sigNote+
     note(`'${esc(ev)}'일 확률을 예측하는 모형은 χ²(${df}) = ${f(chi,2)}, ${pEq(pm)}로 ${sigWord(pm)}. Nagelkerke R² = ${f(nk,3)}, 전체 분류 정확도는 ${f((tp+tn)/n*100,1)}%입니다. `+
-      (sig.length?sig.map(o=>`${esc(o.v)}가 1 증가하면 '${esc(ev)}'일 오즈가 ${f(o.or,2)}배${o.or>=1?` (${f((o.or-1)*100,0)}% 증가)`:` (${f((1-o.or)*100,0)}% 감소)`}`).join(', ')+'.':'유의한 독립변수가 없습니다.')+
+      (sig.length?sig.map(o=>`${esc(o.v)}이(가) 1 증가하면 '${esc(ev)}'일 오즈가 ${f(o.or,2)}배${o.or>=1?` (${f((o.or-1)*100,0)}% 증가)`:` (${f((1-o.or)*100,0)}% 감소)`}`).join(', ')+'.':'유의한 독립변수가 없습니다.')+
       (it>=99||b.some(v=>Math.abs(v)>15)?'<br>계수가 수렴하지 않았거나 매우 큽니다. 완전분리 여부를 확인하세요.':''));},
 
 ipa(){const items=[...document.querySelectorAll('#ipa-rows .ipa-row')].map((r,k)=>({name:r.querySelector('.ipa-name').value.trim()||`속성${k+1}`,I:r.querySelector('.ipa-i').value,P:r.querySelector('.ipa-p').value})).filter(o=>o.I&&o.P);
@@ -1437,7 +1437,7 @@ surv(){const Tn=$('#sv-t').value,En=$('#sv-e').value,ev=$('#sv-ev').value,Gn=$('
   const medTxt=kms.map((km,k)=>`${esc(gl[k])} ${km.median==null?'(50% 미도달)':f(km.median,1)}`).join(', ');
   return html+sigNote+note(`'${esc(ev)}'을(를) 사건으로 보고 분석했습니다. 중앙생존기간: ${medTxt}. `+
     (lr?`로그순위 검정 χ²(${lr.df}) = ${f(lr.chi,2)}, ${pEq(lr.p)}로 집단 간 생존곡선 차이는 ${sigWord(lr.p)}. `:'')+
-    (cx?cx.sig.filter(o=>o.p<0.05).map(o=>`${esc(o.v)}가 1 증가하면 사건 위험이 ${f(o.hr,2)}배${o.hr>=1?` (${f((o.hr-1)*100,0)}% 증가)`:` (${f((1-o.hr)*100,0)}% 감소)`}`).join(', ')+(cx.sig.some(o=>o.p<0.05)?'.':'Cox 회귀에서 유의한 공변량은 없습니다.'):''));}
+    (cx?cx.sig.filter(o=>o.p<0.05).map(o=>`${esc(o.v)}이(가) 1 증가하면 사건 위험이 ${f(o.hr,2)}배${o.hr>=1?` (${f((o.hr-1)*100,0)}% 증가)`:` (${f((1-o.hr)*100,0)}% 감소)`}`).join(', ')+(cx.sig.some(o=>o.p<0.05)?'.':'Cox 회귀에서 유의한 공변량은 없습니다.'):''));}
 });
 function dotp(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s;}
 
@@ -1661,5 +1661,6 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(
 <script src="examples.js"></script>
 <script src="experiment.js"></script>
 <script src="qual.js"></script>
+<script src="results.js"></script>
 </body>
 </html>

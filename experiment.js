@@ -271,7 +271,7 @@ const RUN={
    meanBars([{label:esc(y),...ci(a)}],{ref:mu,yl:'평균'})+
    note(`처치 후 ${esc(y)} 평균은 ${f(m,2)}점으로 기준값 ${mu}점보다 ${f(Math.abs(m-mu),2)}점 ${m>=mu?'높고':'낮고'}, 이 차이는 ${sigWord(p)} (${tStr(t,df,p)}, d = ${f(d,2)}, ${effD(d)} 효과).`)+
    note(`⚠ 일회 사례연구는 처치 전 상태도, 비교집단도 없어 이 점수가 <b>프로그램 때문</b>이라고 말할 수 없습니다. 탐색적 결과로만 보고하고, 가능하면 사전 측정이나 비교집단을 추가하세요.`)+
-   W(`프로그램 참여 후 대상자 ${n}명의 ${esc(y)}는 평균 ${f(m,2)}점(SD = ${f(s,2)})으로, 기준값 ${mu}점과 ${sig(p)?'유의한 차이가 있었다':'유의한 차이가 없었다'}(${tStr(t,df,p)}).`);},
+   W(`프로그램 참여 후 대상자 ${n}명의 ${esc(jo(y,"은","는"))} 평균 ${f(m,2)}점(SD = ${f(s,2)})으로, 기준값 ${mu}점과 ${sig(p)?'유의한 차이가 있었다':'유의한 차이가 없었다'}(${tStr(t,df,p)}).`);},
  onegroup(){const pre=V('onegroup','pre'),post=V('onegroup','post');if(pre===post)throw new Error('사전과 사후에 서로 다른 변수를 고르세요.');
   const R=rowsOf([pre,post]),x=R.map(r=>r[0]),y=R.map(r=>r[1]),P=pairT(x,y),up=R.filter(r=>r[1]>r[0]).length;
   return `<h3>사전·사후 기술통계</h3>`+table(['시점','N','평균','표준편차'],[[esc(pre)+' (사전)',P.n,f(mean(x),2),f(sd(x),2)],[esc(post)+' (사후)',P.n,f(mean(y),2),f(sd(y),2)]])+
@@ -279,7 +279,7 @@ const RUN={
    `<div class="freq-grid">${meanBars([{label:'사전',...ci(x)},{label:'사후',...ci(y)}],{yl:'평균'})}${spaghetti(x,y,'점수')}</div>`+
    note(`${P.n}명 중 ${up}명(${Math.round(up/P.n*100)}%)의 점수가 올랐습니다. 평균은 ${f(mean(x),2)}점에서 ${f(mean(y),2)}점으로 ${f(Math.abs(P.md),2)}점 ${P.md>=0?'높아졌고':'낮아졌고'}, 이 변화는 ${sigWord(P.p)} (${tStr(P.t,P.df,P.p)}, dz = ${f(P.dz,2)}, ${effD(P.dz)} 효과).`)+
    note(`⚠ 통제집단이 없어 같은 기간의 다른 사건(역사), 자연스러운 변화(성숙), 사전검사 경험(검사), 극단 점수의 평균 회귀가 함께 섞여 있을 수 있습니다.`)+
-   W(`프로그램 참여 전 ${esc(pre)}는 평균 ${f(mean(x),2)}점(SD = ${f(sd(x),2)}), 참여 후 ${f(mean(y),2)}점(SD = ${f(sd(y),2)})으로, 사전·사후 차이는 ${sig(P.p)?'통계적으로 유의하였다':'통계적으로 유의하지 않았다'}(${tStr(P.t,P.df,P.p)}, d<sub>z</sub> = ${f(P.dz,2)}).`);},
+   W(`프로그램 참여 전 ${esc(jo(pre,"은","는"))} 평균 ${f(mean(x),2)}점(SD = ${f(sd(x),2)}), 참여 후 ${f(mean(y),2)}점(SD = ${f(sd(y),2)})으로, 사전·사후 차이는 ${sig(P.p)?'통계적으로 유의하였다':'통계적으로 유의하지 않았다'}(${tStr(P.t,P.df,P.p)}, d<sub>z</sub> = ${f(P.dz,2)}).`);},
 };
 function groupCompare(k,random){const y=V(k,'y'),{E,Cn,le,lc}=twoGroups(k,[y]),a=E.map(r=>r[0]),b=Cn.map(r=>r[0]),T=indT(a,b);
   return `<h3>집단별 기술통계</h3>`+table(['집단','N','평균','표준편차','95% CI'],[[gl(le,'실험'),T.n1,f(T.m1,2),f(T.s1,2),`[${f(ci(a).lo,2)}, ${f(ci(a).hi,2)}]`],[gl(lc,random?'통제':'비교'),T.n2,f(T.m2,2),f(T.s2,2),`[${f(ci(b).lo,2)}, ${f(ci(b).hi,2)}]`]])+
@@ -289,7 +289,7 @@ function groupCompare(k,random){const y=V(k,'y'),{E,Cn,le,lc}=twoGroups(k,[y]),a
    note(`실험집단${/실험/.test(le)?'':`(${esc(le)})`} 평균 ${f(T.m1,2)}점, ${random?'통제':'비교'}집단${/통제|비교/.test(lc)?'':`(${esc(lc)})`} 평균 ${f(T.m2,2)}점으로 차이는 ${f(T.diff,2)}점이며, 이 차이는 ${sigWord(T.p)} (${tStr(T.t,T.df,T.p)}, d = ${f(T.d,2)}, ${effD(T.d)} 효과).`)+
    (random?note(`무작위 배정으로 두 집단이 처음에 같다고 볼 수 있으므로, 사후 차이를 처치 효과로 해석할 수 있습니다. 다만 무작위 배정이 실제로 잘 되었는지 성별·연령 등 일반적 특성의 동질성을 함께 제시하세요.`)
      :note(`⚠ 무작위 배정이 아니고 사전 측정도 없어, 이 차이가 처치 때문인지 두 집단이 원래 달랐기 때문인지(선발) 구분할 수 없습니다.`))+
-   W(`사후 ${esc(y)}는 실험집단 ${f(T.m1,2)}점(SD = ${f(T.s1,2)}), ${random?'통제':'비교'}집단 ${f(T.m2,2)}점(SD = ${f(T.s2,2)})으로, 두 집단 간 차이는 ${sig(T.p)?'통계적으로 유의하였다':'통계적으로 유의하지 않았다'}(${tStr(T.t,T.df,T.p)}, d = ${f(T.d,2)}).`);}
+   W(`사후 ${esc(jo(y,"은","는"))} 실험집단 ${f(T.m1,2)}점(SD = ${f(T.s1,2)}), ${random?'통제':'비교'}집단 ${f(T.m2,2)}점(SD = ${f(T.s2,2)})으로, 두 집단 간 차이는 ${sig(T.p)?'통계적으로 유의하였다':'통계적으로 유의하지 않았다'}(${tStr(T.t,T.df,T.p)}, d = ${f(T.d,2)}).`);}
 RUN.static=()=>groupCompare('static',false);
 RUN.postonly=()=>groupCompare('postonly',true);
 
@@ -322,7 +322,7 @@ function prePost(k,random){
      `집단 × 시점 상호작용도 ${sigWord(pI)} (${fStr(Fi,1,TG.dfS,pI)}).`)+
    (random?note(`무작위 배정 설계이므로 사전 점수를 공변량으로 넣은 ANCOVA가 가장 검정력이 높은 분석입니다. 집단 × 시점 상호작용(반복측정 분산분석)도 같은 결론을 보여 줍니다.`)
      :note(`⚠ 무작위 배정이 아닌 기존 집단이므로 ${okPre?'사전 점수가 비슷하더라도 ':'사전 점수가 달라 '}선발과 성숙의 상호작용(두 집단이 원래 다른 속도로 변화)을 배제할 수 없습니다. ANCOVA로 사전 차이를 통제하고, 성별·연령 등 다른 특성도 비교해 제시하세요.`))+
-   W(`${random?'무작위 배정된 ':''}실험집단과 통제집단의 사전 ${esc(pre)}는 ${okPre?'유의한 차이가 없었다':'유의한 차이가 있었다'}(${tStr(T0.t,T0.df,T0.p)}). 사전 점수를 공변량으로 통제한 공분산분석 결과, 실험집단의 조정된 사후 점수(${f(adjE,2)}점)는 통제집단(${f(adjC,2)}점)보다 ${adjE>=adjC?'높았으며':'낮았으며'}, 이 차이는 ${sig(pg)?'통계적으로 유의하였다':'통계적으로 유의하지 않았다'}(${fStr(Fg,1,full.dfe,pg)}, 부분 η² = ${f(eta,3)}).`);
+   W(`${random?'무작위 배정된 ':''}실험집단과 통제집단의 사전 ${esc(jo(pre,"은","는"))} ${okPre?'유의한 차이가 없었다':'유의한 차이가 있었다'}(${tStr(T0.t,T0.df,T0.p)}). 사전 점수를 공변량으로 통제한 공분산분석 결과, 실험집단의 조정된 사후 점수(${f(adjE,2)}점)는 통제집단(${f(adjC,2)}점)보다 ${adjE>=adjC?'높았으며':'낮았으며'}, 이 차이는 ${sig(pg)?'통계적으로 유의하였다':'통계적으로 유의하지 않았다'}(${fStr(Fg,1,full.dfe,pg)}, 부분 η² = ${f(eta,3)}).`);
 }
 RUN.noneq=()=>prePost('noneq',false);
 RUN.prepost=()=>prePost('prepost',true);
