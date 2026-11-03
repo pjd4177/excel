@@ -7,7 +7,7 @@ const store={get(k){try{return localStorage.getItem(k);}catch{return null;}},set
 // ================= 터미널 전환 =================
 const TERM={stat:['기본 분석','01 – 08'],adv:['고급 분석','09 – 19']};
 function setTerm(t){
-  if(!['stat','adv','qual'].includes(t))t='stat';
+  if(!['stat','exp','adv','qual'].includes(t))t='stat';
   document.body.dataset.term=t;
   $$('.term').forEach(b=>b.classList.toggle('active',b.dataset.term===t));
   if(TERM[t]){
@@ -18,7 +18,7 @@ function setTerm(t){
       $$('.nav-item[data-p]').forEach(n=>n.classList.toggle('active',n===first));
       $$('#stat-analysis .panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+first.dataset.p));
     }
-  }else qRender();
+  }else if(t==='qual')qRender();else if(window.expRender)window.expRender();
   store.set('jd-term',t);
   if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);
 }
