@@ -36,8 +36,14 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--sky);font-family
 @keyframes bob{50%{transform:translateX(-50%) translateY(-5px)}}
 #joy{left:22px;bottom:22px;width:128px;height:128px;border-radius:50%;background:rgba(255,248,232,.55);border:3px solid rgba(232,214,168,.9);display:none;touch-action:none}
 #joy i{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:var(--btn);box-shadow:0 4px 0 rgba(120,90,40,.25)}
-@media (max-width:560px){#title{max-width:calc(100vw - 150px);padding:8px 12px}#title h1{font-size:22px}#title p{font-size:12px}}
-@media (pointer:coarse){#joy{display:block}#map{bottom:auto;top:auto;right:12px;bottom:12px}#map canvas{width:96px;height:96px}#title p.keys{display:none}}
+@media (max-width:560px),(max-height:500px){#title{max-width:calc(100vw - 130px);padding:6px 12px;top:10px;left:10px;border-width:2px;border-radius:16px}#title h1{font-size:19px}#title p{display:none}
+  #top-right{top:10px;right:10px}.btn{padding:6px 12px;font-size:13px;border-width:2px}
+  #prompt{font-size:15px;padding:9px 16px;bottom:150px;border-width:2px}#prompt kbd{display:none}
+  #room{padding:10px}#room .card{padding:14px 14px 12px;border-radius:18px}#room .room-head .badge{width:44px;height:44px;font-size:22px;border-radius:14px}#room .room-head h2{font-size:20px}#room .room-head small{font-size:12.5px}
+  #room .talk{font-size:14px;padding:10px 12px;margin:12px 0 10px}#room .opts{font-size:13.5px}#room #room-hint{display:none}
+  #room .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#room .item{padding:9px 10px;border-width:2px;border-radius:14px;gap:8px}#room .item .no{width:24px;height:24px;font-size:12px}#room .item b{font-size:14.5px}#room .item small{font-size:11.5px}
+  #room .room-foot .btn{flex:1;justify-content:center}}
+@media (pointer:coarse){#joy{display:block;width:108px;height:108px;left:16px;bottom:16px}#joy i{width:44px;height:44px;margin:-22px 0 0 -22px}#map{right:10px;bottom:12px;padding:4px}#map canvas{width:84px;height:84px}#title p.keys{display:none}}
 /* 건물 안 */
 #room{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(60,45,25,.35);padding:16px}
 #room.open{display:flex}
@@ -266,7 +272,7 @@ jEl.addEventListener('pointerdown',e=>{jId=e.pointerId;jEl.setPointerCapture(jId
 jEl.addEventListener('pointermove',e=>{if(e.pointerId===jId)moveJoy(e);});
 const endJoy=()=>{jId=null;joy={x:0,y:0};jK.style.transform='';};jEl.addEventListener('pointerup',endJoy);jEl.addEventListener('pointercancel',endJoy);
 function moveJoy(e){const r=jEl.getBoundingClientRect();let x=(e.clientX-r.left-r.width/2)/(r.width/2),y=(e.clientY-r.top-r.height/2)/(r.height/2);const l=Math.hypot(x,y);if(l>1){x/=l;y/=l;}
-  joy={x,y};target=null;jK.style.transform=`translate(${x*36}px,${y*36}px)`;}
+  joy={x,y};target=null;jK.style.transform=`translate(${x*30}px,${y*30}px)`;}
 const prompt=document.getElementById('prompt');
 prompt.addEventListener('click',()=>near&&openRoom(near));prompt.addEventListener('keydown',e=>{if(e.key==='Enter'&&near)openRoom(near);});
 
@@ -321,8 +327,12 @@ function step(){const dt=Math.min(.05,clock.getDelta());
   camPos.copy(hero.position).add(camOff);camera.position.lerp(camPos,1-Math.pow(.001,dt));look.copy(hero.position).add(new THREE.Vector3(0,1.5,0));camera.lookAt(look);
   water.position.y=.95+Math.sin(clock.elapsedTime*2)*.03;sea.material.color.setHSL(.53,.58,.70+Math.sin(clock.elapsedTime*.6)*.015);
   renderer.render(scene,camera);drawMini();requestAnimationFrame(step);}
-function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;
-  camOff.set(0,innerWidth<700?38:30,innerWidth<700?32:25);camera.updateProjectionMatrix();}
+// 화면 비율에 맞춰 카메라 거리 조절: 세로로 긴 휴대폰 화면에서도 섬이 넉넉히 보이도록
+function resize(){const a=innerWidth/innerHeight;renderer.setSize(innerWidth,innerHeight,false);camera.aspect=a;
+  const portrait=a<1;camera.fov=portrait?46:34;
+  // 데스크톱에서 보이는 가로 폭(약 36)의 75% 이상이 보이게 거리 배율 계산
+  const hTan=Math.tan(camera.fov*Math.PI/360)*a,want=a>=1.2?36:28,k=Math.max(1,Math.min(2.4,want/(2*39*hTan)))*(innerHeight<500?1.3:1);
+  camOff.set(0,30*k,25*k);scene.fog.near=60+40*(k-1);scene.fog.far=150+90*(k-1);camera.far=300+150*(k-1);camera.updateProjectionMatrix();}
 addEventListener('resize',resize);resize();
 camera.position.copy(hero.position).add(camOff);
 window.__island={hero,B,openRoom};
