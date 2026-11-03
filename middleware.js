@@ -1,11 +1,11 @@
 // Just Do it Statistics — 사이트 비밀번호 (Vercel Routing Middleware)
-// 모든 페이지·파일 요청 전에 Vercel 서버에서 실행됩니다. 비밀번호가 맞으면 30일 동안 기억합니다.
+// 모든 페이지·파일 요청 전에 Vercel 서버에서 실행됩니다. 비밀번호가 맞으면 브라우저를 닫을 때까지만 기억합니다.
 //
 // 비밀번호 바꾸는 법: Vercel → 프로젝트 → Settings → Environment Variables 에
 //   SITE_PASSWORD = 원하는 비밀번호   를 추가하고 다시 배포하면 그 값이 우선합니다.
 // 설정이 없으면 아래 해시(기본 비밀번호의 SHA-256 값)로 확인합니다. 코드에는 비밀번호 자체를 적지 않습니다.
 const DEFAULT_HASH = '70cc44b2ed0ef98bdc8399a76b0de69294e7e6f81996d7e08519985d386a8a42';
-const COOKIE = 'jd_gate';
+const COOKIE = 'jd_gate2';   // 이름을 바꿔 예전(30일) 기억을 모두 무효화
 const LOGIN = '/__login';
 
 export const config = { matcher: '/:path*' };
@@ -18,7 +18,7 @@ async function expectedHash() {
   const pw = (typeof process !== 'undefined' && process.env && process.env.SITE_PASSWORD) || '';
   return pw ? sha256(pw) : DEFAULT_HASH;
 }
-const tokenFor = hash => sha256('jd-gate-v1:' + hash);
+const tokenFor = hash => sha256('jd-gate-v2:' + hash);
 function readCookie(req, name) {
   const m = (req.headers.get('cookie') || '').match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
   return m ? decodeURIComponent(m[1]) : '';
@@ -60,7 +60,7 @@ export default async function middleware(request) {
       if (pw && (await sha256(pw)) === hash) {
         return new Response(null, { status: 303, headers: {
           location: next, 'cache-control': 'no-store',
-          'set-cookie': `${COOKIE}=${token}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax`,
+          'set-cookie': `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax`   // 만료일 없음 = 브라우저를 닫으면 사라짐,
         } });
       }
       return html(page(next, '비밀번호가 맞지 않습니다. 다시 입력해 주세요.'), 401);
