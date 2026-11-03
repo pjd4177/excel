@@ -48,7 +48,7 @@ html,body{margin:0;height:100%;height:100dvh;width:100%;overflow:hidden;backgrou
   #room .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#room .item{padding:9px 10px;border-width:2px;border-radius:14px;gap:8px}#room .item .no{width:24px;height:24px;font-size:12px}#room .item b{font-size:14.5px}#room .item small{font-size:11.5px}
   #room .room-foot .btn{flex:1;justify-content:center}}
 @media (max-width:560px),(max-height:500px){#zoom{right:10px;top:auto;bottom:118px;transform:none;flex-direction:column}#zoom button{width:38px;height:38px;font-size:21px}}
-@media (max-width:560px),(max-height:500px){#score{top:52px;left:10px;font-size:13px;padding:4px 10px;border-width:2px}#chat{padding:10px}#chat .card{padding:14px}#chat .grid{grid-template-columns:1fr}}
+@media (max-width:560px),(max-height:500px){#score{top:52px;right:10px;font-size:13px;padding:4px 10px;border-width:2px}#chat{padding:10px}#chat .card{padding:14px}#chat .grid{grid-template-columns:1fr}}
 @media (pointer:coarse){#joy{display:block;width:108px;height:108px;left:16px;bottom:16px}#joy i{width:44px;height:44px;margin:-22px 0 0 -22px}#map{right:10px;bottom:12px;padding:4px}#map canvas{width:84px;height:84px}#title p.keys{display:none}}
 /* 건물 안 */
 #chat{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(60,45,25,.35);padding:16px}
@@ -56,7 +56,7 @@ html,body{margin:0;height:100%;height:100dvh;width:100%;overflow:hidden;backgrou
 #chat .card{width:min(720px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:22px 22px 18px;animation:pop .25s ease-out}
 #chat .item.ok{border-color:#3f9a55;background:#e3f6df}#chat .item.no{border-color:#e0897f;opacity:.75}
 #chat .item[disabled]{cursor:default;transform:none}
-#score{top:84px;left:14px;padding:6px 14px;font-size:15px;border-radius:999px}
+#score{top:66px;right:14px;padding:6px 14px;font-size:15px;border-radius:999px}
 #room{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(60,45,25,.35);padding:16px}
 #room.open{display:flex}
 #room .card{width:min(860px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:22px 22px 18px;background:var(--paper);animation:pop .25s ease-out}
@@ -241,16 +241,18 @@ function building(b){
 B.forEach(building);
 
 // ================= 나무 · 꽃 · 돌 =================
+const trees=[];
 const trunkG=new THREE.CylinderGeometry(.32,.45,2,8),leafG=new THREE.SphereGeometry(1.6,16,12),leafM=[M(0x5fb85b),M(0x6cc366),M(0x52a84f)],trunkM=M(0x9b6b43);
 const fruitM=M(0xff7a5c),flowerC=[0xff8fb1,0xfff07a,0xffffff,0xb59cff,0xff9f5a],stoneM=M(0xc9c3b6);
 const blocked=(x,z,r)=>Math.hypot(x,z)<14+r||colliders.some(c=>Math.hypot(x-c.x,z-c.z)<c.r+r+1.5)||B.some(b=>{const t=(x*b.x+z*b.z)/(BR*BR);if(t<0||t>1)return false;return Math.hypot(x-b.x*t,z-b.z*t)<3.2+r;});
 let seed=7;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
 for(let i=0,n=0;i<600&&n<62;i++){const a=rnd()*Math.PI*2,r=14+rnd()*(R-17),x=Math.cos(a)*r,z=Math.sin(a)*r;if(blocked(x,z,1.6))continue;n++;
   const t=new THREE.Group();t.position.set(x,0,z);const s=.85+rnd()*.5;t.scale.setScalar(s);
-  t.add(mesh(trunkG,trunkM,{y:1}));const L=leafM[n%3];
+  const L=leafM[n%3].clone(),TM=trunkM.clone();L.transparent=TM.transparent=true;t.userData.mats=[L,TM];t.add(mesh(trunkG,TM,{y:1}));
   t.add(mesh(leafG,L,{y:3}));t.add(mesh(leafG,L,{x:.9,y:2.5,z:.3}));t.add(mesh(leafG,L,{x:-.8,y:2.6,z:-.4}));const top=mesh(leafG,L,{y:3.9});top.scale.setScalar(.75);t.add(top);
-  if(n%4===0)for(let k=0;k<3;k++)t.add(mesh(new THREE.SphereGeometry(.28,10,8),fruitM,{x:Math.cos(k*2.1)*1.5,y:2.6+k*.35,z:Math.sin(k*2.1)*1.5}));
-  scene.add(t);colliders.push({x,z,r:1.1*s});}
+  const FM=fruitM.clone();FM.transparent=true;t.userData.mats.push(FM);
+  if(n%4===0)for(let k=0;k<3;k++)t.add(mesh(new THREE.SphereGeometry(.28,10,8),FM,{x:Math.cos(k*2.1)*1.5,y:2.6+k*.35,z:Math.sin(k*2.1)*1.5}));
+  scene.add(t);trees.push(t);colliders.push({x,z,r:1.1*s});}
 for(let i=0,n=0;i<900&&n<150;i++){const a=rnd()*Math.PI*2,r=10+rnd()*(R-12),x=Math.cos(a)*r,z=Math.sin(a)*r;if(blocked(x,z,.3))continue;n++;
   const c=flowerC[n%flowerC.length],f=new THREE.Group();f.position.set(x,0,z);
   f.add(mesh(new THREE.CylinderGeometry(.04,.04,.5,5),M(0x4f9a46),{y:.25,cast:false}));
@@ -278,7 +280,7 @@ head.add(mesh(new THREE.SphereGeometry(.09,8,6),dark,{y:-.08,z:1.1,cast:false}))
 const feet=[-1,1].map(s=>{const f=mesh(new THREE.SphereGeometry(.32,12,10),furD,{x:.42*s,y:.25,z:.05});f.scale.set(1,.7,1.25);hero.add(f);return f;});
 const arms=[-1,1].map(s=>{const a=mesh(new THREE.SphereGeometry(.26,12,10),fur,{x:.95*s,y:1.15,z:.05});a.scale.set(.9,1.3,.9);hero.add(a);return a;});
 const shadowBlob=mesh(new THREE.CircleGeometry(1,24),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.14}),{y:.03,cast:false});shadowBlob.rotation.x=-Math.PI/2;scene.add(shadowBlob);
-hero.position.set(0,0,7);hero.rotation.y=Math.PI;
+hero.position.set(0,0,7);hero.rotation.y=Math.PI;hero.scale.setScalar(1.2);
 
 
 // ================= 마을 주민 (통계를 물어보는 사람들) =================
@@ -332,9 +334,10 @@ function villager(p){
   if(p.kind==='squirrel'){const t=mesh(new THREE.SphereGeometry(.7,16,12),fm,{y:1.7,z:-1});t.scale.set(.7,1.5,.7);t.rotation.x=-.4;g.add(t);}
   if(p.kind==='cat'){const t=mesh(new THREE.CylinderGeometry(.09,.12,1.3,8),fm,{y:.9,z:-.8});t.rotation.x=.9;g.add(t);}
   const ft=[-1,1].map(s=>{const f=mesh(new THREE.SphereGeometry(.3,12,10),fd,{x:.4*s,y:.24,z:.05});f.scale.set(1,.7,1.25);g.add(f);return f;});
-  const tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tagTex(p.name,'rgba(255,248,232,.92)'),depthWrite:false}));tag.scale.set(3.2,.9,1);tag.position.y=4.25;g.add(tag);
+  const tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tagTex(p.name,'rgba(255,248,232,.92)'),depthWrite:false}));tag.scale.set(3.6,1.02,1);tag.position.y=4.3;g.add(tag);
   const bub=new THREE.Sprite(new THREE.SpriteMaterial({map:bubbleTex('?'),depthWrite:false}));bub.scale.set(1.15,1.15,1);bub.position.y=5.35;g.add(bub);
-  scene.add(g);return {g,bd,hd,ft,bub,bubT:'?'};}
+  tag.material.depthTest=false;bub.material.depthTest=false;tag.renderOrder=bub.renderOrder=10;
+  g.scale.setScalar(1.2);scene.add(g);return {g,bd,hd,ft,bub,bubT:'?'};}
 const npcs=PEOPLE.map((p,i)=>{const v=villager(p),a=i/PEOPLE.length*Math.PI*2+.6;v.g.position.set(Math.cos(a)*15,0,Math.sin(a)*15);
   const blob=mesh(new THREE.CircleGeometry(.9,20),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.13}),{y:.03,cast:false});blob.rotation.x=-Math.PI/2;scene.add(blob);
   return Object.assign(v,{p,blob,goal:null,wait:1+i,walk:0});});
@@ -461,6 +464,12 @@ function step(){const dt=Math.min(.05,clock.getDelta());
   shadowBlob.position.set(hero.position.x,.03,hero.position.z);
   // 가까운 문
   stepNpcs(dt,clock.elapsedTime);
+  // 캐릭터(나 · 주민)를 가리는 나무는 반투명하게
+  const who=[hero.position,...npcs.map(n=>n.g.position)],cx=camera.position.x,cz=camera.position.z;
+  for(const t of trees){let hide=false;const tx=t.position.x,tz=t.position.z;
+    for(const q of who){const vx=cx-q.x,vz=cz-q.z,L2=vx*vx+vz*vz,u=((tx-q.x)*vx+(tz-q.z)*vz)/L2;if(u<=0||u>.45)continue;
+      const px=q.x+vx*u,pz=q.z+vz*u;if(Math.hypot(tx-px,tz-pz)<3.4*t.scale.x){hide=true;break;}}
+    const want=hide?.28:1;for(const m of t.userData.mats){m.opacity+=(want-m.opacity)*Math.min(1,dt*8);m.depthWrite=m.opacity>.95;}}
   let best=null,bd=3.2;for(const b of B){const d=Math.hypot(hero.position.x-b.door.x,hero.position.z-b.door.z);if(d<bd){bd=d;best=b;}}
   let bn=null,bnd=3.4;for(const n of npcs){const d=Math.hypot(hero.position.x-n.g.position.x,hero.position.z-n.g.position.z);if(d<bnd){bnd=d;bn=n;}}
   const key=(bn?'n'+bn.p.name:'')+(best?'b'+best.k:'')+(busy?'x':'');
