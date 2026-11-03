@@ -20,13 +20,13 @@ function statSample(){const {r,n,s5,pick}=tools(51);
 function advSample(){const {r,n,s5,lik}=tools(61);
   const area=['보수','승진','동료관계','업무량','근무환경'],imp=[4.5,3.9,4.2,4.3,3.8],perf=[2.7,2.9,4.1,2.6,3.6];
   const H=['번호','성별','기관유형','이직의도','경력','근속기간','이직',
-    ...[1,2,3,4].map(k=>'효능'+k),...[1,2,3,4].map(k=>'스트레스'+k),...[1,2,3,4].map(k=>'소진'+k),...[1,2,3,4].map(k=>'만족'+k),
+    ...[1,2,3].map(k=>'효능'+k),...[1,2,3].map(k=>'스트레스'+k),...[1,2,3].map(k=>'소진'+k),...[1,2,3].map(k=>'만족'+k),
     ...area.map(a=>'중요_'+a),...area.map(a=>'만족_'+a),'자기효능감','직무스트레스','슈퍼비전','조직지원','소진','직무만족'];
   const L=[H];
   for(let i=1;i<=200;i++){const sex=r()<.72?'여':'남',type=r()<.55?'이용시설':'생활시설',yrs=Math.max(1,Math.round(7+n()*4.5));
     const fe=n(),fs=n()+(type==='생활시설'?.35:0),sup=n(),org=n();
     const fb=.55*fs-.32*fe-.2*sup+.75*n(),fj=.3*fe-.22*fs+.22*sup+.25*org-.32*fb+.32*fs*sup+.65*n();
-    const items=(f,m)=>[0,1,2,3].map(()=>lik(m+.8*f+.55*n()));
+    const items=(f,m)=>[0,1,2].map(()=>lik(m+.8*f+.55*n()));
     const ie=items(fe,3.6),is=items(fs,3.2),ib=items(fb,2.8),ij=items(fj,3.3),avg=a=>Math.round(a.reduce((x,y)=>x+y,0)/a.length*100)/100;
     const jobsat=avg(ij),burn=avg(ib);
     const rate=.011*Math.exp(-.9*(jobsat-3.3)+.4*(burn-2.8)+(type==='생활시설'?.45:0)),T=-Math.log(r()||1e-9)/rate,C=6+r()*54,dur=Math.round(Math.min(T,C));
