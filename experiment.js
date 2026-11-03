@@ -25,7 +25,7 @@ const fStr=(F,d1,d2,p)=>`<i>F</i>(${d1}, ${d2}) = ${f(F,2)}, ${pEq(p)}`;
 const ms=a=>a.length?`${f(mean(a),2)} (${f(a.length>1?sd(a):NaN,2)})`:'-';
 const sig=p=>p<0.05;
 const jo=(w,a,b)=>{const c=String(w).charCodeAt(String(w).length-1);return w+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?a:b);};
-const W=(s)=>`<h3>논문 결과 서술 예시</h3><div class="e-write">${s}</div>`;
+const W=(s)=>`<h3>결과 서술 (설명적 답변)</h3><div class="e-write">${s}</div>`;
 function sse(y,X){return X[0].length?ols(y,X).sse:sum(y.map(v=>(v-mean(y))**2));}
 
 // ================= 그래프 =================
