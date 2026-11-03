@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>박종두 엑셀통계</title>
+<title>Just Do it Statistics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -169,22 +169,150 @@ footer div:last-child{text-align:right}
   .data,.result{padding:20px}
   .card{border-radius:24px}
 }
+
+/* 터미널 탭 */
+:root{--q1:#7f7ed0;--q2:#d29a2c;--q3:#3f9c9e;--q4:#d0735b;--q5:#7e9f5a;--q6:#b8679a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--q1:#aeadf3;--q2:#f0c95e;--q3:#6cc6c4;--q4:#f09a83;--q5:#a9c985;--q6:#dc94c0}}
+:root[data-theme="dark"]{--q1:#aeadf3;--q2:#f0c95e;--q3:#6cc6c4;--q4:#f09a83;--q5:#a9c985;--q6:#dc94c0}
+.terms{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:8px;margin-bottom:24px;box-shadow:var(--shadow)}
+.term{display:flex;align-items:center;gap:12px;text-align:left;border:none;background:none;border-radius:20px;padding:12px 16px;min-width:0}
+.term b{display:block;font-weight:500;font-size:16px;color:var(--ink)}
+.term small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term>span:last-child{min-width:0}
+.t-ico{flex:none;width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--lav-soft);color:var(--ink)}
+.t-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.term:hover{background:var(--lav-soft)}
+.term.active{background:var(--btn)}
+.term.active b{color:var(--on-btn)}.term.active small{color:var(--on-btn);opacity:.75}
+.term.active .t-ico{background:var(--sun);color:#1e2350}
+body[data-term="stat"] .menu [data-term]:not([data-term="stat"]),body[data-term="adv"] .menu [data-term]:not([data-term="adv"]),body[data-term="dec"] .menu [data-term]:not([data-term="dec"]){display:none}
+body[data-term="qual"] #stat-data,body[data-term="qual"] #stat-analysis,body[data-term="exp"] #stat-data,body[data-term="exp"] #stat-analysis{display:none}
+body:not([data-term="exp"]) #exper{display:none}
+@media (max-width:1100px){.terms{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.terms{grid-template-columns:repeat(2,1fr)}}
+body:not([data-term="qual"]) #qual{display:none}
+@media (max-width:560px){.terms{grid-template-columns:1fr}.term small{white-space:normal}}
+
+/* 질적조사 */
+.q-tools{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 4px;align-items:center}
+.q-tools select,.q-tools input[type=text]{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:9px 12px;font:inherit;color:var(--text)}
+.pill.sm{padding:9px 16px;font-size:13px}
+.seg-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;max-height:720px;overflow:auto;padding-right:4px}
+.seg{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+.seg.iv{background:transparent;border-style:dashed}
+.seg.iv .seg-t{color:var(--muted)}
+.spk{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:Jost,"Noto Sans KR",sans-serif;font-size:14px;background:var(--sun-soft);color:var(--ink);font-weight:500;overflow:hidden;white-space:nowrap}
+.seg.iv .spk{background:var(--lav-soft);font-size:11px}
+.seg-t{font-size:14.5px;color:var(--text);line-height:1.7}
+.seg-t mark{background:linear-gradient(transparent 55%,var(--sun) 55%);color:inherit}
+.seg-codes{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.code{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 6px 3px 10px;border-radius:999px;background:var(--lav-soft);color:var(--ink);border-left:4px solid var(--tc,var(--lav-deep))}
+.code button{border:none;background:none;color:var(--muted);padding:0 4px;font-size:13px;line-height:1}
+.seg-codes select{font-size:12px;padding:4px 8px;border-radius:999px;max-width:220px}
+.h-table td,.h-table th{text-align:left;white-space:normal}
+.h-table input{width:100%;min-width:90px;font:inherit;font-size:13px;color:var(--text);border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 9px}
+.h-table td{padding:5px 4px;vertical-align:middle}
+.h-table .x{border:1px solid var(--line);background:var(--card);border-radius:50%;width:30px;height:30px;color:var(--muted)}
+.h-table td.n{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.kw-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.kw-chips button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:13px}
+.kw-chips button small{color:var(--muted);margin-left:4px}
+.kw-chips button:hover{background:var(--sun-soft)}
+.fig{width:100%;height:auto;display:block;margin:12px 0}
+.fig text{font-family:"Noto Sans KR",sans-serif}
+.qt-theme{margin:22px 0 6px;padding:12px 16px;border-radius:16px;background:var(--lav-soft);color:var(--ink);font-weight:500;border-left:6px solid var(--tc)}
+.qt-cat{margin:14px 0 4px 6px;font-weight:500;color:var(--ink);font-size:15px}
+.qt-sub{margin:10px 0 4px 18px;color:var(--muted);font-size:13px}
+.qt-q{margin:6px 0 6px 18px;padding:10px 16px;border-left:3px solid var(--line);font-size:14.5px;line-height:1.75}
+.qt-q b{font-weight:400;color:var(--muted);font-size:13px;white-space:nowrap}
+.heat td{text-align:center}.heat td:first-child{text-align:left}
+.heat td span{display:inline-block;min-width:34px;padding:3px 8px;border-radius:10px}
+.memo-form{display:grid;grid-template-columns:220px 1fr;gap:10px;margin-top:18px}
+.memo-form textarea{min-height:110px;height:auto;font-family:inherit;font-size:14px;grid-column:1/-1}
+.memo{border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-top:10px;background:var(--card)}
+.memo-h{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.memo-h .x{border:none;background:none;color:var(--muted)}
+.memo p{margin:0;white-space:pre-wrap;font-size:14.5px}
+.vtabs{display:inline-flex;gap:4px;background:var(--lav-soft);padding:4px;border-radius:999px;margin-top:18px}
+.vtabs button{border:none;background:none;border-radius:999px;padding:8px 18px;font-size:14px}
+.vtabs button.on{background:var(--btn);color:var(--on-btn)}
+.ctree td{text-align:left}
+.ctree td.n{text-align:right;width:70px}
+.ctree tr.t0 td:first-child{font-weight:500;color:var(--ink)}
+.ctree tr.t1 td:first-child{padding-left:30px}
+.ctree tr.t2 td:first-child{padding-left:56px;color:var(--text)}
+.ctree .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.stt{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:14px;color:var(--muted)}
+.rec-dot{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+.rec-dot.on{background:#d0505a;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.live{min-height:70px;border:1px dashed var(--line);border-radius:16px;padding:12px 16px;margin-top:12px;font-size:15px}
+.live i{color:var(--muted)}
+.exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
+.exp{border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.exp b{color:var(--ink);font-weight:500}
+.exp p{margin:0;font-size:13px;color:var(--muted)}
+#q-raw{font-family:"Noto Sans KR",system-ui,sans-serif;font-size:13.5px;line-height:1.7}
+@media (max-width:560px){.memo-form{grid-template-columns:1fr}.seg{grid-template-columns:1fr}.spk{width:auto;height:auto;justify-self:start;padding:2px 12px;border-radius:999px}}
+
+/* 실험조사 */
+.dz{display:inline-flex;flex-direction:column;gap:8px;padding:16px 18px;border-radius:20px;background:var(--lav-soft);margin:18px 0 6px;max-width:100%;overflow-x:auto}
+.dz-row{display:flex;align-items:center;gap:8px}
+.dz-lab{width:86px;flex:none;font-size:13px;color:var(--muted)}
+.dz-c{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;font-family:Jost,"Noto Sans KR",sans-serif;font-size:15px;color:var(--ink);background:var(--card);border:1.5px solid var(--lav)}
+.dz-c sub{font-size:10px;margin-left:1px}
+.dz-c.x{background:var(--sun);border-color:var(--sun);color:#1e2350;font-weight:500}
+.dz-c.r{border-radius:10px;border-style:dashed;color:var(--muted)}
+.dz-c.e{background:none;border:none}
+.dz-c.ar{background:none;border:none;color:var(--muted);width:16px}
+.dz-legend{font-size:12px;color:var(--muted);margin-top:2px}
+.thr{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.thr span{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.thr span b{font-weight:700;margin-right:4px}
+.thr .ok b{color:var(--q3)}.thr .no b{color:var(--q4)}.thr .mb b{color:var(--q2)}
+.thr .na{opacity:.5}
+.e-checks{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.e-checks label{display:inline-flex;gap:6px;align-items:center;font-size:13px;padding:5px 12px;border-radius:999px;background:var(--lav-soft);cursor:pointer}
+.e-checks input{accent-color:var(--lav-deep)}
+.e-fw{grid-column:1/-1}
+.e-write{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin-top:10px;font-size:14.5px;line-height:1.8}
+.e-write b{font-weight:500;color:var(--ink)}
+
+/* 손글씨 로고 */
+:root{--brand-blue:#2a63d4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--brand-blue:#7fb0ff}}
+:root[data-theme="dark"]{--brand-blue:#7fb0ff}
+.brand h1.logo{font-family:Caveat,"Noto Sans KR",cursive;font-weight:500;font-size:clamp(40px,9vw,80px);letter-spacing:0;line-height:1.05}
+.brand h1.logo+p{margin-top:22px}
+.brand h1.logo .cap{color:var(--brand-blue);font-weight:700;font-size:1.32em;line-height:0;display:inline-block;transform:rotate(-4deg);margin-right:1px}
+.island-link{display:inline-flex;margin-top:14px;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--card)}
+.island-link:hover{background:var(--sun-soft)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <h1>박종두 엑셀통계</h1>
+      <h1 class="logo" aria-label="Just Do it Statistics"><span class="cap">J</span>ust <span class="cap">D</span>o it Statistics</h1>
       <p class="eyebrow">엑셀 데이터를 가볍게, 결과는 선명하게</p>
+      <a class="pill ghost island-link" href="world.html">🏝️ 통계 섬으로 놀러 가기</a>
     </div>
     <div class="words">
       <div>Frequency<br>Descriptive<br>T-test<br>Paired</div><i></i><div>ANOVA<br>Correlation<br>Clear<br>Results</div>
     </div>
   </header>
 
+  <!-- 터미널 전환 -->
+  <nav class="terms" id="terms" aria-label="터미널">
+    <button class="term" data-term="stat"><span class="t-ico"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6M3 20h18"/></svg></span><span><b>엑셀통계</b><small>빈도 · 기술 · t검정 · ANOVA · 상관</small></span></button>
+    <button class="term" data-term="exp"><span class="t-ico"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span><b>실험조사</b><small>전실험 · 준실험 · 진실험 설계</small></span></button>
+    <button class="term" data-term="dec"><span class="t-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M6.6 7.2 10 10.5M17.4 7.2 14 10.5M6.6 16.8l3.4-3.3M17.4 16.8 14 13.5"/></svg></span><span><b>전문가 합의 · 의사결정 통계</b><small>델파이 · AHP</small></span></button>
+    <button class="term" data-term="adv"><span class="t-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="3"/><rect x="2.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="16.5" y="15.5" width="5" height="5" rx="1.5"/><path d="M10.4 8 5.5 15.5M12 8.5v7M13.6 8l4.9 7.5"/></svg></span><span><b>고급통계</b><small>회귀 · 척도검증 · SEM · 다변량 · 생존</small></span></button>
+    <button class="term" data-term="qual"><span class="t-ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span><span><b>질적조사</b><small>전사 · 코딩 · 범주화 · 주제 도출 · 시각화</small></span></button>
+  </nav>
+
   <!-- 1. 데이터 넣기 (가로) -->
-  <section class="card data">
+  <section class="card data" id="stat-data">
     <div class="data-intro">
       <span class="eyebrow">Step 01 · Data</span>
       <h2>데이터 넣기</h2>
@@ -204,11 +332,11 @@ footer div:last-child{text-align:right}
   </section>
 
   <!-- 2. 분석 (세로 메뉴) -->
-  <section class="analysis">
+  <section class="analysis" id="stat-analysis">
     <aside class="card menu">
-      <div class="menu-head"><h3>분석 방법</h3><span class="eyebrow">Step 02</span></div>
-      <p class="nav-group">기본 분석</p>
-      <div class="nav" id="nav">
+      <div class="menu-head"><h3 id="menu-title">기본 분석</h3><span class="eyebrow" id="menu-range">01 – 08</span></div>
+      <p class="nav-group" data-term="stat">기본 분석</p>
+      <div class="nav" id="nav" data-term="stat">
         <button class="nav-item active" data-p="freq"><span class="idx">01</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6M3 20h18"/></svg></span><span class="nt"><b>빈도분석</b><small>값별 개수와 비율</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="desc"><span class="idx">02</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h10M4 12h16M4 17h7"/><circle cx="17" cy="7" r="2"/><circle cx="14" cy="17" r="2"/></svg></span><span class="nt"><b>기술통계</b><small>평균 · 표준편차 · 분포</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="cross"><span class="idx">03</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 12h16M12 4v16"/></svg></span><span class="nt"><b>교차분석</b><small>교차표 · 카이제곱 검정</small></span><span class="chev">›</span></button>
@@ -218,25 +346,30 @@ footer div:last-child{text-align:right}
         <button class="nav-item" data-p="anova"><span class="idx">06</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="4" height="10" rx="2"/><rect x="10" y="5" width="4" height="15" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></svg></span><span class="nt"><b>ANOVA</b><small>일원분산분석 · 사후검정</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="corr"><span class="idx">07</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="1.5"/><circle cx="10" cy="13" r="1.5"/><circle cx="13" cy="14" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="19" cy="6" r="1.5"/><path d="M4 20 20 4" opacity=".35"/></svg></span><span class="nt"><b>상관관계</b><small>Pearson 상관계수</small></span><span class="chev">›</span></button>
       </div>
-      <p class="nav-group">회귀 · 심화 분석</p>
-      <div class="nav">
+      <p class="nav-group" data-term="adv">회귀 · 심화 분석</p>
+      <div class="nav" data-term="adv">
         <button class="nav-item" data-p="reg"><span class="idx">08</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 19 20 6"/><circle cx="7" cy="15" r="1.4"/><circle cx="10" cy="11" r="1.4"/><circle cx="14" cy="12" r="1.4"/><circle cx="17" cy="7" r="1.4"/></svg></span><span class="nt"><b>회귀분석</b><small>다중 선형회귀</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="logit"><span class="idx">09</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 19c8 0 6-14 18-14"/><path d="M3 21h18" opacity=".35"/></svg></span><span class="nt"><b>로지스틱 회귀분석</b><small>이항 결과 예측 · 오즈비</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="ipa"><span class="idx">10</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="16.5" cy="7.5" r="1.6"/><circle cx="7" cy="16" r="1.6"/></svg></span><span class="nt"><b>IPA 분석</b><small>중요도 · 성과 매트릭스</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="med"><span class="idx">11</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="5" cy="17" r="2.2"/><circle cx="12" cy="6" r="2.2"/><circle cx="19" cy="17" r="2.2"/><path d="M6.3 15.2 10.7 8M13.3 8l4.4 7.2M7.4 17h9.2"/></svg></span><span class="nt"><b>매개효과</b><small>간접효과 · 부트스트랩</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="mod"><span class="idx">12</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 18 20 5M4 14l16 3"/></svg></span><span class="nt"><b>조절효과</b><small>Interaction · 단순기울기</small></span><span class="chev">›</span></button>
       </div>
-      <p class="nav-group">척도 검증</p>
-      <div class="nav">
+      <p class="nav-group" data-term="adv">척도 검증</p>
+      <div class="nav" data-term="adv">
         <button class="nav-item" data-p="rel"><span class="idx">13</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nt"><b>신뢰도 분석</b><small>Cronbach's α</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="val"><span class="idx">14</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="2"/><rect x="14" y="4" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span><span class="nt"><b>타당도 분석</b><small>탐색적 요인분석 · KMO</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="cfa"><span class="idx">15</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="3"/><rect x="2.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="16.5" y="15.5" width="5" height="5" rx="1.5"/><path d="M10.4 8 5.5 15.5M12 8.5v7M13.6 8l4.9 7.5"/></svg></span><span class="nt"><b>확인적 요인분석 · SEM</b><small>적합도 · 수정모형 · 경로</small></span><span class="chev">›</span></button>
       </div>
-      <p class="nav-group">다변량 · 생존 분석</p>
-      <div class="nav">
+      <p class="nav-group" data-term="adv">다변량 · 생존 분석</p>
+      <div class="nav" data-term="adv">
         <button class="nav-item" data-p="disc"><span class="idx">16</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20 20 4" stroke-dasharray="2.5 2.5"/><circle cx="6.5" cy="8" r="1.7"/><circle cx="10" cy="5" r="1.7"/><circle cx="5" cy="12" r="1.7"/><circle cx="14" cy="19" r="1.7"/><circle cx="18" cy="15.5" r="1.7"/><circle cx="19" cy="11" r="1.7"/></svg></span><span class="nt"><b>판별분석</b><small>판별함수 · 분류 정확도</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="clus"><span class="idx">17</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="3.3"/><circle cx="17" cy="8" r="3.3"/><circle cx="11" cy="17" r="3.3"/></svg></span><span class="nt"><b>군집분석</b><small>K-평균 · 엘보우</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="surv"><span class="idx">18</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 5h5v4h4v5h5v5h4"/></svg></span><span class="nt"><b>생존분석</b><small>Kaplan-Meier · Cox 회귀</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group" data-term="dec">전문가 합의 · 의사결정</p>
+      <div class="nav" data-term="dec">
+        <button class="nav-item" data-p="delphi"><span class="idx">01</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M6.6 7.2 10 10.5M17.4 7.2 14 10.5M6.6 16.8l3.4-3.3M17.4 16.8 14 13.5"/></svg></span><span class="nt"><b>델파이 분석</b><small>CVR · 합의도 · 수렴도 · 안정도</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="ahp"><span class="idx">02</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="4" rx="1.5"/><rect x="3" y="11" width="6" height="4" rx="1.5"/><rect x="15" y="11" width="6" height="4" rx="1.5"/><path d="M12 7v2H6v2M12 9h6v2M6 15v3M4 21h4M18 15v3M16 21h4"/></svg></span><span class="nt"><b>AHP 분석</b><small>쌍대비교 · 가중치 · 일관성(CR)</small></span><span class="chev">›</span></button>
       </div>
       <p class="quote">“숫자가 가벼워지면, 결론은 선명해집니다.”</p>
     </aside>
@@ -461,6 +594,37 @@ footer div:last-child{text-align:right}
         <div class="out" id="o-clus"></div>
       </div>
 
+      <div class="panel" id="p-delphi">
+        <span class="eyebrow">01 · Delphi</span>
+        <h2>델파이 분석</h2>
+        <p class="desc">전문가 패널이 문항(지표)마다 매긴 점수로 내용타당도(CVR), 합의도, 수렴도, 안정도(변이계수)를 계산해 채택할 문항을 가립니다. 한 행이 전문가 한 명의 응답입니다. 여러 차수를 한 표에 넣으면 차수 변수를 골라 차수 간 변화도 봅니다.</p>
+        <div class="q-tools"><button class="pill ghost sm" data-dexample="delphi">예시 불러오기: 노인 삶의 질 프로그램 평가지표</button></div>
+        <div class="checks-head"><span class="sublabel">평가 문항</span><button class="mini" data-all="#dp-items">전체 선택</button><button class="mini" data-none="#dp-items">전체 해제</button></div>
+        <div class="checks tight" id="dp-items" data-kind="num"></div>
+        <div class="controls">
+          <label class="f">차수 변수 (선택)<select id="dp-round" data-kind="any"></select></label>
+          <label class="f">척도 최고점<input id="dp-max" type="number" value="5" min="3" max="10"></label>
+          <label class="f">‘타당’으로 볼 점수 (이상)<input id="dp-cut" type="number" value="4" step="1"></label>
+        </div>
+        <button class="pill primary run" data-run="delphi">분석 실행</button>
+        <div class="out" id="o-delphi"></div>
+      </div>
+
+      <div class="panel" id="p-ahp">
+        <span class="eyebrow">02 · AHP</span>
+        <h2>AHP 분석</h2>
+        <p class="desc">전문가의 쌍대비교 응답으로 평가항목의 가중치와 우선순위를 구합니다. 변수명을 <b>A-B</b>로 쓰면 A와 B의 비교입니다. 값이 3이면 A가 3배 중요, 1/3이나 -3이면 B가 3배 중요합니다. 하위 항목은 <b>상위항목:a-b</b>처럼 쓰면 계층 구조로 계산해 종합 가중치까지 냅니다.</p>
+        <div class="q-tools"><button class="pill ghost sm" data-dexample="ahp">예시 불러오기: 노인복지 정책 우선순위</button></div>
+        <div class="checks-head"><span class="sublabel">쌍대비교 변수</span><button class="mini" data-all="#ah-cols">전체 선택</button><button class="mini" data-none="#ah-cols">전체 해제</button></div>
+        <div class="checks tight" id="ah-cols" data-kind="any"></div>
+        <div class="controls">
+          <label class="f">일관성 기준 (CR)<select id="ah-cr"><option value="0.1">0.10 이하 (엄격)</option><option value="0.2">0.20 이하 (완화)</option><option value="9">기준 없이 모두 포함</option></select></label>
+          <label class="f">전문가 의견 통합<select id="ah-agg"><option value="aij">응답 기하평균 (AIJ)</option><option value="aip">가중치 산술평균 (AIP)</option></select></label>
+        </div>
+        <button class="pill primary run" data-run="ahp">분석 실행</button>
+        <div class="out" id="o-ahp"></div>
+      </div>
+
       <div class="panel" id="p-surv">
         <span class="eyebrow">18 · Survival Analysis</span>
         <h2>생존분석</h2>
@@ -478,6 +642,147 @@ footer div:last-child{text-align:right}
       </div>
     </div>
   </section>
+
+
+  <!-- 실험조사 터미널 (experiment.js가 채움) -->
+  <div id="exper"></div>
+
+  <!-- 질적조사 터미널 -->
+  <div id="qual">
+  <section class="card data">
+    <div class="data-intro">
+      <span class="eyebrow">Step 01 · Transcript</span>
+      <h2>전사 자료 넣기</h2>
+      <p class="desc">한 줄에 한 발화씩 <b>“A: 발화 내용”</b> 형식으로 넣으세요. <b>@A 여, 72세</b>는 대상자 정보, [ ]로 감싼 줄은 제목으로 처리합니다.</p>
+      <div class="data-actions">
+        <button class="pill primary" id="q-apply">전사 자료 적용</button>
+        <button class="pill ghost" id="q-sample">예시: 노인의 성공적 노화</button>
+        <label class="pill ghost file">엑셀 · 워드 파일 선택<input type="file" id="q-file" accept=".xlsx,.xls,.docx,.txt,.csv"></label>
+      </div>
+    </div>
+    <textarea id="q-raw" placeholder="[참여자 A 면담]&#10;@A 여, 72세, 혼자 거주&#10;연구자: 어르신이 생각하시는 잘 늙는다는 건 어떤 건가요?&#10;A: 아프지 않고 내 발로 걸어 다니는 거지요."></textarea>
+    <div class="sum" id="q-summary">
+      <span class="eyebrow">불러온 전사 자료</span>
+      <div class="big">0<span>발화</span></div>
+      <small class="desc">자료를 넣고 [전사 자료 적용]을 누르세요.</small>
+    </div>
+  </section>
+
+  <section class="analysis">
+    <aside class="card menu" id="q-menu">
+      <div class="menu-head"><h3>질적 분석</h3><span class="eyebrow">Step 02</span></div>
+      <p class="nav-group">자료 준비</p>
+      <div class="nav">
+        <button class="nav-item" data-q="stt"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><span class="nt"><b>음성 → 텍스트</b><small>마이크 받아쓰기 · 화자 지정</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group">분석</p>
+      <div class="nav">
+        <button class="nav-item active" data-q="code"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h10M4 12h7M4 18h12"/><circle cx="18" cy="8" r="2.5"/><path d="m17 14 3 3"/></svg></span><span class="nt"><b>코딩 · 범주화</b><small>발화별 하위범주 지정</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-q="hier"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="6" height="4" rx="1.5"/><rect x="2.5" y="10" width="6" height="4" rx="1.5"/><rect x="2.5" y="16" width="6" height="4" rx="1.5"/><rect x="15.5" y="10" width="6" height="4" rx="1.5"/><path d="M8.5 6h3v12h-3M11.5 12h4"/></svg></span><span class="nt"><b>주제 도출</b><small>하위범주 → 범주 → 주제 · 그림</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-q="quote"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 8h5v5c0 3-2 4-4 5M14 8h5v5c0 3-2 4-4 5"/></svg></span><span class="nt"><b>대상자별 인용문</b><small>주제별 “ ” 진술 · A·B·C</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-q="memo"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 10h8M8 14h6"/></svg></span><span class="nt"><b>연구자 메모</b><small>분석 메모 · 성찰 일지</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group">시각화 · 저장</p>
+      <div class="nav">
+        <button class="nav-item" data-q="viz"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="4.5" cy="6" r="1.8"/><circle cx="19.5" cy="6" r="1.8"/><circle cx="4.5" cy="18" r="1.8"/><circle cx="19.5" cy="18" r="1.8"/><path d="M6 7l4 3.5M18 7l-4 3.5M6 17l4-3.5M18 17l-4-3.5"/></svg></span><span class="nt"><b>시각화</b><small>코드트리 · 마인드맵 · 워드클라우드</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-q="exp"><span class="idx"></span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 4v11m-4-4 4 4 4-4M5 19h14"/></svg></span><span class="nt"><b>엑셀 · 워드 저장</b><small>결과 보고서 · 예시 파일</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="quote">“말 속에 숨은 의미를, 주제로 선명하게.”</p>
+    </aside>
+
+    <div class="card result" id="q-result">
+      <div class="panel" id="qp-stt">
+        <span class="eyebrow">01 · Speech to Text</span>
+        <h2>음성 → 텍스트</h2>
+        <p class="desc">마이크로 들리는 말을 실시간으로 받아 적어 전사 자료에 한 줄씩 추가합니다. 화자를 바꿔 가며 녹음하세요. Chrome, Edge, Safari에서 됩니다.</p>
+        <div class="controls">
+          <label class="f">화자<select id="stt-spk"></select></label>
+          <label class="f">새 화자 이름<input id="stt-new" placeholder="예: D"></label>
+          <label class="f">언어<select id="stt-lang"><option value="ko-KR">한국어</option><option value="en-US">English</option></select></label>
+        </div>
+        <div class="q-tools"><button class="pill primary sm" id="stt-start">녹음 시작</button><button class="pill ghost sm" id="stt-stop">멈춤</button></div>
+        <div class="stt"><span class="rec-dot" id="stt-dot"></span><span id="stt-msg">대기 중</span></div>
+        <div class="live" id="stt-live"><i>여기에 인식된 문장이 나타납니다.</i></div>
+        <h3 style="font-weight:500;font-size:15px;margin:26px 0 6px;color:var(--ink)">녹음 파일 들으며 전사하기</h3>
+        <p class="desc">브라우저는 녹음 파일을 바로 글자로 바꾸지 못합니다. 파일을 재생하며 아래 칸에 받아 적으면 [Enter]마다 선택한 화자의 발화로 추가됩니다. 재생 중 [Ctrl+Space]는 일시정지와 재생, [Ctrl+←]는 3초 되감기입니다.</p>
+        <div class="q-tools"><label class="pill ghost sm file">음성 파일 선택<input type="file" id="stt-audio" accept="audio/*,video/*"></label><select id="stt-rate"><option value="1">속도 1.0×</option><option value="0.75">0.75×</option><option value="0.5">0.5×</option><option value="1.25">1.25×</option></select></div>
+        <audio id="stt-player" controls style="width:100%;margin-top:10px;display:none"></audio>
+        <div class="q-tools"><input type="text" id="stt-type" placeholder="들은 내용을 적고 Enter" style="flex:1;min-width:200px"></div>
+      </div>
+
+      <div class="panel active" id="qp-code">
+        <span class="eyebrow">02 · Coding</span>
+        <h2>코딩 · 범주화</h2>
+        <p class="desc">발화마다 하위범주를 붙입니다. [키워드 자동 코딩]은 주제 도출 표의 키워드가 들어간 발화에 하위범주를 붙입니다. 결과는 직접 고치세요.</p>
+        <div class="q-tools">
+          <button class="pill primary sm" id="q-auto">키워드 자동 코딩</button>
+          <button class="pill ghost sm" id="q-clear">코딩 모두 지우기</button>
+          <select id="q-fspk"></select>
+          <select id="q-fstat"><option value="all">모든 발화</option><option value="un">미코딩 발화만</option><option value="cd">코딩된 발화만</option></select>
+        </div>
+        <div class="out" id="qo-code"></div>
+      </div>
+
+      <div class="panel" id="qp-hier">
+        <span class="eyebrow">03 · Theme</span>
+        <h2>주제 도출</h2>
+        <p class="desc">하위범주를 묶어 범주를, 범주를 묶어 주제를 만듭니다. 표를 고치면 그림과 코딩 목록이 바로 바뀝니다. 엑셀에서 주제·범주·하위범주·키워드 네 열을 복사해 붙여넣어도 됩니다.</p>
+        <div class="q-tools"><button class="pill ghost sm" id="h-add">행 추가</button><button class="pill ghost sm" id="h-paste">엑셀에서 붙여넣기</button></div>
+        <div id="h-edit"></div>
+        <p class="sublabel">자주 나온 단어 (누르면 새 하위범주 키워드로 추가)</p>
+        <div class="kw-chips" id="h-kw"></div>
+        <div class="out" id="qo-hier"></div>
+      </div>
+
+      <div class="panel" id="qp-quote">
+        <span class="eyebrow">04 · Quotes</span>
+        <h2>대상자별 인용문</h2>
+        <p class="desc">주제·범주·하위범주별로 대상자의 실제 진술을 “ ”로 모아 보여줍니다. 논문 결과 부분에 그대로 옮길 수 있습니다.</p>
+        <div class="q-tools">
+          <select id="qt-view"><option value="theme">주제별로 보기</option><option value="spk">대상자별로 보기</option></select>
+          <select id="qt-theme"></select><select id="qt-spk"></select>
+          <button class="pill ghost sm" id="qt-copy">텍스트 복사</button>
+        </div>
+        <div class="out" id="qo-quote"></div>
+      </div>
+
+      <div class="panel" id="qp-memo">
+        <span class="eyebrow">05 · Memo</span>
+        <h2>연구자 메모</h2>
+        <p class="desc">분석하며 떠오른 생각, 범주를 나눈 근거, 성찰을 남겨 두세요. 메모는 이 브라우저에 저장되고 엑셀·워드 보고서에 함께 들어갑니다.</p>
+        <div class="memo-form">
+          <select id="m-target"></select>
+          <input id="m-title" placeholder="메모 제목 (선택)" style="font:inherit;color:var(--text);border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px">
+          <textarea id="m-text" placeholder="예: B와 E는 모두 ‘자녀에게 짐이 되지 않기’를 성공적 노화의 핵심으로 말함. 독립성 범주와의 관계를 다시 볼 것."></textarea>
+        </div>
+        <div class="q-tools"><button class="pill primary sm" id="m-add">메모 저장</button><select id="m-filter"></select></div>
+        <div id="m-list"></div>
+      </div>
+
+      <div class="panel" id="qp-viz">
+        <span class="eyebrow">06 · Visualize</span>
+        <h2>시각화</h2>
+        <p class="desc">코드트리는 주제·범주·하위범주별 발화 수와 대상자 수를, 마인드맵은 전체 구조를, 워드클라우드는 자주 나온 단어를 보여줍니다.</p>
+        <div class="vtabs" id="v-tabs"><button data-v="tree" class="on">코드트리</button><button data-v="mind">마인드맵</button><button data-v="cloud">워드클라우드</button></div>
+        <div class="q-tools" id="v-opts"><select id="v-spk"></select><select id="v-theme"></select></div>
+        <div class="out" id="qo-viz"></div>
+      </div>
+
+      <div class="panel" id="qp-exp">
+        <span class="eyebrow">07 · Export</span>
+        <h2>엑셀 · 워드 저장</h2>
+        <p class="desc">분석 결과를 엑셀과 워드로 저장합니다. 예시 파일을 받아 형식을 확인하고, 같은 형식으로 내 자료를 만들어 위의 [엑셀 · 워드 파일 선택]으로 불러오세요.</p>
+        <div class="exp-grid">
+          <div class="exp"><b>분석 결과 · 엑셀</b><p>전사·코딩, 범주 구조, 인용문, 대상자×주제 표, 메모를 시트별로 저장합니다.</p><button class="pill primary sm" id="x-xlsx">.xlsx 저장</button></div>
+          <div class="exp"><b>분석 결과 · 워드</b><p>범주 구조 표와 주제별 인용문, 연구자 메모를 담은 보고서입니다.</p><button class="pill primary sm" id="x-docx">.docx 저장</button></div>
+          <div class="exp"><b>예시 파일 · 엑셀</b><p>노인의 성공적 노화 면담 자료입니다. 전사자료, 주제도출, 대상자정보 시트가 들어 있습니다.</p><button class="pill ghost sm" id="x-ex-xlsx">예시 엑셀 받기</button></div>
+          <div class="exp"><b>예시 파일 · 워드</b><p>같은 면담을 “A: 발화” 형식의 워드 전사본으로 만든 파일입니다.</p><button class="pill ghost sm" id="x-ex-docx">예시 워드 받기</button></div>
+        </div>
+        <div class="out" id="qo-exp"></div>
+      </div>
+    </div>
+  </section>
+  </div>
 
   <footer>
     <div>Statistics<br>for a clearer tomorrow</div>
@@ -553,7 +858,7 @@ function setData(d){
   DATA=d;
   $('#summary').innerHTML=`<span class="eyebrow">불러온 데이터</span><div class="big">${d.n}<span>행</span></div><small class="desc">${d.cols.length}개 변수 · 노랑은 숫자, 보라는 문자</small>`+
     `<div class="chips">${d.cols.map(c=>`<span class="badge${c.num?' n':''}">${esc(c.name)}</span>`).join('')}</div>`;
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('done'));
+  document.querySelectorAll('.nav-item[data-p]').forEach(n=>n.classList.remove('done'));
   for(const s of document.querySelectorAll('select[data-kind]')){
     const list=d.cols.filter(c=>s.dataset.kind==='any'||c.num);
     s.innerHTML=list.map(c=>`<option>${esc(c.name)}</option>`).join('');}
@@ -1321,7 +1626,7 @@ $('#cf-names').addEventListener('input',refreshPathOpts);
 $('#cf-nf').addEventListener('change',refreshPathOpts);
 document.addEventListener('click',e=>{const x=e.target.closest('.pair-row .x');if(x)x.parentElement.remove();
   const a=e.target.closest('[data-addcov]');if(a){const [i,j]=a.dataset.addcov.split('|');pairRow('#cf-ecov',itemOpts,i,j,'↔');document.querySelector('[data-run="cfa"]').click();}});
-document.querySelectorAll('.nav-item').forEach((b,i)=>{const n=String(i+1).padStart(2,'0');b.querySelector('.idx').textContent=n;const e=document.querySelector('#p-'+b.dataset.p+' .eyebrow');if(e)e.textContent=e.textContent.replace(/^\d+/,n);});
+document.querySelectorAll('.nav[data-term="stat"] .nav-item,.nav[data-term="adv"] .nav-item').forEach((b,i)=>{const n=String(i+1).padStart(2,'0');b.querySelector('.idx').textContent=n;const e=document.querySelector('#p-'+b.dataset.p+' .eyebrow');if(e)e.textContent=e.textContent.replace(/^\d+/,n);});
 $('#sv-e').addEventListener('change',fillSvEv);
 $('#cf-nf').addEventListener('change',()=>{if(DATA)cfaBuild(+$('#cf-nf').value);});
 $('#o-clus').addEventListener('click',e=>{if(!e.target.closest('#clus-add')||!LAST_CLUS)return;
@@ -1333,7 +1638,7 @@ $('#o-clus').addEventListener('click',e=>{if(!e.target.closest('#clus-add')||!LA
 document.addEventListener('click',e=>{const a=e.target.closest('[data-all],[data-none]');if(!a)return;
   document.querySelectorAll((a.dataset.all||a.dataset.none)+' input').forEach(i=>i.checked=!!a.dataset.all);});
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;
-  document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active',t===b));
+  document.querySelectorAll('.nav-item[data-p]').forEach(t=>t.classList.toggle('active',t===b));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='p-'+b.dataset.p));
   if(window.innerWidth<=900)$('#result').scrollIntoView({behavior:'smooth',block:'start'});});
 $('#tt-g').addEventListener('change',fillLevels);
@@ -1352,5 +1657,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(
   if(!DATA){o.innerHTML=err('먼저 데이터를 입력하고 [데이터 적용]을 누르세요.');return;}
   try{o.innerHTML=RUN[k]();if(!o.querySelector('.err'))$(`.nav-item[data-p="${k}"]`).classList.add('done');}catch(x){o.innerHTML=err('분석 중 오류: '+x.message);}});
 </script>
+<script src="decision.js"></script>
+<script src="examples.js"></script>
+<script src="experiment.js"></script>
+<script src="qual.js"></script>
 </body>
 </html>
