@@ -248,6 +248,7 @@ function show(k){CUR=k;store.set('jd-exp-design',k);
 $('#e-menu').addEventListener('click',e=>{const b=e.target.closest('.nav-item');if(!b)return;show(b.dataset.e);
   if(window.innerWidth<=900)$('#e-result').scrollIntoView({behavior:'smooth',block:'start'});});
 window.expRender=()=>{if(!$('#e-menu .nav-item.active'))show(CUR);};
+window.expShow=k=>{if(DS.some(d=>d.k===k))show(k);};
 
 // ================= 값 읽기 =================
 const V=(k,id)=>$(`#e-${k}-${id}`).value;

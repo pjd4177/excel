@@ -23,7 +23,12 @@ function setTerm(t){
   if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);
 }
 $('#terms').addEventListener('click',e=>{const b=e.target.closest('.term');if(b)setTerm(b.dataset.term);});
-window.addEventListener('hashchange',()=>setTerm(location.hash.slice(1)));
+// 주소 예: #adv/reg (고급통계의 회귀분석), 끝에 /ex를 붙이면 예시 데이터까지 불러옴
+function route(h){const [t,p,ex]=String(h||'').split('/');setTerm(t);if(!p)return;
+  if(t==='exp'){if(window.expShow)window.expShow(p);return;}
+  if(t==='qual'){$(`#q-menu [data-q="${p}"]`)?.click();if(ex==='ex')loadExample();return;}
+  $(`.nav-item[data-p="${p}"]`)?.click();if(ex==='ex')$('#sample')?.click();}
+window.addEventListener('hashchange',()=>route(location.hash.slice(1)));
 
 // ================= 질적조사: 상태 =================
 const IV=/^(연구자|면담자|질문자|인터뷰어|진행자|조사자|사회자|Q|I|R|Interviewer)$/i;
@@ -736,5 +741,5 @@ function loadExample(){S=exampleState();$('#q-raw').value=EX.text;save();
 // ================= 시작 =================
 load();
 if(S.segs.length)$('#q-raw').value=S.raw||toText();
-setTerm(location.hash.slice(1)||store.get('jd-term')||'stat');
+if(location.hash.length>1)route(location.hash.slice(1));else setTerm(store.get('jd-term')||'stat');
 })();
