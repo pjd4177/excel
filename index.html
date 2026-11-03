@@ -1655,6 +1655,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(
   try{o.innerHTML=RUN[k]();if(!o.querySelector('.err'))$(`.nav-item[data-p="${k}"]`).classList.add('done');}catch(x){o.innerHTML=err('분석 중 오류: '+x.message);}});
 </script>
 <script src="decision.js"></script>
+<script src="examples.js"></script>
 <script src="experiment.js"></script>
 <script src="qual.js"></script>
 </body>
