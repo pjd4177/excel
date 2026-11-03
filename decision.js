@@ -91,7 +91,7 @@ RUN.delphi=()=>{
     `<h3>문항별 내용타당도 (CVR)</h3>`+g+stab+
     note(`${res.length}개 문항 중 <span class="sig">${pass.length}개가 채택</span>되었습니다${pass.length?`(${pass.map(o=>esc(o.name)).join(', ')})`:''}. `+
       (fail.length?`${fail.length}개 문항은 기준에 못 미쳐 다음 차수에서 다시 묻거나 수정·삭제를 검토하세요: ${fail.map(o=>`${esc(o.name)}(${why(o)})`).join(', ')}.`:'모든 문항이 기준을 만족했습니다.'))+
-    `<h3>논문 결과 서술 예시</h3><div class="note" style="background:var(--card);border:1px solid var(--line)">${rv?`${esc(last)} `:''}델파이 조사에 참여한 전문가 ${N}명의 응답을 분석한 결과, ${res.length}개 문항 중 내용타당도 비율(CVR ≥ ${minCVR(N)}), 합의도(≥ .75), 수렴도(≤ .50) 기준을 모두 충족한 ${pass.length}개 문항을 최종 지표로 채택하였다.${fail.length?` ${fail.map(o=>esc(o.name)).join(', ')} 문항은 기준을 충족하지 못하였다.`:''}</div>`;
+    `<h3>결과 서술 (설명적 답변)</h3><div class="note" style="background:var(--card);border:1px solid var(--line)">${rv?`${esc(last)} `:''}델파이 조사에 참여한 전문가 ${N}명의 응답을 분석한 결과, ${res.length}개 문항 중 내용타당도 비율(CVR ≥ ${minCVR(N)}), 합의도(≥ .75), 수렴도(≤ .50) 기준을 모두 충족한 ${pass.length}개 문항을 최종 지표로 채택하였다.${fail.length?` ${fail.map(o=>esc(o.name)).join(', ')} 문항은 기준을 충족하지 못하였다.`:''}</div>`;
 };
 
 // ================= AHP =================
@@ -148,7 +148,7 @@ RUN.ahp=()=>{
         rows.map(r=>[esc(r.c),f(r.cw,3),esc(r.s),f(r.lw,3),`<b>${f(r.gw,3)}</b>`,ord.indexOf(r)+1,`<div class="barcell"><div class="bar" style="width:${r.gw/mx*100}%;${ord.indexOf(r)<3?'background:var(--lav-deep)':''}"></div></div>`]))+
         note(`상위 항목 중 가장 중요한 것은 <span class="sig">${esc(top.el[top.w.indexOf(Math.max(...top.w))])}</span>(${f(Math.max(...top.w),3)})입니다. `+
           `종합 우선순위 1~3위는 ${ord.slice(0,3).map((r,i)=>`${i+1}위 ${esc(r.s)}(${esc(r.c)}, ${f(r.gw,3)})`).join(', ')}입니다.`)+
-        `<h3>논문 결과 서술 예시</h3><div class="note" style="background:var(--card);border:1px solid var(--line)">일관성 비율(CR) ${crMax<9?crMax.toFixed(2)+' 이하인':''} 전문가 응답을 ${agg==='aij'?'기하평균으로 통합':'통합'}하여 분석한 결과, 상위 평가기준의 중요도는 ${top.el.map((e,i)=>({e,w:top.w[i]})).sort((a,b)=>b.w-a.w).map(o=>`${esc(o.e)}(${f(o.w,3)})`).join(', ')} 순으로 나타났다. 하위 항목을 포함한 종합 중요도는 ${ord.slice(0,3).map(r=>`${esc(r.s)}(${f(r.gw,3)})`).join(', ')}가 가장 높았다.</div>`;}
+        `<h3>결과 서술 (설명적 답변)</h3><div class="note" style="background:var(--card);border:1px solid var(--line)">일관성 비율(CR) ${crMax<9?crMax.toFixed(2)+' 이하인':''} 전문가 응답을 ${agg==='aij'?'기하평균으로 통합':'통합'}하여 분석한 결과, 상위 평가기준의 중요도는 ${top.el.map((e,i)=>({e,w:top.w[i]})).sort((a,b)=>b.w-a.w).map(o=>`${esc(o.e)}(${f(o.w,3)})`).join(', ')} 순으로 나타났다. 하위 항목을 포함한 종합 중요도는 ${ord.slice(0,3).map(r=>`${esc(r.s)}(${f(r.gw,3)})`).join(', ')}가 가장 높았다.</div>`;}
     else{const o=top.el.map((e,i)=>({e,w:top.w[i]})).sort((a,b)=>b.w-a.w);
       fin=note(`가장 중요한 항목은 <span class="sig">${esc(o[0].e)}</span>(${f(o[0].w,3)})이며, 우선순위는 ${o.map((x,i)=>`${i+1}위 ${esc(x.e)}`).join(', ')}입니다.`);}}
   return html+fin+`<p class="desc">값 해석: 3 = 왼쪽이 3배 중요, 1/3 또는 -3 = 오른쪽이 3배 중요, 1 = 같음. 가중치는 고유벡터법, 일관성 비율 CR = CI / RI (Saaty).</p>`;

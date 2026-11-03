@@ -47,8 +47,8 @@ function polish(s){
   s=s.replace(/^즉 /,'즉, ');
   return s;}
 function narrativeFrom(out,name){
-  // 이미 '논문 결과 서술' 문단이 있는 분석(실험조사·델파이·AHP)은 그대로 씀
-  const h=$$('h3',out).find(x=>/논문 결과 서술/.test(x.textContent));if(h&&h.nextElementSibling)return clean(h.nextElementSibling.innerText);
+  // 이미 결과 서술 문단이 있는 분석(실험조사·델파이·AHP)은 그대로 씀
+  const h=$$('h3',out).find(x=>/결과 서술 \(설명적 답변\)|논문 결과 서술/.test(x.textContent));if(h&&h.nextElementSibling)return clean(h.nextElementSibling.innerText);
   const SPECIAL_ONLY=new Set(['o-desc','o-ipa','o-val']);const special=SPECIAL[out.id.replace(/^e?o-/,'')];const body=[];
   if(special){const s=special(out);if(s)body.push(s);}
   for(const n of $$(':scope > .note, :scope .freq-block .note',out)){if(SPECIAL_ONLY.has(out.id))continue;for(const s of sentences(n.innerText)){if(DROP.test(s))continue;body.push(polish(formal(s)));}}
@@ -111,9 +111,9 @@ function decorate(out){
   if(!out.children.length||out.querySelector('.res-tools'))return;
   if(out.querySelector(':scope > .err')&&out.children.length<=2)return;   // 오류만 있으면 붙이지 않음
   const {name}=panelOf(out),para=narrativeFrom(out,name);
-  const hasOwn=$$('h3',out).some(x=>/논문 결과 서술/.test(x.textContent));
+  const hasOwn=$$('h3',out).some(x=>/결과 서술 \(설명적 답변\)|논문 결과 서술/.test(x.textContent));
   let html='';
-  if(para&&!hasOwn)html+=`<div class="res-write"><h3>결과 서술 (논문용 문단)</h3><p>${esc(para)}</p></div>`;
+  if(para&&!hasOwn)html+=`<div class="res-write"><h3>결과 서술 (설명적 답변)</h3><p>${esc(para)}</p></div>`;
   html+=`<div class="res-tools"><button class="pill primary sm" data-xl>📥 결과를 엑셀로 저장</button>${para?'<button class="pill ghost sm" data-cp>📋 결과 서술 복사</button>':''}<span class="desc" style="font-size:12.5px">표와 해석, 결과 서술이 엑셀 파일 하나에 저장됩니다.</span></div>`;
   out.insertAdjacentHTML('beforeend',html);
   out.dataset.para=para;
