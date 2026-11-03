@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>박종두 엑셀통계</title>
+<title>Just Do it Statistics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Jost:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -276,13 +276,21 @@ body:not([data-term="qual"]) #qual{display:none}
 .e-fw{grid-column:1/-1}
 .e-write{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin-top:10px;font-size:14.5px;line-height:1.8}
 .e-write b{font-weight:500;color:var(--ink)}
+
+/* 손글씨 로고 */
+:root{--brand-blue:#2a63d4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--brand-blue:#7fb0ff}}
+:root[data-theme="dark"]{--brand-blue:#7fb0ff}
+.brand h1.logo{font-family:Caveat,"Noto Sans KR",cursive;font-weight:500;font-size:clamp(40px,9vw,80px);letter-spacing:0;line-height:1.05}
+.brand h1.logo+p{margin-top:22px}
+.brand h1.logo .cap{color:var(--brand-blue);font-weight:700;font-size:1.32em;line-height:0;display:inline-block;transform:rotate(-4deg);margin-right:1px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <h1>박종두 엑셀통계</h1>
+      <h1 class="logo" aria-label="Just Do it Statistics"><span class="cap">J</span>ust <span class="cap">D</span>o it Statistics</h1>
       <p class="eyebrow">엑셀 데이터를 가볍게, 결과는 선명하게</p>
     </div>
     <div class="words">

@@ -1,4 +1,4 @@
-// 박종두 엑셀통계 — 터미널 전환 + 질적조사 터미널
+// Just Do it Statistics — 터미널 전환 + 질적조사 터미널
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

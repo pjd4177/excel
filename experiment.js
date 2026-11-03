@@ -1,4 +1,4 @@
-// 박종두 엑셀통계 — 실험조사 터미널 (전실험 · 준실험 · 진실험 설계)
+// Just Do it Statistics — 실험조사 터미널 (전실험 · 준실험 · 진실험 설계)
 // index.html의 통계 함수(mean, sd, pT, pF, tCrit, ols, levene, meanBars, yAxis, f, fp, pEq, sigP, table, note, err, esc, parseText, build)를 함께 씁니다.
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
