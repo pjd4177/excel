@@ -5,7 +5,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const store={get(k){try{return localStorage.getItem(k);}catch{return null;}},set(k,v){try{localStorage.setItem(k,v);}catch{}}};
 
 // ================= 터미널 전환 =================
-const TERM={stat:['기본 분석','01 – 08'],adv:['고급 분석','09 – 19']};
+const TERM={stat:['기본 분석','01 – 08'],adv:['고급 분석','09 – 21']};
 function setTerm(t){
   if(!['stat','exp','adv','qual'].includes(t))t='stat';
   document.body.dataset.term=t;

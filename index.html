@@ -302,7 +302,7 @@ body:not([data-term="qual"]) #qual{display:none}
   <nav class="terms" id="terms" aria-label="터미널">
     <button class="term" data-term="stat"><span class="t-ico"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6M3 20h18"/></svg></span><span><b>엑셀통계</b><small>01–08 · 빈도 · 기술 · t검정 · ANOVA · 상관</small></span></button>
     <button class="term" data-term="exp"><span class="t-ico"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span><b>실험조사</b><small>전실험 · 준실험 · 진실험 설계</small></span></button>
-    <button class="term" data-term="adv"><span class="t-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="3"/><rect x="2.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="16.5" y="15.5" width="5" height="5" rx="1.5"/><path d="M10.4 8 5.5 15.5M12 8.5v7M13.6 8l4.9 7.5"/></svg></span><span><b>고급통계</b><small>09–19 · 회귀 · 척도검증 · SEM · 다변량 · 생존</small></span></button>
+    <button class="term" data-term="adv"><span class="t-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="3"/><rect x="2.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.5"/><rect x="16.5" y="15.5" width="5" height="5" rx="1.5"/><path d="M10.4 8 5.5 15.5M12 8.5v7M13.6 8l4.9 7.5"/></svg></span><span><b>고급통계</b><small>09–21 · 회귀 · 척도검증 · SEM · 다변량 · 생존 · 델파이 · AHP</small></span></button>
     <button class="term" data-term="qual"><span class="t-ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span><span><b>질적조사</b><small>전사 · 코딩 · 범주화 · 주제 도출 · 시각화</small></span></button>
   </nav>
 
@@ -360,6 +360,11 @@ body:not([data-term="qual"]) #qual{display:none}
         <button class="nav-item" data-p="disc"><span class="idx">16</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20 20 4" stroke-dasharray="2.5 2.5"/><circle cx="6.5" cy="8" r="1.7"/><circle cx="10" cy="5" r="1.7"/><circle cx="5" cy="12" r="1.7"/><circle cx="14" cy="19" r="1.7"/><circle cx="18" cy="15.5" r="1.7"/><circle cx="19" cy="11" r="1.7"/></svg></span><span class="nt"><b>판별분석</b><small>판별함수 · 분류 정확도</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="clus"><span class="idx">17</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="3.3"/><circle cx="17" cy="8" r="3.3"/><circle cx="11" cy="17" r="3.3"/></svg></span><span class="nt"><b>군집분석</b><small>K-평균 · 엘보우</small></span><span class="chev">›</span></button>
         <button class="nav-item" data-p="surv"><span class="idx">18</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 5h5v4h4v5h5v5h4"/></svg></span><span class="nt"><b>생존분석</b><small>Kaplan-Meier · Cox 회귀</small></span><span class="chev">›</span></button>
+      </div>
+      <p class="nav-group" data-term="adv">전문가 합의 · 의사결정</p>
+      <div class="nav" data-term="adv">
+        <button class="nav-item" data-p="delphi"><span class="idx">20</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M6.6 7.2 10 10.5M17.4 7.2 14 10.5M6.6 16.8l3.4-3.3M17.4 16.8 14 13.5"/></svg></span><span class="nt"><b>델파이 분석</b><small>CVR · 합의도 · 수렴도 · 안정도</small></span><span class="chev">›</span></button>
+        <button class="nav-item" data-p="ahp"><span class="idx">21</span><span class="dot"></span><span class="ico"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="4" rx="1.5"/><rect x="3" y="11" width="6" height="4" rx="1.5"/><rect x="15" y="11" width="6" height="4" rx="1.5"/><path d="M12 7v2H6v2M12 9h6v2M6 15v3M4 21h4M18 15v3M16 21h4"/></svg></span><span class="nt"><b>AHP 분석</b><small>쌍대비교 · 가중치 · 일관성(CR)</small></span><span class="chev">›</span></button>
       </div>
       <p class="quote">“숫자가 가벼워지면, 결론은 선명해집니다.”</p>
     </aside>
@@ -582,6 +587,37 @@ body:not([data-term="qual"]) #qual{display:none}
         <label class="opt"><input type="checkbox" id="cl-std" checked> 변수 표준화 (단위가 다른 변수를 함께 쓸 때 권장)</label>
         <button class="pill primary run" data-run="clus">분석 실행</button>
         <div class="out" id="o-clus"></div>
+      </div>
+
+      <div class="panel" id="p-delphi">
+        <span class="eyebrow">20 · Delphi</span>
+        <h2>델파이 분석</h2>
+        <p class="desc">전문가 패널이 문항(지표)마다 매긴 점수로 내용타당도(CVR), 합의도, 수렴도, 안정도(변이계수)를 계산해 채택할 문항을 가립니다. 한 행이 전문가 한 명의 응답입니다. 여러 차수를 한 표에 넣으면 차수 변수를 골라 차수 간 변화도 봅니다.</p>
+        <div class="q-tools"><button class="pill ghost sm" data-dexample="delphi">예시 불러오기: 노인 삶의 질 프로그램 평가지표</button></div>
+        <div class="checks-head"><span class="sublabel">평가 문항</span><button class="mini" data-all="#dp-items">전체 선택</button><button class="mini" data-none="#dp-items">전체 해제</button></div>
+        <div class="checks tight" id="dp-items" data-kind="num"></div>
+        <div class="controls">
+          <label class="f">차수 변수 (선택)<select id="dp-round" data-kind="any"></select></label>
+          <label class="f">척도 최고점<input id="dp-max" type="number" value="5" min="3" max="10"></label>
+          <label class="f">‘타당’으로 볼 점수 (이상)<input id="dp-cut" type="number" value="4" step="1"></label>
+        </div>
+        <button class="pill primary run" data-run="delphi">분석 실행</button>
+        <div class="out" id="o-delphi"></div>
+      </div>
+
+      <div class="panel" id="p-ahp">
+        <span class="eyebrow">21 · AHP</span>
+        <h2>AHP 분석</h2>
+        <p class="desc">전문가의 쌍대비교 응답으로 평가항목의 가중치와 우선순위를 구합니다. 변수명을 <b>A-B</b>로 쓰면 A와 B의 비교입니다. 값이 3이면 A가 3배 중요, 1/3이나 -3이면 B가 3배 중요합니다. 하위 항목은 <b>상위항목:a-b</b>처럼 쓰면 계층 구조로 계산해 종합 가중치까지 냅니다.</p>
+        <div class="q-tools"><button class="pill ghost sm" data-dexample="ahp">예시 불러오기: 노인복지 정책 우선순위</button></div>
+        <div class="checks-head"><span class="sublabel">쌍대비교 변수</span><button class="mini" data-all="#ah-cols">전체 선택</button><button class="mini" data-none="#ah-cols">전체 해제</button></div>
+        <div class="checks tight" id="ah-cols" data-kind="any"></div>
+        <div class="controls">
+          <label class="f">일관성 기준 (CR)<select id="ah-cr"><option value="0.1">0.10 이하 (엄격)</option><option value="0.2">0.20 이하 (완화)</option><option value="9">기준 없이 모두 포함</option></select></label>
+          <label class="f">전문가 의견 통합<select id="ah-agg"><option value="aij">응답 기하평균 (AIJ)</option><option value="aip">가중치 산술평균 (AIP)</option></select></label>
+        </div>
+        <button class="pill primary run" data-run="ahp">분석 실행</button>
+        <div class="out" id="o-ahp"></div>
       </div>
 
       <div class="panel" id="p-surv">
@@ -1616,6 +1652,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(
   if(!DATA){o.innerHTML=err('먼저 데이터를 입력하고 [데이터 적용]을 누르세요.');return;}
   try{o.innerHTML=RUN[k]();if(!o.querySelector('.err'))$(`.nav-item[data-p="${k}"]`).classList.add('done');}catch(x){o.innerHTML=err('분석 중 오류: '+x.message);}});
 </script>
+<script src="decision.js"></script>
 <script src="experiment.js"></script>
 <script src="qual.js"></script>
 </body>
