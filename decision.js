@@ -1,4 +1,4 @@
-// Just Do it Statistics — 고급통계 20 델파이 분석 · 21 AHP 분석
+// Just Do it Statistics — 전문가 합의 · 의사결정 통계 터미널: 01 델파이 분석 · 02 AHP 분석
 // index.html의 RUN, DATA, col, num, levels, quantile, mean, sd, table, note, err, esc, f, setData, setChecks 등을 함께 씁니다.
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -29,6 +29,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-dexample]'
   const k=b.dataset.dexample,rows=k==='delphi'?delphiExample():ahpExample();
   $('#raw').value=rows.map(r=>r.join('\t')).join('\n');$('#apply').click();
   const panel=$('#p-'+k);if(panel&&!panel.classList.contains('active'))$(`.nav-item[data-p="${k}"]`).click();});
+
+// 이 터미널에서 상단 [예시 데이터]를 누르면 보고 있는 분석의 예시를 불러옴
+$('#sample').addEventListener('click',e=>{if(document.body.dataset.term!=='dec')return;e.stopImmediatePropagation();
+  const k=$('.nav[data-term="dec"] .nav-item.active')?.dataset.p||'delphi';$(`[data-dexample="${k}"]`).click();},true);
 
 // ================= 데이터가 바뀔 때 기본 선택 =================
 const PAIR=/^(?:(.+?)\s*[:：]\s*)?(.+?)\s*(?:-|–|—|↔|\bvs\.?\b|\bVS\b)\s*(.+)$/;

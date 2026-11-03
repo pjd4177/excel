@@ -5,9 +5,9 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const store={get(k){try{return localStorage.getItem(k);}catch{return null;}},set(k,v){try{localStorage.setItem(k,v);}catch{}}};
 
 // ================= 터미널 전환 =================
-const TERM={stat:['기본 분석','01 – 08'],adv:['고급 분석','09 – 21']};
+const TERM={stat:['기본 분석','01 – 08'],adv:['고급 분석','09 – 19'],dec:['전문가 합의 · 의사결정','01 – 02']};
 function setTerm(t){
-  if(!['stat','exp','adv','qual'].includes(t))t='stat';
+  if(!['stat','exp','dec','adv','qual'].includes(t))t='stat';
   document.body.dataset.term=t;
   $$('.term').forEach(b=>b.classList.toggle('active',b.dataset.term===t));
   if(TERM[t]){
