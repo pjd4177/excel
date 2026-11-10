@@ -420,13 +420,17 @@ function setSend(cls,html){const el=$("#sendState");el.className="send"+(cls?" "
 async function sendResult(){
   if(!SHEET_URL){setSend("bad","구글 스프레드시트 주소가 아직 설정되지 않아 결과를 이 기기에만 저장했습니다. 선생님께 알려 주세요. [결과 파일 받기]로 내려받을 수도 있습니다.");$("#resend").hidden=true;return}
   setSend("","결과를 구글 스프레드시트로 보내는 중…");
-  const body=JSON.stringify(payload());
-  try{const r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
-    const j=await r.json().catch(()=>({ok:r.ok}));if(!j.ok)throw new Error(j.error||"저장 실패");S.sent=true;save();
-    setSend("ok",`✓ 제출 완료 · ${S.sid} ${esc(S.name)} · 결과가 구글 스프레드시트에 저장되었습니다.`);}
-  catch(e){try{await fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body});S.sent=true;save();
-      setSend("ok",`✓ 제출 완료 · ${S.sid} ${esc(S.name)} · 결과를 구글 스프레드시트로 보냈습니다.`);}
-    catch(e2){setSend("bad","인터넷 연결 문제로 결과를 보내지 못했습니다. 연결을 확인하고 [다시 전송]을 눌러 주세요. 결과는 이 기기에 저장되어 있습니다.");}}}
+  const body=JSON.stringify(payload());let r,txt="";
+  try{r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body,redirect:"follow"});txt=await r.text();}
+  catch(e){
+    // 응답을 읽을 수 없는 경우(구글 로그인 요구 · 접근 권한 문제 등): 보내기만 하고 확인 불가로 안내
+    try{await fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body});}catch(e2){
+      setSend("bad","인터넷 연결 문제로 결과를 보내지 못했습니다. 연결을 확인하고 [다시 전송]을 눌러 주세요. 결과는 이 기기에 저장되어 있습니다.");return}
+    setSend("bad",`결과를 보냈지만 저장되었는지 확인하지 못했습니다. 선생님께 시트를 확인해 달라고 해 주세요.<br><small>원인 예: 웹 앱 배포의 ‘액세스 권한’이 ‘모든 사용자’가 아님 · ${esc(e.message)}</small>`);return}
+  let j=null;try{j=JSON.parse(txt)}catch(e){}
+  if(j&&j.ok){S.sent=true;save();setSend("ok",`✓ 제출 완료 · ${S.sid} ${esc(S.name)} · ‘${esc(j.sheet||S.ch+"장")}’ 시트에 저장되었습니다.`);return}
+  const why=j?j.error:(/accounts\.google|로그인|Sign in/i.test(txt)?"구글 로그인 화면이 돌아왔습니다 (배포 ‘액세스 권한’을 ‘모든 사용자’로)":`응답 ${r.status} · ${txt.replace(/<[^>]+>/g," ").replace(/\s+/g," ").slice(0,120)}`);
+  setSend("bad",`시트에 저장하지 못했습니다. [다시 전송]을 눌러 보고, 계속 안 되면 선생님께 아래 내용을 알려 주세요.<br><small>${esc(why)}</small>`);}
 $("#resend").onclick=sendResult;
 $("#csvBtn").onclick=()=>{const p=payload(),H=["제출시각","장","장 제목","학번","이름","점수","맞힌 문항","전체 문항","안 푼 문항","풀이 시간(초)","틀린 문항","응답"];
   const v=[p.submittedAt,p.chapter,p.chapterTitle,p.studentId,p.name,p.scoreText,p.correct,p.total,p.unanswered,p.seconds,p.wrong,p.answers];

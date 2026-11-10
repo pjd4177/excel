@@ -76,6 +76,23 @@ function sheetFor(ch) {
   return sh;
 }
 
-function doGet() { return out({ ok: true, message: 'Just Do it Statistics 문제 결과 저장용 웹 앱입니다.' }); }
+// 브라우저로 웹 앱 주소를 열면 연결 상태를 보여 줌 (버전 · 스프레드시트 이름 · 시트 목록)
+function doGet() {
+  try {
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    return out({ ok: true, version: 'jd-exam-v2', spreadsheet: ss.getName(),
+      sheets: ss.getSheets().map(function (s) { return s.getName(); }),
+      message: '연결 정상: 학생이 제출하면 n장 → n번째 시트에 저장됩니다.' });
+  } catch (err) {
+    return out({ ok: false, version: 'jd-exam-v2', error: String(err && err.message || err) });
+  }
+}
+
+// Apps Script 편집기에서 이 함수를 선택해 [실행]하면 1장 시트에 시험용 한 줄이 들어갑니다 (권한 허용 확인용).
+function testSave() {
+  var r = doPost({ postData: { contents: JSON.stringify({ chapter: 1, studentId: '0000', name: '시험용', scoreText: '6점 만점에 6점',
+    correct: 6, total: 6, unanswered: 0, seconds: 0, wrong: '', items: [] }) } });
+  Logger.log(r.getContent());
+}
 
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
