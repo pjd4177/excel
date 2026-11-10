@@ -413,7 +413,9 @@ function finish(){clearInterval(timerId);S.done=true;S.submittedAt=new Date().to
 function payload(){const tot=S.order.length,ok=S.order.filter(id=>S.ans[id]===Q[id].ans).length,none=S.order.filter(id=>S.ans[id]==null).length;
   return {submittedAt:S.submittedAt,chapter:S.ch,chapterTitle:DATA.find(c=>c.no===S.ch).title,studentId:S.sid,name:S.name,
     score:Math.round(ok/tot*100),correct:ok,total:tot,unanswered:none,seconds:S.elapsed,
-    wrong:S.order.filter(id=>S.ans[id]!==Q[id].ans).join(", "),answers:S.order.map(id=>`${id}:${S.ans[id]??"-"}`).join(", ")};}
+    scoreText:`${tot}점 만점에 ${ok}점`,
+    wrong:S.order.filter(id=>S.ans[id]!==Q[id].ans).join(", "),answers:S.order.map(id=>`${id}:${S.ans[id]??"-"}`).join(", "),
+    items:S.order.map(id=>({id,answer:S.ans[id]??null,key:Q[id].ans,ok:S.ans[id]===Q[id].ans}))};}
 function setSend(cls,html){const el=$("#sendState");el.className="send"+(cls?" "+cls:"");el.innerHTML=html;$("#resend").hidden=cls!=="bad";}
 async function sendResult(){
   if(!SHEET_URL){setSend("bad","구글 스프레드시트 주소가 아직 설정되지 않아 결과를 이 기기에만 저장했습니다. 선생님께 알려 주세요. [결과 파일 받기]로 내려받을 수도 있습니다.");$("#resend").hidden=true;return}
@@ -427,7 +429,7 @@ async function sendResult(){
     catch(e2){setSend("bad","인터넷 연결 문제로 결과를 보내지 못했습니다. 연결을 확인하고 [다시 전송]을 눌러 주세요. 결과는 이 기기에 저장되어 있습니다.");}}}
 $("#resend").onclick=sendResult;
 $("#csvBtn").onclick=()=>{const p=payload(),H=["제출시각","장","장 제목","학번","이름","점수","맞힌 문항","전체 문항","안 푼 문항","풀이 시간(초)","틀린 문항","응답"];
-  const v=[p.submittedAt,p.chapter,p.chapterTitle,p.studentId,p.name,p.score,p.correct,p.total,p.unanswered,p.seconds,p.wrong,p.answers];
+  const v=[p.submittedAt,p.chapter,p.chapterTitle,p.studentId,p.name,p.scoreText,p.correct,p.total,p.unanswered,p.seconds,p.wrong,p.answers];
   const q=x=>`"${String(x).replace(/"/g,'""')}"`,csv="﻿"+H.map(q).join(",")+"\n"+v.map(q).join(",")+"\n";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`${p.chapter}장_${p.studentId}_${p.name}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);};
 function showResult(){
@@ -438,7 +440,7 @@ function showResult(){
   requestAnimationFrame(()=>{$("#ringArc").style.transition="stroke-dashoffset .9s ease";$("#ringArc").setAttribute("stroke-dashoffset",326.7*(1-ok/tot))});
   $("#scoreHead").textContent=!SHOW_ANSWERS?"답안을 제출했습니다":pct>=80?"아주 잘했습니다":pct>=60?"합격선을 넘었습니다":"틀린 문제를 다시 확인해 보세요";
   const m=Math.floor(S.elapsed/60),s=S.elapsed%60;
-  $("#scoreSub").textContent=`${tot}문항 중 ${ok}문항 정답 · 오답 ${tot-ok-none} · 안 푼 문항 ${none} · 풀이 시간 ${m}분 ${s}초`;
+  $("#scoreSub").textContent=`${tot}점 만점에 ${ok}점 · ${tot}문항 중 ${ok}문항 정답 · 오답 ${tot-ok-none} · 안 푼 문항 ${none} · 풀이 시간 ${m}분 ${s}초`;
   $("#chpanel").hidden=!SHOW_ANSWERS;$("#reviewWrap").hidden=!SHOW_ANSWERS;
   const chs=[...new Set(S.order.map(id=>Q[id].ch))].sort((a,b)=>a-b);
   $("#chbars").innerHTML=chs.map(n=>{const ids=S.order.filter(id=>Q[id].ch===n),o=ids.filter(id=>S.ans[id]===Q[id].ans).length,p=o/ids.length;
