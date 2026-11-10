@@ -22,7 +22,7 @@ function setTerm(t){
   store.set('jd-term',t);
   if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);
 }
-$('#terms').addEventListener('click',e=>{const b=e.target.closest('.term');if(b)setTerm(b.dataset.term);});
+$('#terms').addEventListener('click',e=>{const b=e.target.closest('.term');if(b&&b.dataset.term)setTerm(b.dataset.term);});
 // 주소 예: #adv/reg (고급통계의 회귀분석), 끝에 /ex를 붙이면 예시 데이터까지 불러옴
 function route(h){const [t,p,ex]=String(h||'').split('/');setTerm(t);if(!p)return;
   if(t==='exp'){if(window.expShow)window.expShow(p);return;}
