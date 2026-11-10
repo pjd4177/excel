@@ -6,7 +6,7 @@
  *   처음 저장할 때 그 시트 이름을 '1장', '2장' … 으로 바꿉니다. 시트가 모자라면 새로 만듭니다.
  *
  * 한 줄에 들어가는 내용
- *   제출시각 · 학번 · 이름 · 점수(예: 6점 만점에 6점) · 맞힌 문항 · 안 푼 문항 · 풀이 시간 · 틀린 문항
+ *   제출시각 · 학번 · 이름 · 점수(만점) · 점수(현재) · 점수(현재/만점×100) · 안 푼 문항 · 풀이 시간 · 틀린 문항
  *   · 문항마다 '응답 ② / 정답 ③ / X' (문항 번호가 열 제목)
  *
  * 설치 방법 (한 번만)
@@ -34,20 +34,22 @@ function doPost(e) {
     var mark = function (n) { return n >= 1 && n <= 5 ? CIRCLED[n - 1] : '-'; };
 
     var sh = sheetFor(ch);
-    var head = ['제출시각', '학번', '이름', '점수', '맞힌 문항', '안 푼 문항', '풀이 시간', '틀린 문항']
+    var head = ['제출시각', '학번', '이름', '점수(만점)', '점수(현재)', '점수(현재/만점×100)', '안 푼 문항', '풀이 시간', '틀린 문항']
       .concat(items.map(function (it) { return cut(it.id, 10); }));
-    if (sh.getLastRow() === 0) {
-      sh.appendRow(head);
-      sh.setFrozenRows(1);
-      sh.getRange(1, 1, 1, head.length).setFontWeight('bold').setBackground('#ECEBFA');
-    }
-    var sec = Number(d.seconds) || 0;
+    // 머리글이 없거나 예전 형식이면 첫 줄을 새 머리글로 맞춤
+    var first = sh.getLastRow() === 0 ? [] : sh.getRange(1, 1, 1, head.length).getValues()[0];
+    if (sh.getLastRow() === 0) sh.appendRow(head);
+    else if (String(first[3]) !== head[3] || String(first[5]) !== head[5]) sh.getRange(1, 1, 1, head.length).setValues([head]);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, head.length).setFontWeight('bold').setBackground('#ECEBFA');
+    var sec = Number(d.seconds) || 0, total = Number(d.total) || 0, correct = Number(d.correct) || 0;
     var row = [
       new Date(),
       "'" + cut(d.studentId, 20),               // 학번 앞자리 0이 지워지지 않도록 글자로 저장
       cut(d.name, 20),
-      cut(d.scoreText, 30) || ((Number(d.total) || 0) + '점 만점에 ' + (Number(d.correct) || 0) + '점'),
-      Number(d.correct) || 0,
+      total,
+      correct,
+      total ? Math.round(correct / total * 1000) / 10 : 0,   // 비율(%) 소수 첫째 자리
       Number(d.unanswered) || 0,
       Math.floor(sec / 60) + '분 ' + (sec % 60) + '초',
       cut(d.wrong, 500) || '없음'
