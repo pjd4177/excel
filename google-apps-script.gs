@@ -6,7 +6,7 @@
  *   처음 저장할 때 그 시트 이름을 '1장', '2장' … 으로 바꿉니다. 시트가 모자라면 새로 만듭니다.
  *
  * 한 줄에 들어가는 내용
- *   제출시각 · 학번 · 이름 · 점수(만점) · 점수(현재) · 점수(현재/만점×100) · 안 푼 문항 · 풀이 시간 · 틀린 문항
+ *   제출시각 · 학번 · 이름 · 점수(만점) · 점수(현재) · 점수(현재/만점×100) · 전체 문항 · 맞힌 문항 · 평균(100%) · 안 푼 문항 · 풀이 시간 · 틀린 문항
  *   · 문항마다 '응답 ② / 정답 ③ / X' (문항 번호가 열 제목)
  *
  * 설치 방법 (한 번만)
@@ -34,12 +34,12 @@ function doPost(e) {
     var mark = function (n) { return n >= 1 && n <= 5 ? CIRCLED[n - 1] : '-'; };
 
     var sh = sheetFor(ch);
-    var head = ['제출시각', '학번', '이름', '점수(만점)', '점수(현재)', '점수(현재/만점×100)', '안 푼 문항', '풀이 시간', '틀린 문항']
+    var head = ['제출시각', '학번', '이름', '점수(만점)', '점수(현재)', '점수(현재/만점×100)', '전체 문항', '맞힌 문항', '평균(100%)', '안 푼 문항', '풀이 시간', '틀린 문항']
       .concat(items.map(function (it) { return cut(it.id, 10); }));
     // 머리글이 없거나 예전 형식이면 첫 줄을 새 머리글로 맞춤
     var first = sh.getLastRow() === 0 ? [] : sh.getRange(1, 1, 1, head.length).getValues()[0];
     if (sh.getLastRow() === 0) sh.appendRow(head);
-    else if (String(first[3]) !== head[3] || String(first[5]) !== head[5]) sh.getRange(1, 1, 1, head.length).setValues([head]);
+    else if (String(first[3]) !== head[3] || String(first[8]) !== head[8]) sh.getRange(1, 1, 1, head.length).setValues([head]);
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, head.length).setFontWeight('bold').setBackground('#ECEBFA');
     var sec = Number(d.seconds) || 0, total = Number(d.total) || 0, correct = Number(d.correct) || 0;
@@ -50,6 +50,9 @@ function doPost(e) {
       total,
       correct,
       total ? Math.round(correct / total * 1000) / 10 : 0,   // 비율(%) 소수 첫째 자리
+      total,                                                  // 전체 문항
+      correct,                                                // 맞힌 문항
+      total ? Math.round(correct / total * 1000) / 10 + '%' : '0%',   // 평균(100%): 맞힌 비율을 % 로
       Number(d.unanswered) || 0,
       Math.floor(sec / 60) + '분 ' + (sec % 60) + '초',
       cut(d.wrong, 500) || '없음'
@@ -82,11 +85,11 @@ function sheetFor(ch) {
 function doGet() {
   try {
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    return out({ ok: true, version: 'jd-exam-v2', spreadsheet: ss.getName(),
+    return out({ ok: true, version: 'jd-exam-v4', spreadsheet: ss.getName(),
       sheets: ss.getSheets().map(function (s) { return s.getName(); }),
       message: '연결 정상: 학생이 제출하면 n장 → n번째 시트에 저장됩니다.' });
   } catch (err) {
-    return out({ ok: false, version: 'jd-exam-v2', error: String(err && err.message || err) });
+    return out({ ok: false, version: 'jd-exam-v4', error: String(err && err.message || err) });
   }
 }
 
